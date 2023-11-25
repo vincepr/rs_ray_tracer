@@ -1,0 +1,9 @@
+
+# Only the workspace definition allowed in here (no dependencies etc)
+
+[workspace]
+members=[
+    "runtime_unix",
+    "mathlib",
+]
+resolver = "1"
