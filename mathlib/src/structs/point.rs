@@ -84,12 +84,12 @@ mod tests {
         assert!(l - r == e);
         assert!(r - l == -e);
     }
-    
+
     #[test]
     fn sub_pnt_vec() {
         let l = Point::new(1.1, 1.1, 1.1);
         let r = Vector::new(1.1, 2.2, -1.2);
         let e = Point::new(0.0, -1.1, 2.3);
-        assert!(l-r == e);
+        assert!(l - r == e);
     }
 }

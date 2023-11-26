@@ -1,10 +1,15 @@
-use mathlib::structs::point::Point;
+use mathlib::{visual::{canvas::Canvas, color::Col}, io::write_to_file};
 
 
 fn main() {
-    println!("Hello, world!");
-    let p3 = Point::new(1.1, 2.2, 3.3);
-    let _f1: f32 = 1.2;
+    let mut canvas = Canvas::new(30,50);
 
-    println!("t is currently: {p3:?}");
+    for (i, row) in canvas.arr.iter_mut().enumerate() {
+        for (j, col) in row.iter_mut().enumerate() {
+            *col = Col::new(i as f32 / 30.0, 0.8, 0.6);
+        }
+    }
+
+    write_to_file("./out.ppm", canvas.canvas_to_ppm());
+    
 }

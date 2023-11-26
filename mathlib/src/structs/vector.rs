@@ -1,4 +1,4 @@
-use std::{ops::{Add, Neg, Sub, Mul, Div}};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 use crate::cmp::ApproxEq;
 
@@ -14,7 +14,11 @@ pub struct Vector {
 impl Vector {
     /// quality of live, just casts int -> float
     pub fn newi(x: i32, y: i32, z: i32) -> Self {
-        Vector { x: x as f32, y : y as f32, z: z as f32 }
+        Vector {
+            x: x as f32,
+            y: y as f32,
+            z: z as f32,
+        }
     }
 
     pub fn new(x: f32, y: f32, z: f32) -> Self {
@@ -32,7 +36,7 @@ impl Vector {
 
     /// distance represented by a vector. Calculated by classic pythagoras
     pub fn magnitude(&self) -> f32 {
-        (self.x.powi(2)+ self.y.powi(2) + self.z.powi(2)).sqrt()
+        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 
     /// convert vector to unit vector (with "length" = magniture = 1)
@@ -47,7 +51,7 @@ impl Vector {
 
     /// dot product, aka scalar product. takes 2 vectors returns a scalar value
     pub fn dot(&self, other: &Self) -> f32 {
-        self.x * other.x + self.y * other.y + self.z *other.z 
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     /// get a new vector perpendicular to the two imput ones. used for transformations
@@ -56,7 +60,7 @@ impl Vector {
             x: self.y * other.z - self.z * other.y,
             y: self.z * other.x - self.x * other.z,
             z: self.x * other.y - self.y * other.x,
-        }   
+        }
     }
 }
 
@@ -134,7 +138,7 @@ impl Div<f32> for Vector {
             x: self.x / rhs,
             y: self.y / rhs,
             z: self.z / rhs,
-        } 
+        }
     }
 }
 
@@ -203,9 +207,9 @@ mod tests {
         let v = Vector::new(1.1, 0.0, -3.3);
         let e = Vector::new(2.2, 0.0, -6.6);
         let e2 = Vector::new(0.55, 0.0, -1.65);
-        assert!(2.0*v == e);
-        assert!(-2.0*v == -e);
-        assert!(0.5*v == e2);
+        assert!(2.0 * v == e);
+        assert!(-2.0 * v == -e);
+        assert!(0.5 * v == e2);
     }
 
     #[test]
@@ -213,26 +217,26 @@ mod tests {
         let v = Vector::new(1.1, 0.0, -3.3);
         let e = Vector::new(2.2, 0.0, -6.6);
         let e2 = Vector::new(0.55, 0.0, -1.65);
-        assert!(v/1.0 == v);
-        assert!(v/2.0 == e2);
-        assert!(v/0.5 == e);
+        assert!(v / 1.0 == v);
+        assert!(v / 2.0 == e2);
+        assert!(v / 0.5 == e);
     }
 
     #[test]
     fn magnitude_vec() {
-        assert!(Vector::newi(1,0,0).magnitude().apx_eq(&1.0));
-        assert!(Vector::newi(0,1,0).magnitude().apx_eq(&1.0));
-        assert!(Vector::newi(0,0,1).magnitude().apx_eq(&1.0));
+        assert!(Vector::newi(1, 0, 0).magnitude().apx_eq(&1.0));
+        assert!(Vector::newi(0, 1, 0).magnitude().apx_eq(&1.0));
+        assert!(Vector::newi(0, 0, 1).magnitude().apx_eq(&1.0));
         let sqrt14 = (14.0 as f32).sqrt();
-        assert!(Vector::newi(1,2,3).magnitude().apx_eq(&sqrt14));
-        assert!(Vector::newi(-1,-2,-3).magnitude().apx_eq(&sqrt14));
+        assert!(Vector::newi(1, 2, 3).magnitude().apx_eq(&sqrt14));
+        assert!(Vector::newi(-1, -2, -3).magnitude().apx_eq(&sqrt14));
     }
 
     #[test]
     fn normalize_vec() {
-        assert_eq!(Vector::newi(4,0,0).normalize(), Vector::newi(1,0,0));
+        assert_eq!(Vector::newi(4, 0, 0).normalize(), Vector::newi(1, 0, 0));
 
-        let res = Vector::newi(1,2,3).normalize();
+        let res = Vector::newi(1, 2, 3).normalize();
         let exp = Vector::new(0.26726, 0.53452, 0.80178);
         assert_eq!(res, exp);
         assert!(res.magnitude().apx_eq(&1.0));
@@ -240,16 +244,16 @@ mod tests {
 
     #[test]
     fn dotproduct_vec() {
-        let a = Vector::newi(1,2,3);
-        let b = Vector::newi(2,3,4);
+        let a = Vector::newi(1, 2, 3);
+        let b = Vector::newi(2, 3, 4);
         let res = a.dot(&b);
         assert_eq!(res, 20.0);
     }
 
     #[test]
     fn crossproduct_vec() {
-        let a = Vector::newi(1,2,3);
-        let b = Vector::newi(2,3,4);
+        let a = Vector::newi(1, 2, 3);
+        let b = Vector::newi(2, 3, 4);
         let exp1 = Vector::newi(-1, 2, -1);
         let exp2 = Vector::newi(1, -2, 1);
         assert_eq!(a.cross(&b), exp1);
