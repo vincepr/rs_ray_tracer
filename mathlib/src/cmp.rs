@@ -2,10 +2,10 @@ pub trait ApproxEq {
     /// compares for approximate-float equality with EPSILON of 0.00001
     fn apx_eq(&self, other: &Self) -> bool;
 }
-impl  ApproxEq for f32 {
-   fn apx_eq(&self, other: &f32) -> bool {
+impl ApproxEq for f32 {
+    fn apx_eq(&self, other: &f32) -> bool {
         const EPSILON: f32 = 0.00001;
-        *self==*other || (*self-*other).abs() < EPSILON
+        *self == *other || (*self - *other).abs() < EPSILON
     }
 }
 
