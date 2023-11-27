@@ -1,6 +1,6 @@
 use std::{ops::{Add, Mul, Sub}, fmt::Display};
 
-use crate::cmp::ApproxEq;
+use crate::{cmp::ApproxEq, io::COLOR_MAXVAL};
 
 /// represents a RGB-Color
 ///  - final colors should be between 0 - 1.
@@ -39,15 +39,16 @@ impl Col {
 
 impl Display for Col {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {} {}", base_255(self.r), base_255(self.g), base_255(self.b))
+        write!(f, "{} {} {} ", base_255(self.r), base_255(self.g), base_255(self.b))
     }
 }
 
+// usess COLOR_MAXVAL to translate 0-1 range into percentage of that value
 fn base_255(f: f32) -> u8 {
     match f {
         n if n < 0.0 => 0,
-        n if n > 255.0 => 255,
-        n => (n*256.0).floor() as u8,
+        n if n > COLOR_MAXVAL as f32 => 255,
+        n => (n*((COLOR_MAXVAL+1)as f32)).floor() as u8,
     }
 } 
 
