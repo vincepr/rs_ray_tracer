@@ -1,4 +1,4 @@
-use std::ops::{IndexMut, Index};
+use std::ops::{Index, IndexMut};
 
 use super::color::Col;
 
@@ -21,7 +21,11 @@ pub struct Canvas {
 
 impl Canvas {
     pub fn new(w: usize, h: usize) -> Self {
-        Canvas { width: w, height: h, arr: vec![vec![Col::new_black();w];h] }
+        Canvas {
+            width: w,
+            height: h,
+            arr: vec![vec![Col::new_black(); w]; h],
+        }
     }
 
     /// writes color-pixel to x and y choordinates. Same format as book
@@ -31,7 +35,7 @@ impl Canvas {
     }
 
     /// reads color-pixel from x and y choordinates. Same format as book
-    pub fn read(&self, x: usize, y: usize) -> &Col{
+    pub fn read(&self, x: usize, y: usize) -> &Col {
         &self[y][x]
     }
 }
@@ -50,7 +54,6 @@ impl IndexMut<usize> for Canvas {
         &mut self.arr[index]
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -77,21 +80,21 @@ mod tests {
     fn create_correct_size() {
         let (w, h) = (10, 20);
         let canvas = Canvas::new(w, h);
-        let target = canvas.arr[h-1][w-1];
+        let target = canvas.arr[h - 1][w - 1];
         assert_eq!(w, canvas.width);
         assert_eq!(h, canvas.height);
         assert!(is_black(&target));
     }
-    
+
     #[test]
     fn writes_pixel() {
         let (w, h) = (10, 20);
         let mut canvas = Canvas::new(w, h);
 
-        canvas[20-1][10-1] = Col::new_white();
+        canvas[20 - 1][10 - 1] = Col::new_white();
 
-        let lowest_row = &canvas[20-1];
-        let last_pixel = lowest_row[10-1];
+        let lowest_row = &canvas[20 - 1];
+        let last_pixel = lowest_row[10 - 1];
         assert_eq!(last_pixel, Col::new_white());
 
         canvas

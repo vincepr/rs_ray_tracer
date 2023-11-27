@@ -1,4 +1,7 @@
-use std::{ops::{Add, Mul, Sub}, fmt::Display};
+use std::{
+    fmt::Display,
+    ops::{Add, Mul, Sub},
+};
 
 use crate::{cmp::ApproxEq, io::COLOR_MAXVAL};
 
@@ -11,7 +14,6 @@ pub struct Col {
     pub g: f32,
     pub b: f32,
 }
-
 
 impl Col {
     pub fn new(r: f32, g: f32, b: f32) -> Self {
@@ -39,7 +41,13 @@ impl Col {
 
 impl Display for Col {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {} {} ", base_255(self.r), base_255(self.g), base_255(self.b))
+        write!(
+            f,
+            "{} {} {}  ",
+            base_255(self.r),
+            base_255(self.g),
+            base_255(self.b)
+        )
     }
 }
 
@@ -48,9 +56,9 @@ fn base_255(f: f32) -> u8 {
     match f {
         n if n < 0.0 => 0,
         n if n > COLOR_MAXVAL as f32 => 255,
-        n => (n*((COLOR_MAXVAL+1)as f32)).floor() as u8,
+        n => (n * ((COLOR_MAXVAL + 1) as f32)).floor() as u8,
     }
-} 
+}
 
 impl PartialEq for Col {
     fn eq(&self, other: &Self) -> bool {

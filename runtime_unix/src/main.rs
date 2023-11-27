@@ -1,8 +1,10 @@
-use mathlib::{visual::{canvas::Canvas, color::Col}, io::write_to_file};
-
+use mathlib::{
+    io::write_to_file,
+    visual::{canvas::Canvas, color::Col},
+};
 
 fn main() {
-    let mut canvas = Canvas::new(5,3);
+    let mut canvas = Canvas::new(5, 3);
 
     for (i, row) in canvas.arr.iter_mut().enumerate() {
         for (j, col) in row.iter_mut().enumerate() {
