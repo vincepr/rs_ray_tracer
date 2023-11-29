@@ -33,7 +33,7 @@ impl Canvas {
         let res = lines.join("\n");
 
         if res.ends_with('\n') {
-            return res
+            return res;
         }
         res + "\n"
     }
