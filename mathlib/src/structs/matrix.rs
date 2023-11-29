@@ -37,11 +37,29 @@ impl Matrix2 {
     pub fn new(matrix: [[f32; 2]; 2]) -> Self {
         Self { 0: matrix }
     }
+    
+    /// determinand == the 1/x equivalent in matrix land
+    pub fn determinant(& self) -> f32 {
+        self[0][0]*self[1][1] - self[0][1]*self[1][0]
+    }
 }
 
 impl Matrix3 {
     pub fn new(matrix: [[f32; 3]; 3]) -> Self {
         Self { 0: matrix }
+    }
+
+    // deletes a row & colum to make the size smaller (3->2)
+    pub fn submatrix(&self, row: usize, col: usize) -> Matrix2 {
+        let mut vals: Vec<f32> = Vec::with_capacity(4);
+        for y in 0..3{
+            if y == row {continue;}
+            for x in 0..3 {
+                if x == col {continue;}
+                vals.push(self[y][x]);
+            }
+        } 
+        Matrix2::new([[vals[0], vals[1]], [vals[2], vals[3]]])
     }
 }
 
@@ -66,7 +84,8 @@ impl Matrix4 {
     }
 }
 
-/// impl Intexing into for all 3 matrix-types
+//          [y][x]      0.0 is top left of "screen"
+// impl Intexing into for all 3 matrix-types
 macro_rules! impl_PartialEq_WithRounding {
     ($name:ty) => {
         impl core::cmp::PartialEq for $name {
@@ -258,4 +277,35 @@ mod tests {
         assert_eq!(l.transponse(), exp);
         assert_eq!(Matrix4::new_identity().transponse(), Matrix4::new_identity());
     }
+
+    #[test]
+    fn matrix_determinant() {
+        let l = Matrix2::new([[1.0, 5.0], [-3.0, 2.0]]);
+        assert_eq!(l.determinant(), 17.0);
+    }
+
+    // submatrix calcs:
+    #[test]
+    fn matrix_submatrix_3_3() {
+        let l = Matrix3::new([
+            [1.0, 5.0, 0.0], 
+            [-3.0, 2.0, 7.0], 
+            [0.0, 6.0, -3.0]]); 
+        assert_eq!(l.submatrix(0, 2), Matrix2::new([[-3.0, 2.0], [0.0, 6.0]]));
+        assert_eq!(l.submatrix(2, 2), Matrix2::new([[1.0, 5.0], [-3.0, 2.0]]));
+        assert_eq!(l.submatrix(1, 1), Matrix2::new([[1.0, 0.0], [0.0, -3.0]]));
+    }
+
+    // #[test]
+    // fn matrix_submatrix_4_4() {
+    //     let l = Matrix4::new([
+    //         [-6.0, 1.0, 1.0, 6.0],
+    //         [-8.0, 5.0, 8.0, 6.0],
+    //         [-1.0, 0.0, 8.0, 2.0],
+    //         [-7.0, 1.0, -1.0, 1.0],
+    //     ]);
+    //     let epx = Matrix3::new([[-6.0, 1.0, 6.0], [-8.0, 8.0, 6.0], [-7.0, -1.0, 1.0]]); 
+    //     assert_eq!(l.submatrix(row: 2, col:1), 17.0);
+    // }
+
 }
