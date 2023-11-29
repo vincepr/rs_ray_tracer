@@ -29,7 +29,7 @@ impl Point {
 impl PartialEq for Point {
     /// overwritten with approximate equality for our float based values. So we can use == and !=
     fn eq(&self, other: &Self) -> bool {
-        self.apx_eq(&other)
+        self.apx_eq(other)
     }
 }
 

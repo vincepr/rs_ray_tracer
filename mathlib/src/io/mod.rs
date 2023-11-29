@@ -8,8 +8,8 @@ pub const COLOR_MAXVAL: u16 = 255;
 impl Canvas {
     /// converts to a .ppm string
     pub fn canvas_to_ppm(&self) -> String {
-        const HEADER_MAGIC_NR: &'static str = "P3";
-        const HEADER_COMMENT: &'static str = "# automatically generated plain ppm file";
+        const HEADER_MAGIC_NR: &str = "P3";
+        const HEADER_COMMENT: &str = "# automatically generated plain ppm file";
 
         let mut lines: Vec<String> = Vec::with_capacity(self.height);
 
@@ -24,7 +24,7 @@ impl Canvas {
                 row_str.push_str(&col.to_string());
                 // if above 70 chars we must squeeze in a \n
                 if (j + 1) % 5 == 0 {
-                    row_str.push_str("\n");
+                    row_str.push('\n');
                 }
             }
             lines.push(row_str);
@@ -32,10 +32,10 @@ impl Canvas {
 
         let res = lines.join("\n");
 
-        if res.ends_with("\n") {
-            return res;
+        if res.ends_with('\n') {
+            return res
         }
-        return res + "\n";
+        res + "\n"
     }
 }
 

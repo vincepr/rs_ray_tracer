@@ -56,7 +56,7 @@ impl_PartialEq_WithRounding!(Matrix4);
 
 impl Matrix2 {
     pub fn new(matrix: [[f32; 2]; 2]) -> Self {
-        Self { 0: matrix }
+        Self(matrix)
     }
     
     /// determinant == the 1/x equivalent in matrix land
@@ -67,7 +67,7 @@ impl Matrix2 {
 
 impl Matrix3 {
     pub fn new(matrix: [[f32; 3]; 3]) -> Self {
-        Self { 0: matrix }
+        Self(matrix)
     }
 
     /// deletes a row & colum to make the size smaller (3->2)
@@ -102,7 +102,7 @@ impl Matrix3 {
         if (row+col) % 2 == 0 {
             return res;
         }
-        return -res;
+        -res
     }
 
     /// determinant == the 1/x equivalent in matrix land
@@ -116,22 +116,22 @@ impl Matrix3 {
 
 impl Matrix4 {
     pub fn new(matrix: [[f32; 4]; 4]) -> Self {
-        Self { 0: matrix }
+        Self(matrix)
     }
 
     /// identity-matrix any M*identity = M
     pub fn new_identity() -> Self {
-        Self { 0: [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]] }
+        Self([[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]])
     }
 
     /// turns rows to cols and vice verse. Used for translating normal vectors between obj-space <-> world-space
     pub fn transpose(&self) -> Self {
-        Self { 0: [
+        Self([
             [self[0][0], self[1][0], self[2][0], self[3][0]], 
             [self[0][1], self[1][1], self[2][1], self[3][1]], 
             [self[0][2], self[1][2], self[2][2], self[3][2]], 
             [self[0][3], self[1][3], self[2][3], self[3][3]], 
-        ]}
+        ])
     }
 
     // deletes a row & colum to make the size smaller (4->3)
@@ -161,7 +161,7 @@ impl Matrix4 {
         if (row+col) % 2 == 0 {
             return res;
         }
-        return -res;
+        -res
     }
 
     /// determinant == the 1/x equivalent in matrix land
@@ -176,14 +176,14 @@ impl Matrix4 {
             return None // this matrix is NOT invertible
         }
         let determinant = self.determinant();
-        let mut result = Matrix4{0: [[0.0; 4]; 4] };
+        let mut result = Matrix4([[0.0; 4]; 4]);
         for row in 0..4 {
             for col in 0..4 {
                 let c = self.cofactor(row, col);
                 result[col][row] = c / determinant;
             }
         }
-        return Some(result);
+        Some(result)
     }
 }
 
