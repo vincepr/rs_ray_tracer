@@ -14,11 +14,7 @@ pub struct Vector {
 impl Vector {
     /// quality of live, just casts int -> float
     pub fn newi(x: i32, y: i32, z: i32) -> Self {
-        Vector {
-            x: x as f32,
-            y: y as f32,
-            z: z as f32,
-        }
+        Self::new(x as f32, y as f32, z as f32)
     }
 
     pub fn new(x: f32, y: f32, z: f32) -> Self {
