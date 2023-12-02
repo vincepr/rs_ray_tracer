@@ -189,6 +189,9 @@ impl Matrix {
     /// inverts the effect or reversing multiplication of a matrix
     pub fn inverse(&self) -> Option<Self> {
         if self.determinant().apx_eq(&0.0) {
+            dbg!("could not find invsrse of", &self);
+            println!("Could not find inverse of {self:?}");
+            eprintln!("Could not find inverse of {self:?}");
             return None; // this matrix is NOT invertible
         }
         let determinant = self.determinant();
@@ -200,6 +203,12 @@ impl Matrix {
             }
         }
         Some(result)
+    }
+}
+
+impl Default for Matrix {
+    fn default() -> Self {
+        Self::new_identity()
     }
 }
 

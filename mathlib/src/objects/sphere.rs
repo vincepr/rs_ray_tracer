@@ -10,6 +10,7 @@ use super::object::{Object, Shape};
 pub struct Sphere {}
 
 impl Sphere {
+    #[allow(clippy::new_ret_no_self)]
     pub fn new() -> Object {
         Object::new(Shape::Sphere)
     }
@@ -43,11 +44,7 @@ impl IntersectsRay for Sphere {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        mathstructs::{point::Point, vector::Vector, matrix::Matrix},
-        objects::object::{Object, Shape},
-        ray::{Ray, self},
-    };
+    use crate::mathstructs::{vector::Vector, matrix::Matrix};
 
     use super::*;
     #[test]
@@ -108,8 +105,21 @@ mod tests {
 
     #[test]
     fn intersecting_a_scaled_sphere_with_a_ray() {
+        let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
+        let mut s = Sphere::new();
+        s.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
+        let xs = s.intersect(&r);
+        assert!(xs.is_some());
+        assert_eq!(xs, Some((3.0, 7.0)));
     }
 
     #[test]
-    fn intersecting_a_translated_sphere_with_a_ray() {}
+    fn intersecting_a_translated_sphere_with_a_ray() {
+        let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
+        let mut s = Sphere::new();
+        s.set_transform(Matrix::translation_new(5.0, 0.0, 0.0));
+        let xs = s.intersect(&r);
+        dbg!(xs);
+        assert!(!xs.is_some())
+    }
 }
