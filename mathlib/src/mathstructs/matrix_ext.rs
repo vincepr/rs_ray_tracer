@@ -124,7 +124,7 @@ impl Matrix4 {
 mod tests {
     use std::f32::consts::PI;
 
-    use crate::structs::{point::Point, vector::Vector};
+    use crate::mathstructs::{point::Point, vector::Vector};
 
     use super::*;
 

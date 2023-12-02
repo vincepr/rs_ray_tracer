@@ -127,6 +127,17 @@ impl Mul<Vector> for f32 {
     }
 }
 
+impl Mul<f32> for Vector {
+    type Output = Vector;
+    fn mul(self, rhs: f32) -> Self::Output {
+        Self::Output {
+            x: rhs * self.x,
+            y: rhs * self.y,
+            z: rhs * self.z,
+        }
+    }
+}
+
 impl Div<f32> for Vector {
     type Output = Vector;
     fn div(self, rhs: f32) -> Self::Output {
