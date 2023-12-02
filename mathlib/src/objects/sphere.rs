@@ -1,23 +1,17 @@
-use crate::mathstructs::point::Point;
+use crate::{
+    mathstructs::point::Point,
+    ray::{intersects::IntersectsRay, Ray},
+};
 
-use super::{intersects::IntersectsRay, Ray};
+use super::object::{Object, Shape};
 
+/// always of radius 1 and at (0.0.0) - has no real state so not really a struct tbh
 #[derive(Debug, PartialEq)]
 pub struct Sphere {}
 
-/// sphere at origin of radius 1
-pub fn sphere() -> Sphere {
-    Sphere {}
-}
-
 impl Sphere {
-    pub fn new() -> Self {
-        Self {}
-    }
-}
-impl Default for Sphere {
-    fn default() -> Self {
-        Self::new()
+    pub fn new() -> Object {
+        Object::new(Shape::Sphere)
     }
 }
 
@@ -49,48 +43,73 @@ impl IntersectsRay for Sphere {
 
 #[cfg(test)]
 mod tests {
-    use crate::mathstructs::{point::Point, vector::Vector};
+    use crate::{
+        mathstructs::{point::Point, vector::Vector, matrix::Matrix},
+        objects::object::{Object, Shape},
+        ray::{Ray, self},
+    };
 
     use super::*;
     #[test]
     fn ray_intersects_a_sphere_at_two_points() {
-        let ray = Ray::new(Point::newi(0, 0, -5), Vector::newi(0, 0, 1));
-        let sphere = sphere();
+        let ray = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
+        let sphere = Sphere::new();
         let intersects = sphere.intersect(&ray).unwrap();
         assert_eq!(intersects, (4.0, 6.0));
     }
 
     #[test]
     fn ray_intersects_sphere_at_a_tangent() {
-        let ray = Ray::new(Point::newi(0, 1, -5), Vector::newi(0, 0, 1));
-        let sphere = sphere();
+        let ray = Ray::new(Point::inew(0, 1, -5), Vector::inew(0, 0, 1));
+        let sphere = Sphere::new();
         let intersects = sphere.intersect(&ray).unwrap();
         assert_eq!(intersects, (5.0, 5.0));
     }
 
     #[test]
     fn ray_misses_a_sphere() {
-        let ray = Ray::new(Point::newi(0, 2, -5), Vector::newi(0, 0, 1));
-        let sphere = sphere();
+        let ray = Ray::new(Point::inew(0, 2, -5), Vector::inew(0, 0, 1));
+        let sphere = Sphere::new();
         let intersects = sphere.intersect(&ray);
         assert_eq!(intersects, None);
     }
 
     #[test]
     fn ray_originates_inside_a_sphere() {
-        let ray = Ray::new(Point::newi(0, 0, 0), Vector::newi(0, 0, 1));
-        let sphere = sphere();
+        let ray = Ray::new(Point::inew(0, 0, 0), Vector::inew(0, 0, 1));
+        let sphere = Sphere::new();
         let intersects = sphere.intersect(&ray).unwrap();
         assert_eq!(intersects, (-1.0, 1.0));
     }
 
     #[test]
     fn ray_starts_after_sphere() {
-        let ray = Ray::new(Point::newi(0, 0, 5), Vector::newi(0, 0, 1));
-        let sphere = sphere();
+        let ray = Ray::new(Point::inew(0, 0, 5), Vector::inew(0, 0, 1));
+        let sphere = Sphere::new();
         let intersects = sphere.intersect(&ray).unwrap();
         assert_eq!(intersects.0, -6.0);
         assert_eq!(intersects.1, -4.0);
         assert_eq!(intersects, (-6.0, -4.0));
     }
+
+    #[test]
+    fn sphere_s_default_transformation_is_identity() {
+        let s = Sphere::new();
+        assert_eq!(s.transformation, Matrix::new_identity());
+    }
+
+    #[test]
+    fn changing_a_sphere_s_transformation() {
+        let mut s = Sphere::new();
+        let t = Matrix::translation_new(2.0, 3.0, 4.0);
+        s.set_transform(t);
+        assert_eq!(s.transformation, t);
+    }
+
+    #[test]
+    fn intersecting_a_scaled_sphere_with_a_ray() {
+    }
+
+    #[test]
+    fn intersecting_a_translated_sphere_with_a_ray() {}
 }

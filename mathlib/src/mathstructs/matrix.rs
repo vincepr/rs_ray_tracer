@@ -8,8 +8,9 @@ pub struct Matrix2([[f32; 2]; 2]);
 #[derive(Debug, Clone, Copy)]
 pub struct Matrix3([[f32; 3]; 3]);
 
+/// Matrix4 - 4 rows, 4 columns
 #[derive(Debug, Clone, Copy)]
-pub struct Matrix4([[f32; 4]; 4]);
+pub struct Matrix([[f32; 4]; 4]);
 
 /// impl Intexing into for all 3 matrix-types
 macro_rules! impl_IndexAndIndexMut {
@@ -29,7 +30,7 @@ macro_rules! impl_IndexAndIndexMut {
 }
 impl_IndexAndIndexMut!(Matrix2);
 impl_IndexAndIndexMut!(Matrix3);
-impl_IndexAndIndexMut!(Matrix4);
+impl_IndexAndIndexMut!(Matrix);
 
 //          [y][x]      0.0 is top left of "screen"
 // impl Intexing into for all 3 matrix-types
@@ -51,7 +52,7 @@ macro_rules! impl_PartialEq_WithRounding {
 }
 impl_PartialEq_WithRounding!(Matrix2);
 impl_PartialEq_WithRounding!(Matrix3);
-impl_PartialEq_WithRounding!(Matrix4);
+impl_PartialEq_WithRounding!(Matrix);
 
 impl Matrix2 {
     pub fn new(matrix: [[f32; 2]; 2]) -> Self {
@@ -120,7 +121,7 @@ impl Matrix3 {
     }
 }
 
-impl Matrix4 {
+impl Matrix {
     pub fn new(matrix: [[f32; 4]; 4]) -> Self {
         Self(matrix)
     }
@@ -191,7 +192,7 @@ impl Matrix4 {
             return None; // this matrix is NOT invertible
         }
         let determinant = self.determinant();
-        let mut result = Matrix4([[0.0; 4]; 4]);
+        let mut result = Matrix([[0.0; 4]; 4]);
         for row in 0..4 {
             for col in 0..4 {
                 let c = self.cofactor(row, col);
@@ -203,7 +204,7 @@ impl Matrix4 {
 }
 
 // multiplication (only needed for x4 * x4)
-impl Mul for Matrix4 {
+impl Mul for Matrix {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -216,11 +217,11 @@ impl Mul for Matrix4 {
                     + self[y][3] * rhs[3][x];
             }
         }
-        Matrix4::new(result_matrix)
+        Matrix::new(result_matrix)
     }
 }
 
-impl Mul<Point> for Matrix4 {
+impl Mul<Point> for Matrix {
     type Output = Point;
 
     fn mul(self, rhs: Point) -> Self::Output {
@@ -241,7 +242,7 @@ impl Mul<Point> for Matrix4 {
     }
 }
 
-impl Mul<Vector> for Matrix4 {
+impl Mul<Vector> for Matrix {
     type Output = Vector;
 
     fn mul(self, rhs: Vector) -> Self::Output {
@@ -279,7 +280,7 @@ mod tests {
 
     #[test]
     fn create_matrix4_4() {
-        let m = Matrix4::new([
+        let m = Matrix::new([
             [1.0, 2.0, 3.0, 4.0],
             [5.5, 6.5, 7.5, 8.5],
             [9.0, 10.0, 11.0, 12.0],
@@ -307,19 +308,19 @@ mod tests {
 
     #[test]
     fn matrix_multiplication_4_4() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [1.0, 2.0, 3.0, 4.0],
             [5.0, 6.0, 7.0, 8.0],
             [9.0, 8.0, 7.0, 6.0],
             [5.0, 4.0, 3.0, 2.0],
         ]);
-        let r = Matrix4::new([
+        let r = Matrix::new([
             [-2.0, 1.0, 2.0, 3.0],
             [3.0, 2.0, 1.0, -1.0],
             [4.0, 3.0, 6.0, 5.0],
             [1.0, 2.0, 7.0, 8.0],
         ]);
-        let exp = Matrix4::new([
+        let exp = Matrix::new([
             [20.0, 22.0, 50.0, 48.0],
             [44.0, 54.0, 114.0, 108.0],
             [40.0, 58.0, 110.0, 102.0],
@@ -331,7 +332,7 @@ mod tests {
 
     #[test]
     fn matrix_multiplication_4_point() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [1.0, 2.0, 3.0, 4.0],
             [2.0, 4.0, 4.0, 2.0],
             [8.0, 6.0, 4.0, 1.0],
@@ -344,7 +345,7 @@ mod tests {
 
     #[test]
     fn matrix_multiplication_4_vector() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [1.0, 2.0, 3.0, 4.0],
             [2.0, 4.0, 4.0, 2.0],
             [8.0, 6.0, 4.0, 1.0],
@@ -357,19 +358,19 @@ mod tests {
 
     #[test]
     fn matrix_multiplication_with_idenity_does_nothing() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [1.0, 2.0, 3.0, 4.0],
             [5.0, 6.0, 7.0, 8.0],
             [9.0, 8.0, 7.0, 6.0],
             [4.0, 8.0, 16.0, 32.0],
         ]);
-        let r = Matrix4::new_identity();
+        let r = Matrix::new_identity();
         assert_eq!(l * r, l);
     }
 
     #[test]
     fn matrix_multiplication_with_idenity_does_nothing_vec() {
-        let l = Matrix4::new_identity();
+        let l = Matrix::new_identity();
         let r = Point::new(4.0, 3.3, 5.5);
         let exp = Point::new(4.0, 3.3, 5.5);
         assert_eq!(l * r, exp);
@@ -377,20 +378,20 @@ mod tests {
 
     #[test]
     fn matrix_transponse() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [0.0, 9.0, 3.0, 0.0],
             [9.0, 8.0, 0.0, 8.0],
             [1.0, 8.0, 5.0, 3.0],
             [0.0, 0.0, 5.0, 8.0],
         ]);
-        let exp = Matrix4::new([
+        let exp = Matrix::new([
             [0.0, 9.0, 1.0, 0.0],
             [9.0, 8.0, 8.0, 0.0],
             [3.0, 0.0, 5.0, 5.0],
             [0.0, 8.0, 3.0, 8.0],
         ]);
         assert_eq!(l.transpose(), exp);
-        assert_eq!(Matrix4::new_identity().transpose(), Matrix4::new_identity());
+        assert_eq!(Matrix::new_identity().transpose(), Matrix::new_identity());
     }
 
     #[test]
@@ -410,7 +411,7 @@ mod tests {
 
     #[test]
     fn matrix_submatrix_4_4() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [-6.0, 1.0, 1.0, 6.0],
             [-8.0, 5.0, 8.0, 6.0],
             [-1.0, 0.0, 8.0, 2.0],
@@ -449,7 +450,7 @@ mod tests {
 
     #[test]
     fn matrix_determinant_4_4() {
-        let l = Matrix4::new([
+        let l = Matrix::new([
             [-2.0, -8.0, 3.0, 5.0],
             [-3.0, 1.0, 7.0, 3.0],
             [1.0, 2.0, -9.0, 6.0],
@@ -464,7 +465,7 @@ mod tests {
 
     #[test]
     fn matrix_inverse_fails_on_zero_determinant() {
-        let not_invertible = Matrix4::new([
+        let not_invertible = Matrix::new([
             [-2.0, 2.0, -2.0, -3.0],
             [9.0, 6.0, 2.0, 6.0],
             [0.0, -5.0, 1.0, -5.0],
@@ -476,7 +477,7 @@ mod tests {
 
     #[test]
     fn matrix_inverse_calculating1() {
-        let invertible = Matrix4::new([
+        let invertible = Matrix::new([
             [-5.0, 2.0, 6.0, -8.0],
             [1.0, -5.0, 1.0, 8.0],
             [7.0, 7.0, -6.0, -7.0],
@@ -490,7 +491,7 @@ mod tests {
         assert_eq!(result[3][2], -160.0 / 532.0);
         assert_eq!(result[2][3], 105.0 / 532.0);
 
-        let exp = Matrix4::new([
+        let exp = Matrix::new([
             [0.21805, 0.45113, 0.24060, -0.04511],
             [-0.80827, -1.45677, -0.44361, 0.52068],
             [-0.07895, -0.22368, -0.05263, 0.19737],
@@ -501,14 +502,14 @@ mod tests {
 
     #[test]
     fn matrix_inverse_calculating2() {
-        let invertible = Matrix4::new([
+        let invertible = Matrix::new([
             [8.0, -5.0, 9.0, 2.0],
             [7.0, 5.0, 6.0, 1.0],
             [-6.0, 0.0, 9.0, 6.0],
             [-3.0, 0.0, -9.0, -4.0],
         ]);
         let result = invertible.inverse().unwrap();
-        let exp = Matrix4::new([
+        let exp = Matrix::new([
             [-0.15385, -0.15385, -0.28205, -0.53846],
             [-0.07692, 0.12308, 0.02564, 0.03077],
             [0.35897, 0.35897, 0.43590, 0.92308],
@@ -519,14 +520,14 @@ mod tests {
 
     #[test]
     fn matrix_inverse_calculating3() {
-        let invertible = Matrix4::new([
+        let invertible = Matrix::new([
             [9.0, 3.0, 0.0, 9.0],
             [-5.0, -2.0, -6.0, -3.0],
             [-4.0, 9.0, 6.0, 4.0],
             [-7.0, 6.0, 6.0, 2.0],
         ]);
         let result = invertible.inverse().unwrap();
-        let exp = Matrix4::new([
+        let exp = Matrix::new([
             [-0.04074, -0.07778, 0.14444, -0.22222],
             [-0.07778, 0.03333, 0.36667, -0.33333],
             [-0.02901, -0.14630, -0.10926, 0.12963],
@@ -537,13 +538,13 @@ mod tests {
 
     #[test]
     fn multiplying_product_by_inverse() {
-        let a = Matrix4::new([
+        let a = Matrix::new([
             [3.0, -9.0, 7.0, 3.0],
             [3.0, -8.0, 2.0, -9.0],
             [-4.0, 4.0, 4.0, 1.0],
             [-6.0, 5.0, -1.0, 1.0],
         ]);
-        let b = Matrix4::new([
+        let b = Matrix::new([
             [8.0, 2.0, 2.0, 2.0],
             [3.0, -1.0, 7.0, 0.0],
             [7.0, 0.0, 5.0, 4.0],

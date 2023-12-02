@@ -12,7 +12,7 @@ pub struct Point {
     pub z: f32,
 }
 impl Point {
-    pub fn newi(x: isize, y: isize, z: isize) -> Self {
+    pub fn inew(x: isize, y: isize, z: isize) -> Self {
         Self::new(x as f32, y as f32, z as f32)
     }
     pub fn new(x: f32, y: f32, z: f32) -> Self {

@@ -13,7 +13,7 @@ pub struct Vector {
 }
 impl Vector {
     /// quality of live, just casts int -> float
-    pub fn newi(x: i32, y: i32, z: i32) -> Self {
+    pub fn inew(x: i32, y: i32, z: i32) -> Self {
         Self::new(x as f32, y as f32, z as f32)
     }
 
@@ -231,19 +231,19 @@ mod tests {
 
     #[test]
     fn magnitude_vec() {
-        assert!(Vector::newi(1, 0, 0).magnitude().apx_eq(&1.0));
-        assert!(Vector::newi(0, 1, 0).magnitude().apx_eq(&1.0));
-        assert!(Vector::newi(0, 0, 1).magnitude().apx_eq(&1.0));
+        assert!(Vector::inew(1, 0, 0).magnitude().apx_eq(&1.0));
+        assert!(Vector::inew(0, 1, 0).magnitude().apx_eq(&1.0));
+        assert!(Vector::inew(0, 0, 1).magnitude().apx_eq(&1.0));
         let sqrt14 = (14.0 as f32).sqrt();
-        assert!(Vector::newi(1, 2, 3).magnitude().apx_eq(&sqrt14));
-        assert!(Vector::newi(-1, -2, -3).magnitude().apx_eq(&sqrt14));
+        assert!(Vector::inew(1, 2, 3).magnitude().apx_eq(&sqrt14));
+        assert!(Vector::inew(-1, -2, -3).magnitude().apx_eq(&sqrt14));
     }
 
     #[test]
     fn normalize_vec() {
-        assert_eq!(Vector::newi(4, 0, 0).normalize(), Vector::newi(1, 0, 0));
+        assert_eq!(Vector::inew(4, 0, 0).normalize(), Vector::inew(1, 0, 0));
 
-        let res = Vector::newi(1, 2, 3).normalize();
+        let res = Vector::inew(1, 2, 3).normalize();
         let exp = Vector::new(0.26726, 0.53452, 0.80178);
         assert_eq!(res, exp);
         assert!(res.magnitude().apx_eq(&1.0));
@@ -251,18 +251,18 @@ mod tests {
 
     #[test]
     fn dotproduct_vec() {
-        let a = Vector::newi(1, 2, 3);
-        let b = Vector::newi(2, 3, 4);
+        let a = Vector::inew(1, 2, 3);
+        let b = Vector::inew(2, 3, 4);
         let res = a.dot(&b);
         assert_eq!(res, 20.0);
     }
 
     #[test]
     fn crossproduct_vec() {
-        let a = Vector::newi(1, 2, 3);
-        let b = Vector::newi(2, 3, 4);
-        let exp1 = Vector::newi(-1, 2, -1);
-        let exp2 = Vector::newi(1, -2, 1);
+        let a = Vector::inew(1, 2, 3);
+        let b = Vector::inew(2, 3, 4);
+        let exp1 = Vector::inew(-1, 2, -1);
+        let exp2 = Vector::inew(1, -2, 1);
         assert_eq!(a.cross(&b), exp1);
         assert_eq!(b.cross(&a), exp2);
     }

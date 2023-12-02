@@ -1,6 +1,8 @@
 use std::cmp::Ordering;
 
-use super::{sphere::Sphere, Ray};
+use crate::objects::object::Object;
+
+use super::Ray;
 
 /// the interface we use for all objects that our rays can hit/intersect with
 pub trait IntersectsRay {
@@ -11,13 +13,13 @@ pub trait IntersectsRay {
 #[derive(Debug, PartialEq, Clone)]
 pub struct Intersection<'a> {
     t: f32,
-    object: &'a Sphere,
+    object: &'a Object,
 }
 
 impl<'a> Eq for Intersection<'a> {} // cant use derive macro this will just use PartialEq for Eq
 
 impl<'a> Intersection<'a> {
-    pub fn new(t: f32, object: &'a Sphere) -> Self {
+    pub fn new(t: f32, object: &'a Object) -> Self {
         Self { t, object }
     }
 }
@@ -91,7 +93,7 @@ impl<'a> VecIntersections<'a> {
     // }
 
     /// adds a possible intersection to the collection
-    pub fn intersections(&mut self, intersect: Option<(f32, f32)>, obj: &'a Sphere) {
+    pub fn intersections(&mut self, intersect: Option<(f32, f32)>, obj: &'a Object) {
         match intersect {
             None => {}
             Some((t1, t2)) => {
@@ -110,11 +112,13 @@ impl<'a> Default for VecIntersections<'a> {
 
 #[cfg(test)]
 mod tests {
+    use crate::objects::object::{Object, Shape};
+
     use super::*;
 
     #[test]
     fn intersection_encapsulates_t_and_object() {
-        let sphere = Sphere::new();
+        let sphere = Object::new(Shape::Sphere);
         let i = Intersection::new(3.5, &sphere);
         assert_eq!(i.t, 3.5);
         // we compare if both point to the same space in memory by casting as raw pointers and comparing the memory-adress
@@ -123,7 +127,7 @@ mod tests {
 
     #[test]
     fn aggregating_intersections() {
-        let s = Sphere::new();
+        let s = Object::new(Shape::Sphere);
         let i1 = Intersection::new(1.0, &s);
         let i2 = Intersection::new(2.0, &s);
         let i3 = Intersection::new(3.0, &s);
@@ -139,7 +143,7 @@ mod tests {
 
     #[test]
     fn hit_when_all_intersections_have_positive_t() {
-        let s = Sphere::new();
+        let s = Object::new(Shape::Sphere);
         let i1 = Intersection::new(1.0, &s);
         let i2 = Intersection::new(2.0, &s);
         let mut ins = VecIntersections::new();
@@ -151,7 +155,7 @@ mod tests {
 
     #[test]
     fn hit_when_some_intersections_have_negative_t() {
-        let s = Sphere::new();
+        let s = Object::new(Shape::Sphere);
         let i1 = Intersection::new(-2.0, &s);
         let i2 = Intersection::new(2.0, &s);
         let mut ins = VecIntersections::new();
@@ -163,7 +167,7 @@ mod tests {
 
     #[test]
     fn hit_when_all_intersections_have_negative_t() {
-        let s = Sphere::new();
+        let s = Object::new(Shape::Sphere);
         let i1 = Intersection::new(-3.0, &s);
         let i2 = Intersection::new(-5.0, &s);
         let mut ins = VecIntersections::new();
@@ -175,7 +179,7 @@ mod tests {
 
     #[test]
     fn hit_is_always_lowest_non_negative_intersection() {
-        let s = Sphere::new();
+        let s = Object::new(Shape::Sphere);
         let i1 = Intersection::new(5.0, &s);
         let i2 = Intersection::new(7.0, &s);
         let i3 = Intersection::new(-3.0, &s);
