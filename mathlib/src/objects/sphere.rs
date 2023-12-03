@@ -1,6 +1,9 @@
 use crate::{
-    mathstructs::point::Point,
-    ray::{intersects::{IntersectsRay, VecIntersections}, Ray},
+    mathstructs::{point::Point, vector::Vector},
+    ray::{
+        intersects::{IntersectsRay, VecIntersections},
+        Ray,
+    },
 };
 
 use super::object::{Object, Shape};
@@ -17,7 +20,7 @@ impl Sphere {
 }
 
 impl IntersectsRay for Sphere {
-    // the t value of the position on the ray where the intersections happen. 0, 1, 2 possible.
+    /// the t value of the position on the ray where the intersections happen. 0, 1, 2 possible.
     fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)> {
         let sphere_to_ray = ray.ori - Point::new(0.0, 0.0, 0.0);
         let a = ray.dir.dot(&ray.dir);
@@ -33,13 +36,18 @@ impl IntersectsRay for Sphere {
         let t2 = (-b + disc.sqrt()) / (2.0 * a);
         Some((t1, t2))
     }
+
+    /// points perpendicular to the surface of the sphere
+    fn normal_at(point: Point) -> Vector {
+        point - Point::new_origin() // .normalize() not neccessary as long as we assume unit-sphere
+    }
 }
-
-
 
 #[cfg(test)]
 mod tests {
-    use crate::mathstructs::{vector::Vector, matrix::Matrix};
+    use std::f32::consts::PI;
+
+    use crate::mathstructs::{matrix::Matrix, vector::Vector};
 
     use super::*;
     #[test]
@@ -116,5 +124,60 @@ mod tests {
         let xs = s.intersect_raw(&r);
         dbg!(xs);
         assert!(!xs.is_some())
+    }
+
+    #[test]
+    fn normal_on_a_sphere_at_a_point_on_the_x_axis() {
+        let s = Sphere::new();
+        let res = s.normal_at(&Point::inew(1, 0, 0));
+        assert_eq!(res, Vector::inew(1, 0, 0));
+    }
+
+    #[test]
+    fn normal_on_a_sphere_at_a_point_on_the_y_axis() {
+        let s = Sphere::new();
+        let res = s.normal_at(&Point::inew(0, 1, 0));
+        assert_eq!(res, Vector::inew(0, 1, 0));
+    }
+
+    #[test]
+    fn normal_on_a_sphere_at_a_point_on_the_z_axis() {
+        let s = Sphere::new();
+        let res = s.normal_at(&Point::inew(0, 0, 1));
+        assert_eq!(res, Vector::inew(0, 0, 1));
+    }
+
+    #[test]
+    fn normal_on_a_sphere_at_a_nonaxial_point() {
+        let s = Sphere::new();
+        let sq = 3.0_f32.sqrt() / 3.0;
+        let res = s.normal_at(&Point::new(sq, sq, sq));
+        assert_eq!(res, Vector::new(sq, sq, sq));
+    }
+
+    #[test]
+    fn normal_on_a_sphere_is_a_normalized_vector() {
+        let s = Sphere::new();
+        let sq = 3.0_f32.sqrt() / 3.0;
+        let res = s.normal_at(&Point::new(sq, sq, sq));
+        let norm_res = res.clone().normalize();
+        assert_eq!(res, norm_res);
+    }
+
+    #[test]
+    fn computing_normal_on_a_translated_sphere() {
+        let mut s = Sphere::new();
+        s.set_transform(Matrix::translation_new(0.0, 1.0, 0.0));
+        let res =s.normal_at(&Point::new(0.0, 1.70711, -0.70711));
+        assert_eq!(res, Vector::new(0.0, 0.70711, -0.70711));
+    }
+
+    #[test]
+    fn computing_normal_on_a_transformed_sphere() {
+        let mut s = Sphere::new();
+        s.set_transform(Matrix::scaling_new(1.0, 0.5, 1.0) * Matrix::rotation_z_new(PI / 5.0));
+        let sq = 2.0_f32.sqrt() / 2.0;
+        let res = s.normal_at(&Point::new(0.0, sq, sq));
+        assert_eq!(res, Vector::new(0.0, 0.97014, 0.24254));
     }
 }

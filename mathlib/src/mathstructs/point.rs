@@ -15,12 +15,22 @@ impl Point {
     pub fn inew(x: isize, y: isize, z: isize) -> Self {
         Self::new(x as f32, y as f32, z as f32)
     }
+
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Point { x, y, z }
     }
 
     pub fn w(&self) -> i8 {
         1
+    }
+
+    /// Point(0, 0, 0)
+    pub fn new_origin() -> Self {
+        Point {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
     }
 
     /// because we overwrite eq we provide this in case we ever need to check for exact values

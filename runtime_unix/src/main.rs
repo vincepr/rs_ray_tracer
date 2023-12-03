@@ -1,4 +1,10 @@
-use mathlib::{mathstructs::{point::Point, matrix::Matrix}, visual::{color::Col, canvas::Canvas}, objects::sphere::Sphere, ray::{Ray, intersects::VecIntersections}, io::ppm::write_to_file};
+use mathlib::{
+    io::ppm::write_to_file,
+    mathstructs::{matrix::Matrix, point::Point},
+    objects::sphere::Sphere,
+    ray::{intersects::VecIntersections, Ray},
+    visual::{canvas::Canvas, color::Col},
+};
 
 fn main() {
     manually_cast_rays_at_sphere_infront_canvas();
@@ -12,13 +18,15 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
     let canvas_size_px = 100;
     let mut canvas = Canvas::new(canvas_size_px, canvas_size_px);
     let pixel_size = wall_size / canvas_size_px as f32;
-    let half = wall_size / 2.0; 
+    let half = wall_size / 2.0;
 
     // hard coded color of our 'shadpw' we cast
-    let color = Col::new(1.0 ,0.0, 0.0);
+    let color = Col::new(1.0, 0.0, 0.0);
 
     let mut shape = Sphere::new();
-    shape.set_transform(Matrix::shearingi_new(1, 0, 0, 0, 0, 0) * Matrix::scaling_new(0.5, 1.0, 1.0));
+    shape.set_transform(
+        Matrix::shearingi_new(1, 0, 0, 0, 0, 0) * Matrix::scaling_new(0.5, 1.0, 1.0),
+    );
 
     // for each pixel:
     for (y, row) in canvas.arr.iter_mut().enumerate() {

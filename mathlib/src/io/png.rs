@@ -1,9 +1,11 @@
 use std::fs;
 
-use image::{RgbImage, ImageBuffer, ImageOutputFormat, ImageFormat}; // first img library i found might look for a smalller ones later
+use image::{ImageBuffer, ImageFormat, ImageOutputFormat, RgbImage}; // first img library i found might look for a smalller ones later
 
-use crate::{visual::{canvas::Canvas, color::Col}, io::ppm::COLOR_MAXVAL};
-
+use crate::{
+    io::ppm::COLOR_MAXVAL,
+    visual::{canvas::Canvas, color::Col},
+};
 
 impl Canvas {
     pub fn canvas_png_save(&self, path: &str) {
@@ -14,9 +16,11 @@ impl Canvas {
             let col: Col = self[y][x];
             *pixel = image::Rgb([base_255(col.r), base_255(col.g), base_255(col.b)]);
         }
-        buffer.save_with_format(path, ImageFormat::Png).expect("unable to write file");
+        buffer
+            .save_with_format(path, ImageFormat::Png)
+            .expect("unable to write file");
         // buffer.write_to(writer, ImageOutputFormat::Png)
-    } 
+    }
 }
 
 // uses COLOR_MAXVAL to translate 0-1 range into percentage of that value

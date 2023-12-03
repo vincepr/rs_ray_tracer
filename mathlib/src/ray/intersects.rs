@@ -1,12 +1,16 @@
 use std::cmp::Ordering;
 
-use crate::objects::object::Object;
+use crate::{
+    mathstructs::{point::Point, vector::Vector},
+    objects::object::Object,
+};
 
 use super::Ray;
 
 /// the interface we use for all objects that our rays can hit/intersect with
 pub trait IntersectsRay {
     fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)>;
+    fn normal_at(point: Point) -> Vector;
 }
 
 /// keeps reference to intersections our rays we cast find

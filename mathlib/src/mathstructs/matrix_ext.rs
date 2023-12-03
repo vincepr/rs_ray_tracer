@@ -140,7 +140,7 @@ mod tests {
     #[test]
     fn multiplying_by_inverse_of_a_translation_matrix() {
         let t = Matrix::translation_new(5.0, -3.0, 2.0);
-        let inv = t.inverse().unwrap();
+        let inv = t.inverse();
         let p = Point::inew(-3, 4, 5);
         let res = inv * p;
         assert_eq!(res, Point::inew(-8, 7, 3));
@@ -171,7 +171,7 @@ mod tests {
     #[test]
     fn scaling_matrix_multiplying_by_inverse_of() {
         let t = Matrix::iscaling_new(2, 3, 4);
-        let inv = t.inverse().unwrap();
+        let inv = t.inverse();
         let v = Vector::inew(-4, 6, 8);
         assert_eq!(inv * v, Vector::inew(-2, 2, 2));
     }

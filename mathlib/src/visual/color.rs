@@ -3,8 +3,7 @@ use std::{
     ops::{Add, Mul, Sub},
 };
 
-use crate::{io::ppm::COLOR_MAXVAL, cmp::ApproxEq};
-
+use crate::{cmp::ApproxEq, io::ppm::COLOR_MAXVAL};
 
 /// represents a RGB-Color
 ///  - final colors should be between 0 - 1.
