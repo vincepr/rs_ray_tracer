@@ -1,6 +1,4 @@
-use mathlib::{
-    visual::{canvas::Canvas, color::Col}, io::ppm::write_to_file, ray::{Ray, intersects::{IntersectsRay, VecIntersections}}, mathstructs::point::Point, objects::sphere::Sphere,
-};
+use mathlib::{mathstructs::{point::Point, matrix::Matrix}, visual::{color::Col, canvas::Canvas}, objects::sphere::Sphere, ray::{Ray, intersects::VecIntersections}, io::ppm::write_to_file};
 
 fn main() {
     manually_cast_rays_at_sphere_infront_canvas();
@@ -19,7 +17,8 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
     // hard coded color of our 'shadpw' we cast
     let color = Col::new(1.0 ,0.0, 0.0);
 
-    let shape = Sphere::new();
+    let mut shape = Sphere::new();
+    shape.set_transform(Matrix::shearingi_new(1, 0, 0, 0, 0, 0) * Matrix::scaling_new(0.5, 1.0, 1.0));
 
     // for each pixel:
     for (y, row) in canvas.arr.iter_mut().enumerate() {
@@ -36,13 +35,14 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
             let ray = Ray::new(ray_origin, (position - ray_origin).normalize());
             let xs = VecIntersections::new().intersect_add(&ray, &shape);
             let pos_hit = xs.hit();
-            if let Some(hit) = pos_hit {
+            if let Some(_hit) = pos_hit {
                 *col = color;
             }
         }
     }
 
     write_to_file("./out.ppm", canvas.canvas_to_ppm());
+    canvas.canvas_png_save("./out.png");
 }
 
 pub fn manually_create_gradient_file() {

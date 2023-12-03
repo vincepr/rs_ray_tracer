@@ -1,6 +1,7 @@
 pub mod cmp;
 pub mod io{
     pub mod ppm;
+    pub mod png;
 }
 pub mod mathstructs {
     pub mod point;
