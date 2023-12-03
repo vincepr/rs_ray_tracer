@@ -29,7 +29,7 @@ impl Canvas {
     }
 
     /// writes color-pixel to x and y choordinates. Same format as book
-    pub fn write(&mut self, x: usize, y: usize, col: Col) -> &mut Self {
+    pub fn write_px(&mut self, x: usize, y: usize, col: Col) -> &mut Self {
         self[y][x] = col;
         self
     }
@@ -98,8 +98,8 @@ mod tests {
         assert_eq!(last_pixel, Col::new_white());
 
         canvas
-            .write(5, 4, Col::new_white())
-            .write(5, 5, Col::new_white());
+            .write_px(5, 4, Col::new_white())
+            .write_px(5, 5, Col::new_white());
         assert_eq!(canvas[4][5], Col::new_white());
         assert_eq!(canvas[5][5], Col::new_white());
     }

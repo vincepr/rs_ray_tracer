@@ -1,6 +1,6 @@
 use crate::{
     mathstructs::point::Point,
-    ray::{intersects::IntersectsRay, Ray},
+    ray::{intersects::{IntersectsRay, VecIntersections}, Ray},
 };
 
 use super::object::{Object, Shape};
@@ -18,7 +18,7 @@ impl Sphere {
 
 impl IntersectsRay for Sphere {
     // the t value of the position on the ray where the intersections happen. 0, 1, 2 possible.
-    fn intersect(&self, ray: &Ray) -> Option<(f32, f32)> {
+    fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)> {
         let sphere_to_ray = ray.ori - Point::new(0.0, 0.0, 0.0);
         let a = ray.dir.dot(&ray.dir);
         let b = 2.0 * ray.dir.dot(&sphere_to_ray);
@@ -35,12 +35,7 @@ impl IntersectsRay for Sphere {
     }
 }
 
-// impl Sphere {
-//     /// calculates intersection then adds to collection
-//     pub fn intersect_add(&self, ray: &Ray, coll: &VecIntersections) {
-//         coll.intersections(self.intersect(ray), &self);
-//     }
-// }
+
 
 #[cfg(test)]
 mod tests {
@@ -51,7 +46,7 @@ mod tests {
     fn ray_intersects_a_sphere_at_two_points() {
         let ray = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
         let sphere = Sphere::new();
-        let intersects = sphere.intersect(&ray).unwrap();
+        let intersects = sphere.intersect_raw(&ray).unwrap();
         assert_eq!(intersects, (4.0, 6.0));
     }
 
@@ -59,7 +54,7 @@ mod tests {
     fn ray_intersects_sphere_at_a_tangent() {
         let ray = Ray::new(Point::inew(0, 1, -5), Vector::inew(0, 0, 1));
         let sphere = Sphere::new();
-        let intersects = sphere.intersect(&ray).unwrap();
+        let intersects = sphere.intersect_raw(&ray).unwrap();
         assert_eq!(intersects, (5.0, 5.0));
     }
 
@@ -67,7 +62,7 @@ mod tests {
     fn ray_misses_a_sphere() {
         let ray = Ray::new(Point::inew(0, 2, -5), Vector::inew(0, 0, 1));
         let sphere = Sphere::new();
-        let intersects = sphere.intersect(&ray);
+        let intersects = sphere.intersect_raw(&ray);
         assert_eq!(intersects, None);
     }
 
@@ -75,7 +70,7 @@ mod tests {
     fn ray_originates_inside_a_sphere() {
         let ray = Ray::new(Point::inew(0, 0, 0), Vector::inew(0, 0, 1));
         let sphere = Sphere::new();
-        let intersects = sphere.intersect(&ray).unwrap();
+        let intersects = sphere.intersect_raw(&ray).unwrap();
         assert_eq!(intersects, (-1.0, 1.0));
     }
 
@@ -83,7 +78,7 @@ mod tests {
     fn ray_starts_after_sphere() {
         let ray = Ray::new(Point::inew(0, 0, 5), Vector::inew(0, 0, 1));
         let sphere = Sphere::new();
-        let intersects = sphere.intersect(&ray).unwrap();
+        let intersects = sphere.intersect_raw(&ray).unwrap();
         assert_eq!(intersects.0, -6.0);
         assert_eq!(intersects.1, -4.0);
         assert_eq!(intersects, (-6.0, -4.0));
@@ -108,7 +103,7 @@ mod tests {
         let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
         let mut s = Sphere::new();
         s.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
-        let xs = s.intersect(&r);
+        let xs = s.intersect_raw(&r);
         assert!(xs.is_some());
         assert_eq!(xs, Some((3.0, 7.0)));
     }
@@ -118,7 +113,7 @@ mod tests {
         let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
         let mut s = Sphere::new();
         s.set_transform(Matrix::translation_new(5.0, 0.0, 0.0));
-        let xs = s.intersect(&r);
+        let xs = s.intersect_raw(&r);
         dbg!(xs);
         assert!(!xs.is_some())
     }

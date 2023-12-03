@@ -6,7 +6,7 @@ use super::Ray;
 
 /// the interface we use for all objects that our rays can hit/intersect with
 pub trait IntersectsRay {
-    fn intersect(&self, ray: &Ray) -> Option<(f32, f32)>;
+    fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)>;
 }
 
 /// keeps reference to intersections our rays we cast find
@@ -53,7 +53,7 @@ impl<'a> VecIntersections<'a> {
         Self(Vec::with_capacity(32))
     }
 
-    pub fn push(&mut self, add: Intersection<'a>) {
+    fn push(&mut self, add: Intersection<'a>) {
         self.0.push(add);
     }
 
@@ -75,7 +75,7 @@ impl<'a> VecIntersections<'a> {
         ) // or maybe just return by reference? might be
     }
 
-    // unclean because of the mutability (unless we hit often then this might be faster)
+    // a bit unclean because of the mutability (unless we hit often then this might be faster)
     /// sorts the vec permanently. might be optimal if hit is called often.
     pub fn hit_permanent(&mut self) -> Option<Intersection<'_>> {
         self.0.sort();
@@ -93,7 +93,7 @@ impl<'a> VecIntersections<'a> {
     // }
 
     /// adds a possible intersection to the collection
-    pub fn intersections(&mut self, intersect: Option<(f32, f32)>, obj: &'a Object) {
+    fn intersections(&mut self, intersect: Option<(f32, f32)>, obj: &'a Object) {
         match intersect {
             None => {}
             Some((t1, t2)) => {
@@ -101,6 +101,12 @@ impl<'a> VecIntersections<'a> {
                 self.0.push(Intersection::new(t2, obj)); // TODO: we could not remove double in case of tangent?
             }
         }
+    }
+
+    /// calculates intersection then adds to collection
+    pub fn intersect_add(mut self, ray: &Ray, obj: &'a Object) -> Self {
+        self.intersections(obj.intersect_raw(ray), &obj);
+        self
     }
 }
 

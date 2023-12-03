@@ -62,9 +62,9 @@ mod tests {
     fn correct_output_ppm() {
         let (w, h) = (5, 3);
         let mut canvas = Canvas::new(w, h);
-        canvas.write(0, 0, Col::new(1.5, 0.0, 0.0));
-        canvas.write(2, 1, Col::new(0.0, 0.5, 0.0));
-        canvas.write(4, 2, Col::new(-0.5, 0.0, 1.0));
+        canvas.write_px(0, 0, Col::new(1.5, 0.0, 0.0));
+        canvas.write_px(2, 1, Col::new(0.0, 0.5, 0.0));
+        canvas.write_px(4, 2, Col::new(-0.5, 0.0, 1.0));
         let result = canvas.canvas_to_ppm();
 
         let l1 = format!("P3\n# automatically generated plain ppm file\n{w} {h}\n255\n");

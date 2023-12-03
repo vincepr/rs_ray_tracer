@@ -1,4 +1,4 @@
-use crate::{mathstructs::matrix::Matrix, ray::intersects::IntersectsRay};
+use crate::{mathstructs::matrix::Matrix, ray::{intersects::{IntersectsRay, VecIntersections}, Ray}};
 
 use super::sphere::Sphere;
 
@@ -15,16 +15,18 @@ pub struct Object {
 }
 
 impl IntersectsRay for Object {
-    fn intersect(&self, ray: &crate::ray::Ray) -> Option<(f32, f32)> {
+    fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)> {
         // to translate from worldspace to objectspace - aka swap choordinate-system
         // we transform the ray itself by the inverse of the .transformation Matrix
         let ray = ray.transform(&self.transformation.inverse().unwrap_or_default());
 
         match &self.shape {
-            Shape::Sphere => Sphere {}.intersect(&ray),
+            Shape::Sphere => Sphere {}.intersect_raw(&ray),
         }
     }
 }
+
+
 
 impl Object {
     pub fn new(shape: Shape) -> Self {
