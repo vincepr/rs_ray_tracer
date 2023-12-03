@@ -1,5 +1,3 @@
-
-
 use image::{ImageBuffer, ImageFormat, RgbImage}; // first img library i found might look for a smalller ones later
 
 use crate::{

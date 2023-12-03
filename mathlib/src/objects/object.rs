@@ -1,9 +1,6 @@
 use crate::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
-    ray::{
-        intersects::{IntersectsRay},
-        Ray,
-    },
+    ray::{intersects::IntersectsRay, Ray},
 };
 
 use super::sphere::Sphere;
@@ -78,7 +75,5 @@ impl Default for Object {
     }
 }
 
-
 #[cfg(test)]
-mod tests {
-}
+mod tests {}

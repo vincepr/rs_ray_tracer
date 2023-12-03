@@ -480,7 +480,7 @@ mod tests {
             [0.0, 0.0, 0.0, 0.0],
         ]);
         assert_eq!(not_invertible.determinant(), 0.0);
-        not_invertible.inverse();   // -> Panics
+        not_invertible.inverse(); // -> Panics
     }
 
     #[test]

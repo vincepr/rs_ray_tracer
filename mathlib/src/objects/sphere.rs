@@ -1,9 +1,6 @@
 use crate::{
     mathstructs::{point::Point, vector::Vector},
-    ray::{
-        intersects::{IntersectsRay},
-        Ray,
-    },
+    ray::{intersects::IntersectsRay, Ray},
 };
 
 use super::object::{Object, Shape};
@@ -168,7 +165,7 @@ mod tests {
     fn computing_normal_on_a_translated_sphere() {
         let mut s = Sphere::new();
         s.set_transform(Matrix::translation_new(0.0, 1.0, 0.0));
-        let res =s.normal_at(&Point::new(0.0, 1.70711, -0.70711));
+        let res = s.normal_at(&Point::new(0.0, 1.70711, -0.70711));
         assert_eq!(res, Vector::new(0.0, 0.70711, -0.70711));
     }
 
