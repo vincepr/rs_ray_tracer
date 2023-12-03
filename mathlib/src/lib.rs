@@ -3,9 +3,8 @@ pub mod io {
     pub mod png;
     pub mod ppm;
 }
+#[allow(dead_code)]
 pub mod mathstructs {
-    #[allow(dead_code)]
-    // TODO: remove this after every function gets used (and make others private)
     pub mod matrix;
     pub mod matrix_ext;
     pub mod point;
@@ -15,6 +14,7 @@ pub mod objects {
     pub mod object;
     pub mod sphere;
 }
+#[allow(dead_code)]
 pub mod ray;
 pub mod visual {
     pub mod canvas;

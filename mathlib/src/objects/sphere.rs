@@ -1,7 +1,7 @@
 use crate::{
     mathstructs::{point::Point, vector::Vector},
     ray::{
-        intersects::{IntersectsRay, VecIntersections},
+        intersects::{IntersectsRay},
         Ray,
     },
 };

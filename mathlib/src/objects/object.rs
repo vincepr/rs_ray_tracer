@@ -1,7 +1,7 @@
 use crate::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     ray::{
-        intersects::{IntersectsRay, VecIntersections},
+        intersects::{IntersectsRay},
         Ray,
     },
 };
@@ -31,6 +31,7 @@ impl Object {
         }
     }
 
+    #[allow(clippy::let_and_return)]
     /// gets point perpendicular to surface.
     pub fn normal_at(&self, world_point: &Point) -> Vector {
         // transform to object's choordinate system

@@ -1,6 +1,6 @@
-use std::fs;
 
-use image::{ImageBuffer, ImageFormat, ImageOutputFormat, RgbImage}; // first img library i found might look for a smalller ones later
+
+use image::{ImageBuffer, ImageFormat, RgbImage}; // first img library i found might look for a smalller ones later
 
 use crate::{
     io::ppm::COLOR_MAXVAL,

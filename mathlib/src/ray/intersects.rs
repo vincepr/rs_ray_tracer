@@ -109,7 +109,7 @@ impl<'a> VecIntersections<'a> {
 
     /// calculates intersection then adds to collection
     pub fn intersect_add(mut self, ray: &Ray, obj: &'a Object) -> Self {
-        self.intersections(obj.intersect_raw(ray), &obj);
+        self.intersections(obj.intersect_raw(ray), obj);
         self
     }
 }
