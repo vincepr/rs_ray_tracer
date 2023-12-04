@@ -11,6 +11,7 @@ pub mod mathstructs {
     pub mod vector;
 }
 pub mod objects {
+    pub mod material;
     pub mod object;
     pub mod sphere;
 }
@@ -19,4 +20,5 @@ pub mod ray;
 pub mod visual {
     pub mod canvas;
     pub mod color;
+    pub mod light;
 }

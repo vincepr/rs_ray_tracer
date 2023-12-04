@@ -3,7 +3,7 @@ use crate::{
     ray::{intersects::IntersectsRay, Ray},
 };
 
-use super::sphere::Sphere;
+use super::{material::Material, sphere::Sphere};
 
 #[derive(Debug, PartialEq)]
 pub enum Shape {
@@ -15,6 +15,7 @@ pub enum Shape {
 pub struct Object {
     shape: Shape,
     pub transformation: Matrix,
+    pub material: Material,
 }
 
 impl Object {
@@ -71,6 +72,7 @@ impl Default for Object {
         Self {
             shape: Shape::Sphere,
             transformation: Matrix::new_identity(),
+            material: Material::default(),
         }
     }
 }

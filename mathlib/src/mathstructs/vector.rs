@@ -58,6 +58,11 @@ impl Vector {
             z: self.x * other.y - self.y * other.x,
         }
     }
+
+    /// relecting should happen at input- = output-angle
+    pub fn reflect(input: &Vector, normal: &Vector) -> Self {
+        *input - *normal * 2.0 * input.dot(normal)
+    }
 }
 
 impl PartialEq for Vector {
@@ -265,5 +270,22 @@ mod tests {
         let exp2 = Vector::inew(1, -2, 1);
         assert_eq!(a.cross(&b), exp1);
         assert_eq!(b.cross(&a), exp2);
+    }
+
+    #[test]
+    fn reflecting_vector_approaching_at_45_deg() {
+        let v = Vector::inew(1, -1, 0);
+        let n = Vector::inew(0, 1, 0);
+        let res = Vector::reflect(&v, &n);
+        assert_eq!(res, Vector::inew(1, 1, 0));
+    }
+
+    #[test]
+    fn reflecting_vector_slanted_angle() {
+        let v = Vector::inew(0, -1, 0);
+        let sq = 2.0_f32.sqrt() / 2.0;
+        let n = Vector::new(sq, sq, 0.0);
+        let res = Vector::reflect(&v, &n);
+        assert_eq!(res, Vector::inew(1, 0, 0));
     }
 }

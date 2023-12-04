@@ -44,7 +44,7 @@ impl IntersectsRay for Sphere {
 mod tests {
     use std::f32::consts::PI;
 
-    use crate::mathstructs::{matrix::Matrix, vector::Vector};
+    use crate::mathstructs::matrix::Matrix;
 
     use super::*;
     #[test]
