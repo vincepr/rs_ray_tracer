@@ -16,8 +16,8 @@ pub trait IntersectsRay {
 /// keeps reference to intersections our rays we cast find
 #[derive(Debug, PartialEq, Clone)]
 pub struct Intersection<'a> {
-    t: f32,
-    object: &'a Object,
+    pub t: f32,
+    pub object: &'a Object,
 }
 
 impl<'a> Eq for Intersection<'a> {} // cant use derive macro this will just use PartialEq for Eq
