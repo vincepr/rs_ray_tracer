@@ -1,3 +1,5 @@
+pub mod png_io;
+
 use mathlib::{
     io::ppm::write_to_file,
     mathstructs::point::Point,
@@ -5,6 +7,7 @@ use mathlib::{
     ray::{intersects::VecIntersections, Ray},
     visual::{canvas::Canvas, color::Col, light::Light},
 };
+use png_io::canvas_png_save;
 
 fn main() {
     manually_cast_rays_at_sphere_infront_canvas();
@@ -58,7 +61,7 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
     }
 
     write_to_file("./out.ppm", canvas.canvas_to_ppm());
-    canvas.canvas_png_save("./out.png");
+    canvas_png_save(&canvas, "./out.png");
 }
 
 pub fn manually_create_gradient_file() {

@@ -39,7 +39,7 @@ impl Light {
         let diffuse;
         let specular;
 
-        let light_dot_normal = light_v.dot(&normal_v);
+        let light_dot_normal = light_v.dot(normal_v);
         if light_dot_normal < 0.0 {
             diffuse = Col::new_black();
             specular = Col::new_black();
@@ -50,8 +50,8 @@ impl Light {
             // reflect_dot_eye represents the cosine of the angle between the
             // reflection vector and the eye vector. A negative number means
             // the light reflects away from the eye.
-            let reflect_v = Vector::reflect(&(-light_v), &normal_v);
-            let reflect_dot_eye = reflect_v.dot(&eye_v);
+            let reflect_v = Vector::reflect(&(-light_v), normal_v);
+            let reflect_dot_eye = reflect_v.dot(eye_v);
 
             if reflect_dot_eye <= 0.0 {
                 specular = Col::new_black();

@@ -1,6 +1,5 @@
 pub mod cmp;
 pub mod io {
-    pub mod png;
     pub mod ppm;
 }
 #[allow(dead_code)]
