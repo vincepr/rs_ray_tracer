@@ -3,7 +3,6 @@ use photon_rs::open_image;
 use wasm_bindgen::{prelude::*, JsCast};
 use web_sys::console;
 
-
 #[wasm_bindgen(start)]
 pub fn main() {
     console::log_1(&"Rust compiled and hooked into the js console.log()".into());
@@ -37,13 +36,12 @@ pub fn insert_picture(element_id: &str) {
         .get_element_by_id(element_id)
         .expect("no canvas found");
 
-    let canvas_html = canvas.dyn_into::<web_sys::HtmlCanvasElement>()
-        .unwrap();
+    let canvas_html = canvas.dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
 
     // let canvas: web_sys::HtmlCanvasElement = canvas.
-        // .dyn_into::<web_sys::HtmlCanvasElement>()
-        // .map_err(|_| ())
-        // .unwrap();
+    // .dyn_into::<web_sys::HtmlCanvasElement>()
+    // .map_err(|_| ())
+    // .unwrap();
 
     let context = canvas_html
         .get_context("2d")

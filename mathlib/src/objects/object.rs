@@ -5,13 +5,13 @@ use crate::{
 
 use super::{material::Material, sphere::Sphere};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Shape {
     Sphere, // Sphere has no state so i guess no need to actually wrap the shape-struct here
 }
 
 /// wrapper that represents a shape like a Sphere and applied transformations etc.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Object {
     shape: Shape,
     pub transformation: Matrix,

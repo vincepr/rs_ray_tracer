@@ -46,15 +46,16 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
 
             // cast the ray:
             let ray = Ray::new(ray_origin, (position - ray_origin).normalize());
-            let xs = VecIntersections::new().intersect_add(&ray, &shape);
+            let mut xs = VecIntersections::new();
+            xs.intersect_add(&ray, &shape);
             let pos_hit = xs.hit();
             if let Some(hit) = pos_hit {
                 // apply light
                 let point = ray.position(hit.t);
                 let normal_v = hit.object.normal_at(&point);
-                let eye_v = -ray.dir;
-                let color_with_lighting = Light::lighting(
-                    &hit.object.material, &light, &point, &eye_v, &normal_v);
+                let eye_v = -ray.direction;
+                let color_with_lighting =
+                    Light::lighting(&hit.object.material, &light, &point, &eye_v, &normal_v);
                 *col = color_with_lighting;
             }
         }

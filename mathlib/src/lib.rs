@@ -16,8 +16,10 @@ pub mod objects {
 }
 #[allow(dead_code)]
 pub mod ray;
+
 pub mod visual {
     pub mod canvas;
     pub mod color;
     pub mod light;
+    pub mod world;
 }

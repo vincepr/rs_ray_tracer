@@ -1,3 +1,4 @@
+pub mod computations;
 pub mod intersects;
 
 use crate::mathstructs::{matrix::Matrix, point::Point, vector::Vector};
@@ -10,25 +11,28 @@ use crate::mathstructs::{matrix::Matrix, point::Point, vector::Vector};
 #[derive(Debug)]
 pub struct Ray {
     /// the Origin on the ray
-    pub ori: Point,
+    pub origin: Point,
     /// the Direction of the ray
-    pub dir: Vector,
+    pub direction: Vector,
 }
 impl Ray {
     pub fn new(ori: Point, dir: Vector) -> Ray {
-        Ray { ori, dir }
+        Ray {
+            origin: ori,
+            direction: dir,
+        }
     }
 
     pub fn position(&self, t: f32) -> Point {
-        self.ori + self.dir * t
+        self.origin + self.direction * t
     }
 
     /// creates a copy of the ray translated by the matrix given.
     /// - this is used to translate from worldspace <-> objectspace
     pub fn transform(&self, m: &Matrix) -> Self {
         Self {
-            ori: *m * self.ori,
-            dir: *m * self.dir,
+            origin: *m * self.origin,
+            direction: *m * self.direction,
         }
     }
 }
@@ -42,8 +46,8 @@ mod tests {
         let origin = Point::inew(1, 2, 3);
         let direction = Vector::inew(4, 5, 6);
         let ray = Ray::new(origin, direction);
-        assert_eq!(ray.ori, origin);
-        assert_eq!(ray.dir, direction);
+        assert_eq!(ray.origin, origin);
+        assert_eq!(ray.direction, direction);
     }
 
     #[test]
@@ -60,10 +64,10 @@ mod tests {
         let r1 = Ray::new(Point::inew(1, 2, 3), Vector::inew(0, 1, 0));
         let m = Matrix::itranslation_new(3, 4, 5);
         let r2 = r1.transform(&m);
-        assert_eq!(r2.ori, Point::inew(4, 6, 8));
-        assert_eq!(r2.dir, Vector::inew(0, 1, 0));
-        assert_eq!(r1.ori, Point::inew(1, 2, 3));
-        assert_eq!(r1.dir, Vector::inew(0, 1, 0));
+        assert_eq!(r2.origin, Point::inew(4, 6, 8));
+        assert_eq!(r2.direction, Vector::inew(0, 1, 0));
+        assert_eq!(r1.origin, Point::inew(1, 2, 3));
+        assert_eq!(r1.direction, Vector::inew(0, 1, 0));
     }
 
     #[test]
@@ -71,7 +75,7 @@ mod tests {
         let r1 = Ray::new(Point::inew(1, 2, 3), Vector::inew(0, 1, 0));
         let m = Matrix::iscaling_new(2, 3, 4);
         let r2 = r1.transform(&m);
-        assert_eq!(r2.ori, Point::inew(2, 6, 12));
-        assert_eq!(r2.dir, Vector::inew(0, 3, 0));
+        assert_eq!(r2.origin, Point::inew(2, 6, 12));
+        assert_eq!(r2.direction, Vector::inew(0, 3, 0));
     }
 }

@@ -5,6 +5,7 @@ use crate::{
 
 use super::color::Col;
 
+#[derive(Debug, Clone, PartialEq)]
 pub struct Light {
     position: Point,
     intensity: Col,
@@ -62,6 +63,13 @@ impl Light {
             }
         }
         ambient + diffuse + specular
+    }
+}
+
+impl Default for Light {
+    /// A default light configuration used for testing. at Point (-10, 10, -10)
+    fn default() -> Self {
+        Light::new_point_light(Point::inew(-10, 10, -10), Col::new(1.0, 1.0, 1.0))
     }
 }
 

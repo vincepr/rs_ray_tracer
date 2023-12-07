@@ -19,9 +19,9 @@ impl Sphere {
 impl IntersectsRay for Sphere {
     /// the t value of the position on the ray where the intersections happen. 0, 1, 2 possible.
     fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)> {
-        let sphere_to_ray = ray.ori - Point::new(0.0, 0.0, 0.0);
-        let a = ray.dir.dot(&ray.dir);
-        let b = 2.0 * ray.dir.dot(&sphere_to_ray);
+        let sphere_to_ray = ray.origin - Point::new(0.0, 0.0, 0.0);
+        let a = ray.direction.dot(&ray.direction);
+        let b = 2.0 * ray.direction.dot(&sphere_to_ray);
         let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
         let disc = b * b - 4.0 * a * c;
         // if disc < 0 => ray not hitting the sphere

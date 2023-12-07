@@ -1,7 +1,8 @@
-use image::{RgbImage, ImageBuffer, ImageFormat};
-use mathlib::{visual::{canvas::Canvas, color::Col}, io::ppm::COLOR_MAXVAL};
-
-
+use image::{ImageBuffer, ImageFormat, RgbImage};
+use mathlib::{
+    io::ppm::COLOR_MAXVAL,
+    visual::{canvas::Canvas, color::Col},
+};
 
 pub fn canvas_png_save(canvas: &Canvas, path: &str) {
     let mut buffer: RgbImage = ImageBuffer::new(canvas.width as u32, canvas.height as u32);
