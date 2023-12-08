@@ -18,6 +18,7 @@ pub mod objects {
 pub mod ray;
 
 pub mod visual {
+    pub mod camera;
     pub mod canvas;
     pub mod color;
     pub mod light;

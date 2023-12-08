@@ -44,7 +44,7 @@ impl Default for World {
         objects.push(s2);
 
         Self {
-            lights: vec![Default::default();1],
+            lights: vec![Default::default(); 1],
             objects,
         }
     }
@@ -64,7 +64,8 @@ impl World {
             // multiple lights exist in the secene (careful will slow down everything)
             let mut col_sum = Col::new_black();
             for cur_light in &self.lights {
-                col_sum = col_sum + Light::lighting(
+                col_sum = col_sum
+                    + Light::lighting(
                         &comps.object.material,
                         cur_light,
                         &comps.point,

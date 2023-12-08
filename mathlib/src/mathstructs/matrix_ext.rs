@@ -1,4 +1,4 @@
-use super::matrix::Matrix;
+use super::{matrix::Matrix, point::Point, vector::Vector};
 
 impl Matrix {
     // these are the Matrix'es created
@@ -95,6 +95,20 @@ impl Matrix {
             Xy as f32, Xz as f32, Yx as f32, Yz as f32, Zx as f32, Zy as f32,
         )
     }
+
+    /// used for our virtual camera. transforms the world so it fits to our camera
+    pub fn view_transform_new(from: Point, to: Point, up: Vector) -> Self {
+        let forward_v = (to - from).normalize();
+        let left_v = forward_v.cross(&up.normalize());
+        let true_up_v = left_v.cross(&forward_v);
+        let orientation = Matrix::new([
+            [left_v.x, left_v.y, left_v.z, 0.0],
+            [true_up_v.x, true_up_v.y, true_up_v.z, 0.0],
+            [-forward_v.x, -forward_v.y, -forward_v.z, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]);
+        orientation * Matrix::translation_new(-from.x, -from.y, -from.z)
+    }
 }
 
 // implement fluent-API for the transformations
@@ -124,7 +138,10 @@ impl Matrix {
 mod tests {
     use std::f32::consts::PI;
 
-    use crate::mathstructs::{point::Point, vector::Vector};
+    use crate::mathstructs::{
+        point::Point,
+        vector::{self, Vector},
+    };
 
     use super::*;
 
@@ -295,5 +312,38 @@ mod tests {
             .translate(10.0, 5.0, 7.0);
         let res_chain = chain * p1;
         assert_eq!(res_chain, p4);
+    }
+
+    // view transformation:
+    #[test]
+    fn view_transformation_for_default_orientation() {
+        let from = Point::inew(0, 0, 0);
+        let to = Point::inew(0, 0, -1);
+        let up = Vector::inew(0, 1, 0);
+        assert_eq!(
+            Matrix::view_transform_new(from, to, up),
+            Matrix::new_identity()
+        );
+    }
+    #[test]
+    fn view_transformation_moves_the_world() {
+        let from = Point::inew(0, 0, 8);
+        let to = Point::inew(0, 0, 0);
+        let up = Vector::inew(0, 1, 0);
+        let exp = Matrix::translation_new(0.0, 0.0, -8.0);
+        assert_eq!(Matrix::view_transform_new(from, to, up), exp);
+    }
+    #[test]
+    fn view_transformation_calculated() {
+        let from = Point::inew(1, 3, 2);
+        let to = Point::inew(4, -2, 8);
+        let up = Vector::inew(1, 1, 0);
+        let exp = Matrix::new([
+            [-0.50709, 0.50709, 0.67612, -2.36643],
+            [0.76772, 0.60609, 0.12122, -2.82843],
+            [-0.35857, 0.59761, -0.71714, 0.00000],
+            [0.00000, 0.00000, 0.00000, 1.00000],
+        ]);
+        assert_eq!(Matrix::view_transform_new(from, to, up), exp);
     }
 }
