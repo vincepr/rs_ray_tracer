@@ -1,8 +1,10 @@
 use crate::{mathstructs::{matrix::Matrix, point::Point}, ray::Ray};
 
+use super::{world::World, canvas::Canvas};
+
 pub struct Camera {
-    pub hsize: u32,
-    pub vsize: u32,
+    pub hsize: usize,
+    pub vsize: usize,
     pub field_of_view: f32,
     pub transform: Matrix,
     pub pixel_size: f32,
@@ -12,7 +14,7 @@ pub struct Camera {
 
 impl Camera {
     /// calculate the pixel size for a given camera
-    pub fn new(hsize: u32, vsize: u32, fow: f32) -> Self {
+    pub fn new(hsize: usize, vsize: usize, fow: f32) -> Self {
         let half_view = (fow/2.0).tan();
         let aspect = hsize as f32 / vsize as f32;
         let (half_width, half_height) = if aspect >= 1.0 {
@@ -32,22 +34,39 @@ impl Camera {
         }
     }
 
+    pub fn with_transform(mut self, t: Matrix) -> Self{
+        self.transform = t;
+        self
+    }
+
     /// for each canvas pixel get the correspoinding world_choordinates and then the ray from it
-    pub fn ray_for_pixel(&self, px: u32, py: u32) -> Ray {
-        let px = px as f32;
-        let py = py as f32;
-        let offset_x = (px + 0.5) * self.pixel_size;
-        let offset_y = (py + 0.5) * self.pixel_size;
+    pub fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
+        let offset_x = (px as f32 + 0.5) * self.pixel_size;
+        let offset_y = (py as f32 + 0.5) * self.pixel_size;
 
         let world_x = self.half_width - offset_x;
         let world_y = self.half_height - offset_y;
 
         // using the camera matrix transform the canvas point and the origin
         // and then compute the ray's directin vector;
-        let pixel = self.transform.inverse() * Point::new(world_x, world_y, -1.0);
-        let origin = self.transform.inverse() * Point::new(0.0, 0.0, 0.0);
+        let inverse = self.transform.inverse();
+        let pixel = inverse * Point::new(world_x, world_y, -1.0);
+        let origin = inverse * Point::new(0.0, 0.0, 0.0);
         let direction = (pixel - origin).normalize();
         Ray::new(origin, direction)
+    }
+
+    /// for given camera and world we render out the pixels to a canvas
+    pub fn render(&self, world: World) -> Canvas {
+        let mut canvas = Canvas::new(self.hsize, self.hsize);
+        for (y, row) in canvas.arr.iter_mut().enumerate() {
+            for (x, col) in row.iter_mut().enumerate() {
+                let ray = self.ray_for_pixel(x,y);
+                let color = world.color_at(&ray);
+                *col = color;
+            }
+        }
+        canvas
     }
 }
 
@@ -55,7 +74,7 @@ impl Camera {
 mod tests {
     use std::f32::consts::PI;
 
-    use crate::{mathstructs::{matrix::Matrix, vector::Vector, point::Point}, cmp::ApproxEq};
+    use crate::{mathstructs::{matrix::Matrix, vector::Vector, point::Point}, cmp::ApproxEq, visual::{world::World, color::Col}};
 
     use super::*;
 
@@ -96,15 +115,25 @@ mod tests {
 
     }
 
-    // #[test]
-    // fn constructing_a_ray_when_camera_is_transformed() {
-    //     let mut c = Camera::new(201, 101, PI / 2.0);
-    //     //c.transform = Matrix::new_identity().rotate_y(PI/4.0).translate(0.0, -2.0, 5.0);
-    //     c.transform = Matrix::rotation_y_new(PI/4.0) * Matrix::translation_new(0.0, -2.0, 5.0);
-    //     Matrix::new_identity().rotate_y(PI/4.0).translate(0.0, -2.0, 5.0);
-    //     let r = c.ray_for_pixel(100, 50);
-    //     assert_eq!(r.origin, Point::inew(0, 2, -5));
-    //     let sq = 2.0_f32.sqrt();
-    //     assert_eq!(r.direction, Vector::new(sq, 0.0, -sq));
-    // }
+    #[test]
+    fn constructing_a_ray_when_camera_is_transformed() {
+        let mut c = Camera::new(201, 101, PI / 2.0);
+        c.transform = Matrix::rotation_y_new(PI/4.0) * Matrix::translation_new(0.0, -2.0, 5.0);
+        let r = c.ray_for_pixel(100, 50);
+        assert_eq!(r.origin, Point::inew(0, 2, -5));
+        let sq = 2.0_f32.sqrt()/2.0;
+        assert_eq!(r.direction, Vector::new(sq, 0.0, -sq));
+    }
+
+    #[test]
+    fn rendering_world_with_camera() {
+        let w = World::default();
+        let from = Point::inew(0, 0, -5);
+        let to = Point::inew(0, 0, 0);
+        let up = Vector::inew(0, 1, 0);
+        let c = Camera::new(11, 11, PI/2.0)
+            .with_transform(Matrix::view_transform_new(from, to, up));
+        let image = c.render(w);
+        assert_eq!(image[5][5], Col::new(0.38066, 0.47583, 0.2855));
+    }
 }

@@ -23,7 +23,7 @@ impl World {
     fn intersect_world(&self, ray: &Ray) -> VecIntersections {
         let mut intersections = VecIntersections::new();
         for obj in &self.objects {
-            intersections.intersect_add(ray, &obj);
+            intersections.intersect_add(ray, obj);
         }
         intersections
     }
@@ -73,17 +73,17 @@ impl World {
                         &comps.normal_v,
                     );
             }
-            return col_sum;
+            col_sum
         }
     }
 
     pub fn color_at(&self, ray: &Ray) -> Col {
         let intersects = self.intersect_world(ray);
         match intersects.hit() {
-            None => return Col::new_black(),
+            None => Col::new_black(),
             Some(i) => {
-                let comps = Computations::prepare(&i, &ray);
-                return self.shade_hit(&comps);
+                let comps = Computations::prepare(&i, ray);
+                self.shade_hit(&comps)
             }
         }
     }

@@ -34,9 +34,9 @@ impl Computations {
         Self {
             t: intersection.t,
             object: intersection.object.clone(),
-            point: point,
-            eye_v: eye_v,
-            normal_v: normal_v,
+            point,
+            eye_v,
+            normal_v,
             inside: hit_is_inside_object,
         }
     }

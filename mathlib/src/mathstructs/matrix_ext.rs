@@ -138,11 +138,6 @@ impl Matrix {
 mod tests {
     use std::f32::consts::PI;
 
-    use crate::mathstructs::{
-        point::Point,
-        vector::{self, Vector},
-    };
-
     use super::*;
 
     // translation
