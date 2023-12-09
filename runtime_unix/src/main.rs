@@ -1,4 +1,7 @@
 pub mod png_io;
+pub mod examples {
+    pub mod chapter7;
+}
 
 use mathlib::{
     io::ppm::write_to_file,
@@ -10,7 +13,7 @@ use mathlib::{
 use png_io::canvas_png_save;
 
 fn main() {
-    manually_cast_rays_at_sphere_infront_canvas();
+    examples::chapter7::build_example();
 }
 
 pub fn manually_cast_rays_at_sphere_infront_canvas() {
