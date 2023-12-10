@@ -1,7 +1,6 @@
 use crate::{
     mathstructs::{matrix::Matrix, point::Point},
-    objects::{object::Object, sphere::Sphere},
-    ray::{computations::Computations, intersects::VecIntersections, Ray},
+    ray::{computations::Computations, intersects::VecIntersections, Ray}, object::{Object, sphere::Sphere},
 };
 
 use super::{color::Col, light::Light};
@@ -114,7 +113,6 @@ mod tests {
 
     use crate::{
         mathstructs::{matrix::Matrix, point::Point, vector::Vector},
-        objects::sphere::Sphere,
         ray::{intersects::Intersect, Ray},
         visual::color::Col,
     };

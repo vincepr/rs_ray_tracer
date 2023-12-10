@@ -1,3 +1,7 @@
+use crate::mathstructs::{point::Point, vector::Vector};
+
+use super::{color::Col, material::Material};
+
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Light {
@@ -75,7 +79,7 @@ impl Default for Light {
 
 #[cfg(test)]
 mod tests {
-    use crate::{mathstructs::vector::Vector, objects::material::Material};
+    use crate::mathstructs::vector::Vector;
 
     use super::*;
 

@@ -1,7 +1,6 @@
 use crate::{
     cmp::EPSILON,
-    mathstructs::{point::Point, vector::Vector},
-    objects::object::Object,
+    mathstructs::{point::Point, vector::Vector}, object::Object,
 };
 
 use super::{intersects::Intersect, Ray};
@@ -52,8 +51,7 @@ impl Computations {
 mod tests {
     use crate::{
         mathstructs::matrix::Matrix,
-        objects::sphere::Sphere,
-        ray::{intersects::Intersect, Ray},
+        ray::{intersects::Intersect, Ray}, object::sphere::Sphere,
     };
 
     use super::*;

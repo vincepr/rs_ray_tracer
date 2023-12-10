@@ -40,7 +40,7 @@ impl PartialEq for Material {
 
 #[cfg(test)]
 mod tests {
-    use crate::objects::sphere::Sphere;
+    use crate::object::sphere::Sphere;
 
     use super::*;
 

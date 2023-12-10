@@ -1,8 +1,7 @@
 use std::{cmp::Ordering, collections::BTreeSet};
 
 use crate::{
-    mathstructs::{point::Point, vector::Vector},
-    objects::object::Object,
+    mathstructs::{point::Point, vector::Vector}, object::Object,
 };
 
 use super::Ray;
@@ -130,7 +129,7 @@ impl<'a> Default for VecIntersections<'a> {
 
 #[cfg(test)]
 mod tests {
-    use crate::objects::object::{Object, Shape};
+    use crate::object::Shape;
 
     use super::*;
 

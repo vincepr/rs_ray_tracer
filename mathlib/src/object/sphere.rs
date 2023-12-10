@@ -3,7 +3,8 @@ use crate::{
     ray::{intersects::IntersectsRay, Ray},
 };
 
-use super::object::{Object, Shape};
+use super::{Object, Shape};
+
 
 /// always of radius 1 and at (0.0.0) - has no real state so not really a struct tbh
 #[derive(Debug, PartialEq)]
