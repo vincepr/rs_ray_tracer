@@ -7,17 +7,17 @@ use super::point::Point;
 /// (x, y, z, w=0) - vector
 #[derive(Debug, Clone, Copy)]
 pub struct Vector {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 impl Vector {
     /// quality of live, just casts int -> float
     pub fn inew(x: i32, y: i32, z: i32) -> Self {
-        Self::new(x as f32, y as f32, z as f32)
+        Self::new(x as f64, y as f64, z as f64)
     }
 
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vector { x, y, z }
     }
 
@@ -31,7 +31,7 @@ impl Vector {
     }
 
     /// distance represented by a vector. Calculated by classic pythagoras
-    pub fn magnitude(&self) -> f32 {
+    pub fn magnitude(&self) -> f64 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 
@@ -46,7 +46,7 @@ impl Vector {
     }
 
     /// dot product, aka scalar product. takes 2 vectors returns a scalar value
-    pub fn dot(&self, other: &Self) -> f32 {
+    pub fn dot(&self, other: &Self) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
@@ -121,7 +121,7 @@ impl Neg for Vector {
     }
 }
 
-impl Mul<Vector> for f32 {
+impl Mul<Vector> for f64 {
     type Output = Vector;
     fn mul(self, rhs: Vector) -> Self::Output {
         Self::Output {
@@ -132,9 +132,9 @@ impl Mul<Vector> for f32 {
     }
 }
 
-impl Mul<f32> for Vector {
+impl Mul<f64> for Vector {
     type Output = Vector;
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self::Output {
         Self::Output {
             x: rhs * self.x,
             y: rhs * self.y,
@@ -143,9 +143,9 @@ impl Mul<f32> for Vector {
     }
 }
 
-impl Div<f32> for Vector {
+impl Div<f64> for Vector {
     type Output = Vector;
-    fn div(self, rhs: f32) -> Self::Output {
+    fn div(self, rhs: f64) -> Self::Output {
         Self::Output {
             x: self.x / rhs,
             y: self.y / rhs,
@@ -239,7 +239,7 @@ mod tests {
         assert!(Vector::inew(1, 0, 0).magnitude().apx_eq(&1.0));
         assert!(Vector::inew(0, 1, 0).magnitude().apx_eq(&1.0));
         assert!(Vector::inew(0, 0, 1).magnitude().apx_eq(&1.0));
-        let sqrt14 = (14.0 as f32).sqrt();
+        let sqrt14 = (14.0 as f64).sqrt();
         assert!(Vector::inew(1, 2, 3).magnitude().apx_eq(&sqrt14));
         assert!(Vector::inew(-1, -2, -3).magnitude().apx_eq(&sqrt14));
     }
@@ -283,7 +283,7 @@ mod tests {
     #[test]
     fn reflecting_vector_slanted_angle() {
         let v = Vector::inew(0, -1, 0);
-        let sq = 2.0_f32.sqrt() / 2.0;
+        let sq = 2.0_f64.sqrt() / 2.0;
         let n = Vector::new(sq, sq, 0.0);
         let res = Vector::reflect(&v, &n);
         assert_eq!(res, Vector::inew(1, 0, 0));

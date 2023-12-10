@@ -9,21 +9,21 @@ use super::Ray;
 
 /// the interface we use for all objects that our rays can hit/intersect with
 pub trait IntersectsRay {
-    fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)>;
+    fn intersect_raw(&self, ray: &Ray) -> Option<(f64, f64)>;
     fn normal_at(point: Point) -> Vector;
 }
 
 /// keeps reference to intersections our rays we cast find
 #[derive(Debug, PartialEq, Clone)]
 pub struct Intersection<'a> {
-    pub t: f32,
+    pub t: f64,
     pub object: &'a Object,
 }
 
 impl<'a> Eq for Intersection<'a> {} // cant use derive macro this will just use PartialEq for Eq
 
 impl<'a> Intersection<'a> {
-    pub fn new(t: f32, object: &'a Object) -> Self {
+    pub fn new(t: f64, object: &'a Object) -> Self {
         Self { t, object }
     }
 }
@@ -97,7 +97,7 @@ impl<'a> VecIntersections<'a> {
     // }
 
     /// adds a possible intersection to the collection
-    fn intersections(&mut self, intersect: Option<(f32, f32)>, obj: &'a Object) {
+    fn intersections(&mut self, intersect: Option<(f64, f64)>, obj: &'a Object) {
         match intersect {
             None => {}
             Some((t1, t2)) => {

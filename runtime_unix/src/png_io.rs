@@ -19,10 +19,10 @@ pub fn canvas_png_save(canvas: &Canvas, path: &str) {
 }
 
 // uses COLOR_MAXVAL to translate 0-1 range into percentage of that value
-fn base_255(f: f32) -> u8 {
+fn base_255(f: f64) -> u8 {
     match f {
         n if n < 0.0 => 0,
-        n if n > COLOR_MAXVAL as f32 => 255,
-        n => (n * ((COLOR_MAXVAL + 1) as f32)).floor() as u8,
+        n if n > COLOR_MAXVAL as f64 => 255,
+        n => (n * ((COLOR_MAXVAL + 1) as f64)).floor() as u8,
     }
 }

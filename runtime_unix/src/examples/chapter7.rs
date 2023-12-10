@@ -1,6 +1,6 @@
 // a scene with 6 spheres:
 
-use std::f32::consts::PI;
+use std::f64::consts::PI;
 
 use mathlib::{
     io::ppm::write_to_file,

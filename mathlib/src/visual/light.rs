@@ -64,7 +64,7 @@ impl Light {
                 specular = Col::new_black();
             } else {
                 // compute the specular contribution
-                let factor = f32::powf(reflect_dot_eye, material.shininess);
+                let factor = f64::powf(reflect_dot_eye, material.shininess);
                 specular = light.intensity * material.specular * factor;
             }
         }
@@ -113,7 +113,7 @@ mod tests {
     #[test]
     fn lighting_with_the_eye_between_the_light_and_surface_eye_offset_45deg() {
         let (m, position) = setup_mat_pos();
-        let sq = 2.0_f32.sqrt() / 2.0;
+        let sq = 2.0_f64.sqrt() / 2.0;
         let v_eye = Vector::new(0.0, sq, -sq);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
@@ -134,7 +134,7 @@ mod tests {
     #[test]
     fn light_with_eye_in_the_path_of_reflection_vector() {
         let (m, position) = setup_mat_pos();
-        let sq = 2.0_f32.sqrt() / 2.0;
+        let sq = 2.0_f64.sqrt() / 2.0;
         let v_eye = Vector::new(0.0, -sq, -sq);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 10, -10), Col::new(1.0, 1.0, 1.0));

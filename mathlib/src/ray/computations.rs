@@ -9,7 +9,7 @@ use super::{intersects::Intersect, Ray};
 /// set of precomputed values that will get used a lot
 #[derive(Debug, Clone)]
 pub struct Computations {
-    pub t: f32,
+    pub t: f64,
     pub object: Object,
     /// the point of the intersection
     pub point: Point,

@@ -3,10 +3,10 @@ pub trait ApproxEq {
     fn apx_eq(&self, other: &Self) -> bool;
 }
 
-pub const EPSILON: f32 = 0.00001;
+pub const EPSILON: f64 = 0.00001;
 
-impl ApproxEq for f32 {
-    fn apx_eq(&self, other: &f32) -> bool {
+impl ApproxEq for f64 {
+    fn apx_eq(&self, other: &f64) -> bool {
         *self == *other || (*self - *other).abs() < EPSILON
     }
 }
@@ -16,11 +16,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn f32_aprox_eq() {
-        let a: f32 = 1.1;
-        let b: f32 = 1.1;
-        let c: f32 = 1.100001;
-        let d: f32 = 1.10001;
+    fn f64_aprox_eq() {
+        let a: f64 = 1.1;
+        let b: f64 = 1.1;
+        let c: f64 = 1.100001;
+        let d: f64 = 1.10001;
         assert!(a.apx_eq(&b));
         assert!(a.apx_eq(&c));
         assert!(!a.apx_eq(&d));

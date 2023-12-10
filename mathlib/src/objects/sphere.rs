@@ -18,7 +18,7 @@ impl Sphere {
 
 impl IntersectsRay for Sphere {
     /// the t value of the position on the ray where the intersections happen. 0, 1, 2 possible.
-    fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)> {
+    fn intersect_raw(&self, ray: &Ray) -> Option<(f64, f64)> {
         let sphere_to_ray = ray.origin - Point::new(0.0, 0.0, 0.0);
         let a = ray.direction.dot(&ray.direction);
         let b = 2.0 * ray.direction.dot(&sphere_to_ray);
@@ -42,7 +42,7 @@ impl IntersectsRay for Sphere {
 
 #[cfg(test)]
 mod tests {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use crate::mathstructs::matrix::Matrix;
 
@@ -147,7 +147,7 @@ mod tests {
     #[test]
     fn normal_on_a_sphere_at_a_nonaxial_point() {
         let s = Sphere::new();
-        let sq = 3.0_f32.sqrt() / 3.0;
+        let sq = 3.0_f64.sqrt() / 3.0;
         let res = s.normal_at(&Point::new(sq, sq, sq));
         assert_eq!(res, Vector::new(sq, sq, sq));
     }
@@ -155,7 +155,7 @@ mod tests {
     #[test]
     fn normal_on_a_sphere_is_a_normalized_vector() {
         let s = Sphere::new();
-        let sq = 3.0_f32.sqrt() / 3.0;
+        let sq = 3.0_f64.sqrt() / 3.0;
         let res = s.normal_at(&Point::new(sq, sq, sq));
         let norm_res = res.clone().normalize();
         assert_eq!(res, norm_res);
@@ -173,7 +173,7 @@ mod tests {
     fn computing_normal_on_a_transformed_sphere() {
         let mut s = Sphere::new();
         s.set_transform(Matrix::scaling_new(1.0, 0.5, 1.0) * Matrix::rotation_z_new(PI / 5.0));
-        let sq = 2.0_f32.sqrt() / 2.0;
+        let sq = 2.0_f64.sqrt() / 2.0;
         let res = s.normal_at(&Point::new(0.0, sq, sq));
         assert_eq!(res, Vector::new(0.0, 0.97014, 0.24254));
     }

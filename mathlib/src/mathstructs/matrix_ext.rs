@@ -9,7 +9,7 @@ impl Matrix {
     //                          [0 0 1 z]
     //                          [0 0 0 1]
     /// translation moves a Point by x-y-z. But doesnt affect a Vector
-    pub fn translation_new(x: f32, y: f32, z: f32) -> Self {
+    pub fn translation_new(x: f64, y: f64, z: f64) -> Self {
         Self::new([
             [1.0, 0.0, 0.0, x],
             [0.0, 1.0, 0.0, y],
@@ -18,7 +18,7 @@ impl Matrix {
         ])
     }
     pub fn itranslation_new(x: isize, y: isize, z: isize) -> Self {
-        Self::translation_new(x as f32, y as f32, z as f32)
+        Self::translation_new(x as f64, y as f64, z as f64)
     }
 
     // scaling (x,y,z)=         [x 0 0 0]
@@ -26,7 +26,7 @@ impl Matrix {
     //                          [0 0 z 0]
     //                          [0 0 0 1]
     /// scales by the origin. Effectively making it larger or smaller
-    pub fn scaling_new(x: f32, y: f32, z: f32) -> Self {
+    pub fn scaling_new(x: f64, y: f64, z: f64) -> Self {
         Self::new([
             [x, 0.0, 0.0, 0.0],
             [0.0, y, 0.0, 0.0],
@@ -35,7 +35,7 @@ impl Matrix {
         ])
     }
     pub fn iscaling_new(x: isize, y: isize, z: isize) -> Self {
-        Self::scaling_new(x as f32, y as f32, z as f32)
+        Self::scaling_new(x as f64, y as f64, z as f64)
     }
 
     // rotationX (x,y,z)=   [1      0     0    0]
@@ -44,7 +44,7 @@ impl Matrix {
     //                      [0      0     0    1]
     /// the rotation will appear to be clockwise arround the corresponding axis
     /// when viewed along that axis. towards the negative end.
-    pub fn rotation_x_new(rad: f32) -> Self {
+    pub fn rotation_x_new(rad: f64) -> Self {
         Self::new([
             [1.0, 0.0, 0.0, 0.0],
             [0.0, rad.cos(), -rad.sin(), 0.0],
@@ -53,7 +53,7 @@ impl Matrix {
         ])
     }
 
-    pub fn rotation_y_new(rad: f32) -> Self {
+    pub fn rotation_y_new(rad: f64) -> Self {
         Self::new([
             [rad.cos(), 0.0, rad.sin(), 0.0],
             [0.0, 1.0, 0.0, 0.0],
@@ -62,7 +62,7 @@ impl Matrix {
         ])
     }
 
-    pub fn rotation_z_new(rad: f32) -> Self {
+    pub fn rotation_z_new(rad: f64) -> Self {
         Self::new([
             [rad.cos(), -rad.sin(), 0.0, 0.0],
             [rad.sin(), rad.cos(), 0.0, 0.0],
@@ -80,7 +80,7 @@ impl Matrix {
     // Z in proportion to y
     /// making straight lines slanted. (the further away the more it shears off)
     #[allow(non_snake_case)]
-    pub fn shearing_new(Xy: f32, Xz: f32, Yx: f32, Yz: f32, Zx: f32, Zy: f32) -> Self {
+    pub fn shearing_new(Xy: f64, Xz: f64, Yx: f64, Yz: f64, Zx: f64, Zy: f64) -> Self {
         Self::new([
             [1.0, Xy, Xz, 0.0],
             [Yx, 1.0, Yz, 0.0],
@@ -92,7 +92,7 @@ impl Matrix {
     #[allow(non_snake_case)]
     pub fn shearingi_new(Xy: usize, Xz: usize, Yx: usize, Yz: usize, Zx: usize, Zy: usize) -> Self {
         Self::shearing_new(
-            Xy as f32, Xz as f32, Yx as f32, Yz as f32, Zx as f32, Zy as f32,
+            Xy as f64, Xz as f64, Yx as f64, Yz as f64, Zx as f64, Zy as f64,
         )
     }
 
@@ -113,30 +113,30 @@ impl Matrix {
 
 // implement fluent-API for the transformations
 impl Matrix {
-    pub fn translate(&self, x: f32, y: f32, z: f32) -> Self {
+    pub fn translate(&self, x: f64, y: f64, z: f64) -> Self {
         Self::translation_new(x, y, z) * *self
     }
-    pub fn scale(&self, x: f32, y: f32, z: f32) -> Self {
+    pub fn scale(&self, x: f64, y: f64, z: f64) -> Self {
         Self::scaling_new(x, y, z) * *self
     }
-    pub fn rotate_x(&self, rad: f32) -> Self {
+    pub fn rotate_x(&self, rad: f64) -> Self {
         Self::rotation_x_new(rad) * *self
     }
-    pub fn rotate_y(&self, rad: f32) -> Self {
+    pub fn rotate_y(&self, rad: f64) -> Self {
         Self::rotation_y_new(rad) * *self
     }
-    pub fn rotate_z(&self, rad: f32) -> Self {
+    pub fn rotate_z(&self, rad: f64) -> Self {
         Self::rotation_z_new(rad) * *self
     }
     #[allow(non_snake_case)]
-    pub fn shear(&self, Xy: f32, Xz: f32, Yx: f32, Yz: f32, Zx: f32, Zy: f32) -> Self {
+    pub fn shear(&self, Xy: f64, Xz: f64, Yx: f64, Yz: f64, Zx: f64, Zy: f64) -> Self {
         Self::shearing_new(Xy, Xz, Yx, Yz, Zx, Zy) * *self
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use super::*;
 
@@ -200,7 +200,7 @@ mod tests {
     fn rotation_point_arround_x_axis() {
         let p = Point::inew(0, 1, 0);
         let half_quarter = Matrix::rotation_x_new(PI / 4.0);
-        let sqrt = 2.0_f32.sqrt() / 2.0;
+        let sqrt = 2.0_f64.sqrt() / 2.0;
         assert_eq!(half_quarter * p, Point::new(0.0, sqrt, sqrt));
         let full_quarter = Matrix::rotation_x_new(PI / 2.0);
         assert_eq!(full_quarter * p, Point::inew(0, 0, 1));
@@ -210,7 +210,7 @@ mod tests {
     fn rotation_point_arround_y_axis() {
         let p = Point::inew(0, 0, 1);
         let half_quarter = Matrix::rotation_y_new(PI / 4.0);
-        let sqrt = 2.0_f32.sqrt() / 2.0;
+        let sqrt = 2.0_f64.sqrt() / 2.0;
         assert_eq!(half_quarter * p, Point::new(sqrt, 0.0, sqrt));
         let full_quarter = Matrix::rotation_y_new(PI / 2.0);
         assert_eq!(full_quarter * p, Point::inew(1, 0, 0));
@@ -220,7 +220,7 @@ mod tests {
     fn rotation_point_arround_z_axis() {
         let p = Point::inew(0, 1, 0);
         let half_quarter = Matrix::rotation_z_new(PI / 4.0);
-        let sqrt = 2.0_f32.sqrt() / 2.0;
+        let sqrt = 2.0_f64.sqrt() / 2.0;
         assert_eq!(half_quarter * p, Point::new(-sqrt, sqrt, 0.0));
         let full_quarter = Matrix::rotation_z_new(PI / 2.0);
         assert_eq!(full_quarter * p, Point::inew(-1, 0, 0));

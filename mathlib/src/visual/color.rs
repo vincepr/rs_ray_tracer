@@ -10,13 +10,13 @@ use crate::{cmp::ApproxEq, io::ppm::COLOR_MAXVAL};
 /// But intermediate ones used for further calculating might exceede those borders in both directions
 #[derive(Debug, Clone, Copy)]
 pub struct Col {
-    pub r: f32,
-    pub g: f32,
-    pub b: f32,
+    pub r: f64,
+    pub g: f64,
+    pub b: f64,
 }
 
 impl Col {
-    pub fn new(r: f32, g: f32, b: f32) -> Self {
+    pub fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
     }
 
@@ -52,11 +52,11 @@ impl Display for Col {
 }
 
 // usess COLOR_MAXVAL to translate 0-1 range into percentage of that value
-fn base_255(f: f32) -> u8 {
+fn base_255(f: f64) -> u8 {
     match f {
         n if n < 0.0 => 0,
-        n if n > COLOR_MAXVAL as f32 => 255,
-        n => (n * ((COLOR_MAXVAL + 1) as f32)).floor() as u8,
+        n if n > COLOR_MAXVAL as f64 => 255,
+        n => (n * ((COLOR_MAXVAL + 1) as f64)).floor() as u8,
     }
 }
 
@@ -100,9 +100,9 @@ impl Mul for Col {
     }
 }
 
-impl Mul<f32> for Col {
+impl Mul<f64> for Col {
     type Output = Col;
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self::Output {
         Self::Output {
             r: self.r * rhs,
             g: self.g * rhs,
@@ -110,7 +110,7 @@ impl Mul<f32> for Col {
         }
     }
 }
-impl Mul<Col> for f32 {
+impl Mul<Col> for f64 {
     type Output = Col;
     fn mul(self, rhs: Col) -> Self::Output {
         Self::Output {
@@ -162,7 +162,7 @@ mod tests {
     }
 
     #[test]
-    fn mul_col_f32() {
+    fn mul_col_f64() {
         let l = Col::new(0.2, 0.3, 0.4);
         let e = Col::new(0.4, 0.6, 0.8);
         assert_eq!(l * 2.0, e);

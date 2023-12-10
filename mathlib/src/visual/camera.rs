@@ -12,24 +12,24 @@ pub struct Camera {
     pub width: usize,
     /// heigth in pixels
     pub height: usize,
-    pub field_of_view: f32,
+    pub field_of_view: f64,
     pub transform: Matrix,
-    pub pixel_size: f32,
-    pub half_width: f32,
-    pub half_height: f32,
+    pub pixel_size: f64,
+    pub half_width: f64,
+    pub half_height: f64,
 }
 
 impl Camera {
     /// calculate the pixel size for a given camera
-    pub fn new(width: usize, height: usize, fow: f32) -> Self {
+    pub fn new(width: usize, height: usize, fow: f64) -> Self {
         let half_view = (fow / 2.0).tan();
-        let aspect = width as f32 / height as f32;
+        let aspect = width as f64 / height as f64;
         let (half_width, half_height) = if aspect >= 1.0 {
             (half_view, half_view / aspect)
         } else {
             (half_view * aspect, half_view)
         };
-        let pixel_size = (half_width * 2.0) / width as f32;
+        let pixel_size = (half_width * 2.0) / width as f64;
         Self {
             width,
             height,
@@ -48,8 +48,8 @@ impl Camera {
 
     /// for each canvas pixel get the correspoinding world_choordinates and then the ray from it
     pub fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
-        let offset_x = (px as f32 + 0.5) * self.pixel_size;
-        let offset_y = (py as f32 + 0.5) * self.pixel_size;
+        let offset_x = (px as f64 + 0.5) * self.pixel_size;
+        let offset_y = (py as f64 + 0.5) * self.pixel_size;
 
         let world_x = self.half_width - offset_x;
         let world_y = self.half_height - offset_y;
@@ -108,7 +108,7 @@ impl Camera {
 
 #[cfg(test)]
 mod tests {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use crate::{
         cmp::ApproxEq,
@@ -160,7 +160,7 @@ mod tests {
         c.transform = Matrix::rotation_y_new(PI / 4.0) * Matrix::translation_new(0.0, -2.0, 5.0);
         let r = c.ray_for_pixel(100, 50);
         assert_eq!(r.origin, Point::inew(0, 2, -5));
-        let sq = 2.0_f32.sqrt() / 2.0;
+        let sq = 2.0_f64.sqrt() / 2.0;
         assert_eq!(r.direction, Vector::new(sq, 0.0, -sq));
     }
 

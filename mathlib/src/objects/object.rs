@@ -19,7 +19,7 @@ pub struct Object {
 }
 
 impl Object {
-    pub fn intersect_raw(&self, ray: &Ray) -> Option<(f32, f32)> {
+    pub fn intersect_raw(&self, ray: &Ray) -> Option<(f64, f64)> {
         // to translate from worldspace to objectspace - aka swap choordinate-system
         // we transform the ray itself by the inverse of the .transformation Matrix
         let ray = ray.transform(&self.transformation.inverse());

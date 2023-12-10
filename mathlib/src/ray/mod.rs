@@ -23,7 +23,7 @@ impl Ray {
         }
     }
 
-    pub fn position(&self, t: f32) -> Point {
+    pub fn position(&self, t: f64) -> Point {
         self.origin + self.direction * t
     }
 

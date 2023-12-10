@@ -3,20 +3,20 @@ use crate::cmp::ApproxEq;
 use std::ops::Mul;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Matrix2([[f32; 2]; 2]);
+pub struct Matrix2([[f64; 2]; 2]);
 
 #[derive(Debug, Clone, Copy)]
-pub struct Matrix3([[f32; 3]; 3]);
+pub struct Matrix3([[f64; 3]; 3]);
 
 /// Matrix4 - 4 rows, 4 columns
 #[derive(Debug, Clone, Copy)]
-pub struct Matrix([[f32; 4]; 4]);
+pub struct Matrix([[f64; 4]; 4]);
 
 /// impl Intexing into for all 3 matrix-types
 macro_rules! impl_IndexAndIndexMut {
     ($name:ty) => {
         impl core::ops::Index<usize> for $name {
-            type Output = [f32];
+            type Output = [f64];
             fn index(&self, index: usize) -> &Self::Output {
                 &self.0[index]
             }
@@ -55,24 +55,24 @@ impl_PartialEq_WithRounding!(Matrix3);
 impl_PartialEq_WithRounding!(Matrix);
 
 impl Matrix2 {
-    pub fn new(matrix: [[f32; 2]; 2]) -> Self {
+    pub fn new(matrix: [[f64; 2]; 2]) -> Self {
         Self(matrix)
     }
 
     /// determinant == the 1/x equivalent in matrix land
-    pub fn determinant(&self) -> f32 {
+    pub fn determinant(&self) -> f64 {
         self[0][0] * self[1][1] - self[0][1] * self[1][0]
     }
 }
 
 impl Matrix3 {
-    pub fn new(matrix: [[f32; 3]; 3]) -> Self {
+    pub fn new(matrix: [[f64; 3]; 3]) -> Self {
         Self(matrix)
     }
 
     /// deletes a row & colum to make the size smaller (3->2)
     pub fn submatrix(&self, row: usize, col: usize) -> Matrix2 {
-        let mut vals: Vec<f32> = Vec::with_capacity(4);
+        let mut vals: Vec<f64> = Vec::with_capacity(4);
         for y in 0..3 {
             if y == row {
                 continue;
@@ -88,8 +88,8 @@ impl Matrix3 {
     }
 
     /// submatrix first then determinant of that 2x2
-    pub fn minor(&self, row: usize, col: usize) -> f32 {
-        let mut vals: Vec<f32> = Vec::with_capacity(4);
+    pub fn minor(&self, row: usize, col: usize) -> f64 {
+        let mut vals: Vec<f64> = Vec::with_capacity(4);
         for y in 0..3 {
             if y == row {
                 continue;
@@ -105,7 +105,7 @@ impl Matrix3 {
     }
 
     /// minors that change their sign if row+col is odd
-    pub fn cofactor(&self, row: usize, col: usize) -> f32 {
+    pub fn cofactor(&self, row: usize, col: usize) -> f64 {
         let res = self.minor(row, col);
         if (row + col) % 2 == 0 {
             return res;
@@ -114,7 +114,7 @@ impl Matrix3 {
     }
 
     /// determinant == the 1/x equivalent in matrix land
-    pub fn determinant(&self) -> f32 {
+    pub fn determinant(&self) -> f64 {
         self[0][0] * self.cofactor(0, 0)
             + self[0][1] * self.cofactor(0, 1)
             + self[0][2] * self.cofactor(0, 2)
@@ -122,7 +122,7 @@ impl Matrix3 {
 }
 
 impl Matrix {
-    pub fn new(matrix: [[f32; 4]; 4]) -> Self {
+    pub fn new(matrix: [[f64; 4]; 4]) -> Self {
         Self(matrix)
     }
 
@@ -148,7 +148,7 @@ impl Matrix {
 
     // deletes a row & colum to make the size smaller (4->3)
     pub fn submatrix(&self, row: usize, col: usize) -> Matrix3 {
-        let mut vals: Vec<f32> = Vec::with_capacity(9);
+        let mut vals: Vec<f64> = Vec::with_capacity(9);
         for y in 0..4 {
             if y == row {
                 continue;
@@ -168,12 +168,12 @@ impl Matrix {
     }
 
     /// submatrix first then determinant of 3x3
-    pub fn minor(&self, row: usize, col: usize) -> f32 {
+    pub fn minor(&self, row: usize, col: usize) -> f64 {
         self.submatrix(row, col).determinant()
     }
 
     /// minors that change their sign if row+col is odd
-    pub fn cofactor(&self, row: usize, col: usize) -> f32 {
+    pub fn cofactor(&self, row: usize, col: usize) -> f64 {
         let res = self.minor(row, col);
         if (row + col) % 2 == 0 {
             return res;
@@ -182,7 +182,7 @@ impl Matrix {
     }
 
     /// determinant == the 1/x equivalent in matrix land
-    pub fn determinant(&self) -> f32 {
+    pub fn determinant(&self) -> f64 {
         (0..4).fold(0.0, |acc, x| acc + self[0][x] * self.cofactor(0, x))
     }
 
@@ -236,15 +236,15 @@ impl Mul<Point> for Matrix {
             self[0][0] * rhs.x
                 + self[0][1] * rhs.y
                 + self[0][2] * rhs.z
-                + self[0][3] * (rhs.w() as f32),
+                + self[0][3] * (rhs.w() as f64),
             self[1][0] * rhs.x
                 + self[1][1] * rhs.y
                 + self[1][2] * rhs.z
-                + self[1][3] * (rhs.w() as f32),
+                + self[1][3] * (rhs.w() as f64),
             self[2][0] * rhs.x
                 + self[2][1] * rhs.y
                 + self[2][2] * rhs.z
-                + self[2][3] * (rhs.w() as f32),
+                + self[2][3] * (rhs.w() as f64),
         )
     }
 }
@@ -257,15 +257,15 @@ impl Mul<Vector> for Matrix {
             self[0][0] * rhs.x
                 + self[0][1] * rhs.y
                 + self[0][2] * rhs.z
-                + self[0][3] * (rhs.w() as f32),
+                + self[0][3] * (rhs.w() as f64),
             self[1][0] * rhs.x
                 + self[1][1] * rhs.y
                 + self[1][2] * rhs.z
-                + self[1][3] * (rhs.w() as f32),
+                + self[1][3] * (rhs.w() as f64),
             self[2][0] * rhs.x
                 + self[2][1] * rhs.y
                 + self[2][2] * rhs.z
-                + self[2][3] * (rhs.w() as f32),
+                + self[2][3] * (rhs.w() as f64),
         )
     }
 }

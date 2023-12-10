@@ -7,16 +7,16 @@ use super::vector::Vector;
 /// (x, y, z, w=1) - Point
 #[derive(Debug, Clone, Copy)]
 pub struct Point {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 impl Point {
     pub fn inew(x: isize, y: isize, z: isize) -> Self {
-        Self::new(x as f32, y as f32, z as f32)
+        Self::new(x as f64, y as f64, z as f64)
     }
 
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
         Point { x, y, z }
     }
 
