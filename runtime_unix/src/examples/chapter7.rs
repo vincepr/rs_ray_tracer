@@ -78,7 +78,7 @@ pub fn build_example() {
         Vector::new(0.0, 1.0, 0.0),
     ));
 
-    let canvas = crate::parallel::render_parallel(&camera, &world);
+    let canvas = crate::parallel::render_parallel(camera, world);
     write_to_file("./out.ppm", canvas.canvas_to_ppm());
     canvas_png_save(&canvas, "./out.png");
 }
