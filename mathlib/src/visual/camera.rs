@@ -8,8 +8,10 @@ use crate::{
 use super::{canvas::Canvas, world::World};
 
 pub struct Camera {
-    pub hsize: usize,
-    pub vsize: usize,
+    /// width in pixels
+    pub width: usize,
+    /// heigth in pixels
+    pub height: usize,
     pub field_of_view: f32,
     pub transform: Matrix,
     pub pixel_size: f32,
@@ -19,18 +21,18 @@ pub struct Camera {
 
 impl Camera {
     /// calculate the pixel size for a given camera
-    pub fn new(hsize: usize, vsize: usize, fow: f32) -> Self {
+    pub fn new(width: usize, height: usize, fow: f32) -> Self {
         let half_view = (fow / 2.0).tan();
-        let aspect = hsize as f32 / vsize as f32;
+        let aspect = width as f32 / height as f32;
         let (half_width, half_height) = if aspect >= 1.0 {
             (half_view, half_view / aspect)
         } else {
             (half_view * aspect, half_view)
         };
-        let pixel_size = (half_width * 2.0) / hsize as f32;
+        let pixel_size = (half_width * 2.0) / width as f32;
         Self {
-            hsize,
-            vsize,
+            width,
+            height,
             field_of_view: fow,
             transform: Matrix::new_identity(),
             pixel_size,
@@ -63,7 +65,7 @@ impl Camera {
 
     /// for given camera and world we render out the pixels to a canvas
     pub fn render(&self, world: World) -> Canvas {
-        let mut canvas = Canvas::new(self.hsize, self.hsize);
+        let mut canvas = Canvas::new(self.width, self.height);
         for (y, row) in canvas.arr.iter_mut().enumerate() {
             for (x, col) in row.iter_mut().enumerate() {
                 let ray = self.ray_for_pixel(x, y);
@@ -76,12 +78,12 @@ impl Camera {
 
     pub fn render_with_progress(&self, world: World) -> Canvas {
         let now = Instant::now();
-        let mut canvas = Canvas::new(self.hsize, self.hsize);
-        let mut nxt_percent = (1, self.hsize / 10, "::".to_string());
+        let mut canvas = Canvas::new(self.width, self.height);
+        let mut nxt_percent = (1, self.height / 10, "::".to_string());
         for (y, row) in canvas.arr.iter_mut().enumerate() {
             if y == nxt_percent.1 {
                 println!("{} {}0 % took: {}s",nxt_percent.2, nxt_percent.0, now.elapsed().as_secs());
-                nxt_percent = (nxt_percent.0 + 1, (nxt_percent.0 + 1) * self.hsize/10, nxt_percent.2 + "::");
+                nxt_percent = (nxt_percent.0 + 1, (nxt_percent.0 + 1) * self.height/10, nxt_percent.2 + "::");
             }
             for (x, col) in row.iter_mut().enumerate() {
                 let ray = self.ray_for_pixel(x, y);
@@ -110,8 +112,8 @@ mod tests {
     #[test]
     fn constructing_a_camera() {
         let c = Camera::new(160, 120, PI / 2.0);
-        assert_eq!(c.hsize, 160);
-        assert_eq!(c.vsize, 120);
+        assert_eq!(c.width, 160);
+        assert_eq!(c.height, 120);
         assert_eq!(c.field_of_view, PI / 2.0);
         assert_eq!(c.transform, Matrix::new_identity())
     }
