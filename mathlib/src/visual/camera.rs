@@ -67,7 +67,7 @@ impl Camera {
     pub fn render(&self, world: World) -> Canvas {
         let mut canvas = Canvas::new(self.width, self.height);
         canvas.arr.iter_mut().enumerate().for_each(|(y, row)| {
-            row.iter_mut().enumerate().for_each(|(x, col)|{
+            row.iter_mut().enumerate().for_each(|(x, col)| {
                 let ray = self.ray_for_pixel(x, y);
                 let color = world.color_at(&ray);
                 *col = color;
@@ -83,8 +83,17 @@ impl Camera {
         let mut nxt_percent = (1, self.height / 10, "::".to_string());
         for (y, row) in canvas.arr.iter_mut().enumerate() {
             if y == nxt_percent.1 {
-                println!("{} {}0 % took: {}s",nxt_percent.2, nxt_percent.0, now.elapsed().as_secs());
-                nxt_percent = (nxt_percent.0 + 1, (nxt_percent.0 + 1) * self.height/10, nxt_percent.2 + "::");
+                println!(
+                    "{} {}0 % took: {}s",
+                    nxt_percent.2,
+                    nxt_percent.0,
+                    now.elapsed().as_secs()
+                );
+                nxt_percent = (
+                    nxt_percent.0 + 1,
+                    (nxt_percent.0 + 1) * self.height / 10,
+                    nxt_percent.2 + "::",
+                );
             }
             for (x, col) in row.iter_mut().enumerate() {
                 let ray = self.ray_for_pixel(x, y);
@@ -95,8 +104,6 @@ impl Camera {
         println!("total render took: {} seconds.", now.elapsed().as_secs());
         canvas
     }
-
-
 }
 
 #[cfg(test)]

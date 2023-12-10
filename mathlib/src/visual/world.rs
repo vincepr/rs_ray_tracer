@@ -60,7 +60,7 @@ impl World {
                 &comps.point,
                 &comps.eye_v,
                 &comps.normal_v,
-                self.is_shadowed(&comps.over_point, &self.lights[0])
+                self.is_shadowed(&comps.over_point, &self.lights[0]),
             )
         } else {
             // multiple lights exist in the secene (careful will slow down everything)
@@ -73,12 +73,11 @@ impl World {
                         &comps.point,
                         &comps.eye_v,
                         &comps.normal_v,
-                        self.is_shadowed(&comps.over_point, cur_light)
+                        self.is_shadowed(&comps.over_point, cur_light),
                     );
             }
             col_sum
         }
-
     }
 
     /// cast ray to the lightsource, if we hit any obstruction => were in the shadow of that
@@ -94,7 +93,7 @@ impl World {
             if h.t < distance {
                 return true;
             }
-        } 
+        }
         false
     }
 
@@ -215,7 +214,7 @@ mod tests {
         let c = w.color_at(&r);
         assert_eq!(c, exp);
     }
-    
+
     // shadows
     #[test]
     fn there_is_no_shadow_when_nothing_is_collinear_with_point_and_light() {
@@ -224,7 +223,7 @@ mod tests {
         let current_light = &w.lights[0];
         assert_eq!(w.is_shadowed(&p, current_light), false);
     }
- 
+
     #[test]
     fn the_shadow_when_an_object_is_between_the_point_and_the_light() {
         let w = World::default();
@@ -232,7 +231,7 @@ mod tests {
         let current_light = &w.lights[0];
         assert_eq!(w.is_shadowed(&p, current_light), true);
     }
-  
+
     #[test]
     fn there_is_no_shadow_when_and_object_is_behind_the_light() {
         let w = World::default();
@@ -252,7 +251,7 @@ mod tests {
     #[test]
     fn shade_hit_is_given_an_intersection_in_shadow() {
         let mut w = World::new();
-        w.lights[0] = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0)); 
+        w.lights[0] = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
         let s1 = Sphere::new();
         w.objects.push(s1);
         let mut s2 = Sphere::new();

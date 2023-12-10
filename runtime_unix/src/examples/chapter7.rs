@@ -2,8 +2,12 @@
 
 use std::f32::consts::PI;
 
-
-use mathlib::{objects::{material::Material, sphere::Sphere}, visual::{color::Col, world::World, light::Light, camera::Camera}, mathstructs::{matrix::Matrix, point::Point, vector::Vector}, io::ppm::write_to_file};
+use mathlib::{
+    io::ppm::write_to_file,
+    mathstructs::{matrix::Matrix, point::Point, vector::Vector},
+    objects::{material::Material, sphere::Sphere},
+    visual::{camera::Camera, color::Col, light::Light, world::World},
+};
 
 use crate::png_io::canvas_png_save;
 
@@ -65,7 +69,8 @@ pub fn build_example() {
     world.objects.push(right);
     world.objects.push(left);
 
-    world.lights[0] = Light::new_point_light(Point::new(-10.0, 10.0, -10.0), Col::new(1.0, 1.0, 1.0));
+    world.lights[0] =
+        Light::new_point_light(Point::new(-10.0, 10.0, -10.0), Col::new(1.0, 1.0, 1.0));
 
     let camera = Camera::new(2000, 1000, PI / 3.0).with_transform(Matrix::view_transform_new(
         Point::new(0.0, 1.5, -5.0),
@@ -77,4 +82,3 @@ pub fn build_example() {
     write_to_file("./out.ppm", canvas.canvas_to_ppm());
     canvas_png_save(&canvas, "./out.png");
 }
-

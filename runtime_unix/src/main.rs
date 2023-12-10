@@ -1,5 +1,5 @@
-pub mod png_io;
 pub mod parallel;
+pub mod png_io;
 pub mod examples {
     pub mod chapter7;
 }
@@ -58,8 +58,14 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
                 let point = ray.position(hit.t);
                 let normal_v = hit.object.normal_at(&point);
                 let eye_v = -ray.direction;
-                let color_with_lighting =
-                    Light::lighting(&hit.object.material, &light, &point, &eye_v, &normal_v, false);
+                let color_with_lighting = Light::lighting(
+                    &hit.object.material,
+                    &light,
+                    &point,
+                    &eye_v,
+                    &normal_v,
+                    false,
+                );
                 *col = color_with_lighting;
             }
         }
