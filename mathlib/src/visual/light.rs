@@ -7,8 +7,8 @@ use super::color::Col;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Light {
-    position: Point,
-    intensity: Col,
+    pub position: Point,
+    pub intensity: Col,
 }
 
 impl Light {
@@ -26,6 +26,7 @@ impl Light {
         point: &Point,
         eye_v: &Vector,
         normal_v: &Vector,
+        in_shadow: bool,
     ) -> Col {
         // combine the surface color with the lights's color/intensity
         let effective_col = material.color * light.intensity;
@@ -33,6 +34,11 @@ impl Light {
         let light_v = (light.position - *point).normalize();
         // compute the ambient contribution
         let ambient = effective_col * material.ambient;
+
+        // when in shadow we ignore diffure & specular -> only ambient lighting left:
+        if in_shadow {
+            return ambient;
+        }
 
         // light_dot_normal represents the cosine of the angle between the
         // light vector and the normal vector. A negative number means the
@@ -100,7 +106,7 @@ mod tests {
         let v_eye = Vector::inew(0, 0, -1);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal);
+        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(1.9, 1.9, 1.9));
     }
 
@@ -111,7 +117,7 @@ mod tests {
         let v_eye = Vector::new(0.0, sq, -sq);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal);
+        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(1.0, 1.0, 1.0));
     }
 
@@ -121,7 +127,7 @@ mod tests {
         let v_eye = Vector::inew(0, 0, -1);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 10, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal);
+        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(0.7364, 0.7364, 0.7364));
     }
 
@@ -132,7 +138,7 @@ mod tests {
         let v_eye = Vector::new(0.0, -sq, -sq);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 10, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal);
+        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(1.63638, 1.63638, 1.63638));
     }
 
@@ -142,7 +148,19 @@ mod tests {
         let v_eye = Vector::inew(0, 0, -1);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, 10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal);
+        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
+        assert_eq!(res, Col::new(0.1, 0.1, 0.1));
+    }
+
+    // shadows
+    #[test]
+    fn lighting_with_surface_in_shadow() {
+        let (m, position) = setup_mat_pos();
+        let eye_v = Vector::inew(0, 0, -1);
+        let normal_v = Vector::inew(0, 0, -1);
+        let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
+        let in_shadow = true;
+        let res = Light::lighting(&m, &light, &position, &eye_v, &normal_v, in_shadow);
         assert_eq!(res, Col::new(0.1, 0.1, 0.1));
     }
 }

@@ -67,8 +67,7 @@ pub fn build_example() {
 
     world.lights[0] = Light::new_point_light(Point::new(-10.0, 10.0, -10.0), Col::new(1.0, 1.0, 1.0));
 
-    let camera = Camera::new(4000, 2000, PI / 3.0).with_transform(Matrix::view_transform_new(
-    // let camera = Camera::new(500, 250, PI / 3.0).with_transform(Matrix::view_transform_new(
+    let camera = Camera::new(2000, 1000, PI / 3.0).with_transform(Matrix::view_transform_new(
         Point::new(0.0, 1.5, -5.0),
         Point::new(0.0, 1.0, 0.0),
         Vector::new(0.0, 1.0, 0.0),

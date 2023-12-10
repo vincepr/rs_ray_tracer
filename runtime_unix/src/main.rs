@@ -59,7 +59,7 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
                 let normal_v = hit.object.normal_at(&point);
                 let eye_v = -ray.direction;
                 let color_with_lighting =
-                    Light::lighting(&hit.object.material, &light, &point, &eye_v, &normal_v);
+                    Light::lighting(&hit.object.material, &light, &point, &eye_v, &normal_v, false);
                 *col = color_with_lighting;
             }
         }

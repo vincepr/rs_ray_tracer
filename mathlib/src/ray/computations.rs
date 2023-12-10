@@ -1,6 +1,6 @@
 use crate::{
     mathstructs::{point::Point, vector::Vector},
-    objects::object::Object,
+    objects::object::Object, cmp::EPSILON,
 };
 
 use super::{intersects::Intersect, Ray};
@@ -10,7 +10,10 @@ use super::{intersects::Intersect, Ray};
 pub struct Computations {
     pub t: f32,
     pub object: Object,
+    /// the point of the intersection
     pub point: Point,
+    /// to avoid acne-rounding errors we need to add a slightly offset-point = Point * EPSILON
+    pub over_point: Point,
     pub eye_v: Vector,
     pub normal_v: Vector,
     /// indicates if the hit occurs inside the object. (In that case the normal will be inverted)
@@ -30,6 +33,7 @@ impl Computations {
         } else {
             false
         };
+        let over_point = point + normal_v * EPSILON;
 
         Self {
             t: intersection.t,
@@ -38,6 +42,7 @@ impl Computations {
             eye_v,
             normal_v,
             inside: hit_is_inside_object,
+            over_point,
         }
     }
 }
@@ -46,7 +51,7 @@ impl Computations {
 mod tests {
     use crate::{
         objects::sphere::Sphere,
-        ray::{intersects::Intersect, Ray},
+        ray::{intersects::Intersect, Ray}, mathstructs::matrix::Matrix,
     };
 
     use super::*;
@@ -83,5 +88,16 @@ mod tests {
         assert_eq!(comps.eye_v, Vector::inew(0, 0, -1));
         assert_eq!(comps.inside, true);
         assert_eq!(comps.normal_v, Vector::inew(0, 0, -1)); // this is the inverted normal
+    }
+
+    #[test]
+    fn the_hit_should_offset_overpoint_by_epsilon() {
+        let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
+        let mut shape = Sphere::new();
+        shape.transformation = Matrix::translation_new(0.0, 0.0, 1.0);
+        let i = Intersect::new(5.0, &shape);
+        let comps = Computations::prepare(&i, &r);
+        assert!(comps.over_point.z < -EPSILON / 2.0);
+        assert!(comps.point.z > comps.over_point.z);
     }
 }
