@@ -1,9 +1,3 @@
-use crate::{
-    mathstructs::{point::Point, vector::Vector},
-    objects::material::Material,
-};
-
-use super::color::Col;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Light {

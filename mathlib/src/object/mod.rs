@@ -1,3 +1,5 @@
+pub mod sphere;
+
 use crate::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     ray::{intersects::IntersectsRay, Ray},

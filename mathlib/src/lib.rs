@@ -9,15 +9,14 @@ pub mod mathstructs {
     pub mod point;
     pub mod vector;
 }
-pub mod objects {
-    pub mod material;
-    pub mod object;
-    pub mod sphere;
-}
+
 #[allow(dead_code)]
 pub mod ray;
 
+pub mod object;
+
 pub mod visual {
+    pub mod material;
     pub mod camera;
     pub mod canvas;
     pub mod color;
