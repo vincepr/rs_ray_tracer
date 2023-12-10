@@ -16,3 +16,14 @@ Ot works by recursively spawning rays and bouncing them arround the scene, to ca
 ```
 wasm_web/build/index.html
 ```
+
+
+- perf in wsl
+```
+apt install linux-tools-generic
+cargo install flamegraph
+
+PERF=/usr/lib/linux-tools/5.15.0-91-generic/perf cargo flamegraph -o flamegraph.svg
+
+sudo /usr/lib/linux-tools/5.15.0-91-generic/perf record -g --call-graph dwarf ./unix_compiled
+```

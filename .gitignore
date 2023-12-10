@@ -1,3 +1,6 @@
 /target
 out.ppm
 out.png
+perf.data
+perf.data.old
+flamegraph.svg
