@@ -1,4 +1,10 @@
-use mathlib::{mathstructs::point::Point, visual::{canvas::Canvas, color::Col, light::Light}, object::sphere::Sphere, io::ppm::write_to_file, ray::{Ray, intersects::VecIntersections}};
+use mathlib::{
+    io::ppm::write_to_file,
+    mathstructs::point::Point,
+    object::sphere::Sphere,
+    ray::{intersects::VecIntersections, Ray},
+    visual::{canvas::Canvas, color::Col, light::Light},
+};
 
 use crate::png_io::canvas_png_save;
 

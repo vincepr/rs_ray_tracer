@@ -1,11 +1,11 @@
 pub mod sphere;
 use crate::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
-    ray::{intersects::IntersectsRay, Ray}, visual::material::Material,
+    ray::{intersects::IntersectsRay, Ray},
+    visual::material::Material,
 };
 
 use self::sphere::Sphere;
-
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Shape {

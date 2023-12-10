@@ -5,7 +5,8 @@ use std::f64::consts::PI;
 use mathlib::{
     io::ppm::write_to_file,
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
-    visual::{camera::Camera, color::Col, light::Light, world::World, material::Material}, object::sphere::Sphere,
+    object::sphere::Sphere,
+    visual::{camera::Camera, color::Col, light::Light, material::Material, world::World},
 };
 
 use crate::png_io::canvas_png_save;

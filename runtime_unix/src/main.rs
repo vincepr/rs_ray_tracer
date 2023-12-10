@@ -5,9 +5,6 @@ pub mod examples {
     pub mod chapter7;
 }
 
-
-
 fn main() {
     examples::chapter7::build_example();
 }
-

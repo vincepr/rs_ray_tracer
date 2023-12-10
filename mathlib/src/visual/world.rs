@@ -1,6 +1,7 @@
 use crate::{
     mathstructs::{matrix::Matrix, point::Point},
-    ray::{computations::Computations, intersects::VecIntersections, Ray}, object::{Object, sphere::Sphere},
+    object::{sphere::Sphere, Object},
+    ray::{computations::Computations, intersects::VecIntersections, Ray},
 };
 
 use super::{color::Col, light::Light};

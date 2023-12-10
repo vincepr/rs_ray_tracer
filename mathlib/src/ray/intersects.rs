@@ -1,7 +1,8 @@
 use std::{cmp::Ordering, collections::BTreeSet};
 
 use crate::{
-    mathstructs::{point::Point, vector::Vector}, object::Object,
+    mathstructs::{point::Point, vector::Vector},
+    object::Object,
 };
 
 use super::Ray;

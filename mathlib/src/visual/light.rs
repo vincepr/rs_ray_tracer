@@ -2,7 +2,6 @@ use crate::mathstructs::{point::Point, vector::Vector};
 
 use super::{color::Col, material::Material};
 
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct Light {
     pub position: Point,

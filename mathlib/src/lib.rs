@@ -16,10 +16,10 @@ pub mod ray;
 pub mod object;
 
 pub mod visual {
-    pub mod material;
     pub mod camera;
     pub mod canvas;
     pub mod color;
     pub mod light;
+    pub mod material;
     pub mod world;
 }
