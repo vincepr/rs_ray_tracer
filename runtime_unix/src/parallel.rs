@@ -6,7 +6,7 @@ use rayon::prelude::*;
 pub fn render_parallel(camera: Camera, world: World) -> Canvas {
     let bar = ProgressBar::new((camera.height) as u64);
     bar.set_style(ProgressStyle::default_bar().template(
-        "[{elapsed} elapsed] [{eta} left] {wide_bar:.green/white} {percent}% [{bytes_per_sec} rows/s] [total: {pos} rows] ").unwrap());
+        "[{elapsed} elapsed] [{eta} left] {wide_bar:.green/white} {percent}% [speed-in-rows: {bytes_per_sec}] [total-rows: {pos} rows] ").unwrap());
 
     let mut canvas = Canvas::new(camera.width, camera.height);
     canvas.arr.par_iter_mut().enumerate().for_each(|(y, row)| {
