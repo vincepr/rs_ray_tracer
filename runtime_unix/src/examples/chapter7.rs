@@ -74,7 +74,7 @@ pub fn build_example() {
         Vector::new(0.0, 1.0, 0.0),
     ));
 
-    let canvas = camera.render_with_progress(world);
+    let canvas = camera.render_with_success_msg(world);
     write_to_file("./out.ppm", canvas.canvas_to_ppm());
     canvas_png_save(&canvas, "./out.png");
 }

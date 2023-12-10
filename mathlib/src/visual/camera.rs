@@ -1,5 +1,7 @@
 use std::time::Instant;
 
+use rayon::iter::{IntoParallelRefIterator, IntoParallelRefMutIterator};
+use rayon::prelude::*;
 use crate::{
     mathstructs::{matrix::Matrix, point::Point},
     ray::Ray,
@@ -66,17 +68,18 @@ impl Camera {
     /// for given camera and world we render out the pixels to a canvas
     pub fn render(&self, world: World) -> Canvas {
         let mut canvas = Canvas::new(self.width, self.height);
-        for (y, row) in canvas.arr.iter_mut().enumerate() {
-            for (x, col) in row.iter_mut().enumerate() {
+        canvas.arr.par_iter_mut().enumerate().for_each(|(y, row)| {
+            row.par_iter_mut().enumerate().for_each(|(x, col)|{
                 let ray = self.ray_for_pixel(x, y);
                 let color = world.color_at(&ray);
                 *col = color;
-            }
-        }
+            });
+        });
+
         canvas
     }
 
-    pub fn render_with_progress(&self, world: World) -> Canvas {
+    pub fn render_with_progress_procedural(&self, world: World) -> Canvas {
         let now = Instant::now();
         let mut canvas = Canvas::new(self.width, self.height);
         let mut nxt_percent = (1, self.height / 10, "::".to_string());
@@ -91,6 +94,20 @@ impl Camera {
                 *col = color;
             }
         }
+        println!("total render took: {} seconds.", now.elapsed().as_secs());
+        canvas
+    }
+
+    pub fn render_with_success_msg(&self, world: World) -> Canvas {
+        let now = Instant::now();
+        let mut canvas = Canvas::new(self.width, self.height);
+        canvas.arr.par_iter_mut().enumerate().for_each(|(y, row)| {
+            row.par_iter_mut().enumerate().for_each(|(x, col)|{
+                let ray = self.ray_for_pixel(x, y);
+                let color = world.color_at(&ray);
+                *col = color;
+            });
+        });
         println!("total render took: {} seconds.", now.elapsed().as_secs());
         canvas
     }
