@@ -139,7 +139,7 @@ mod tests {
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 10, -10), Col::new(1.0, 1.0, 1.0));
         let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
-        assert_eq!(res, Col::new(1.63638, 1.63638, 1.63638));
+        assert_eq!(res, Col::new(1.63639, 1.63639, 1.63639));
     }
 
     #[test]

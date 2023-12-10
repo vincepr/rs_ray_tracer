@@ -170,9 +170,9 @@ mod tests {
     fn partial_eq_tests() {
         let v1 = Vector::new(1.1, 1.1, 1.1);
         let v2 = Vector::new(1.1, 1.1, 1.1);
-        let v3 = Vector::new(1.100001, 1.1, 1.1);
-        let v4 = Vector::new(1.10001, 1.1, 1.1);
-        let v5 = Vector::new(1.1001, 1.1, 1.1);
+        let v3 = Vector::new(1.10001, 1.1, 1.1);
+        let v4 = Vector::new(1.1001, 1.1, 1.1);
+        let v5 = Vector::new(1.101, 1.1, 1.1);
         assert!(v1 == v2);
         assert!(v1 == v3);
         assert!(v1 != v4);

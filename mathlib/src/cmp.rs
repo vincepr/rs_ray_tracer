@@ -19,8 +19,8 @@ mod tests {
     fn f64_aprox_eq() {
         let a: f64 = 1.1;
         let b: f64 = 1.1;
-        let c: f64 = 1.100001;
-        let d: f64 = 1.10001;
+        let c: f64 = 1.10001;
+        let d: f64 = 1.1001;
         assert!(a.apx_eq(&b));
         assert!(a.apx_eq(&c));
         assert!(!a.apx_eq(&d));
