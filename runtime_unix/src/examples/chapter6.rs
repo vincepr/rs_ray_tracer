@@ -1,4 +1,6 @@
-use mathlib::mathstructs::point::Point;
+use mathlib::{mathstructs::point::Point, visual::{canvas::Canvas, color::Col, light::Light}, object::sphere::Sphere, io::ppm::write_to_file, ray::{Ray, intersects::VecIntersections}};
+
+use crate::png_io::canvas_png_save;
 
 pub fn manually_cast_rays_at_sphere_infront_canvas() {
     let ray_origin = Point::inew(0, 0, -5);
