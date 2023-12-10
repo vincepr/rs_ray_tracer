@@ -1,4 +1,5 @@
 pub mod png_io;
+pub mod parallel;
 pub mod examples {
     pub mod chapter7;
 }

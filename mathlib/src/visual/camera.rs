@@ -1,7 +1,5 @@
 use std::time::Instant;
 
-use rayon::iter::{IntoParallelRefIterator, IntoParallelRefMutIterator};
-use rayon::prelude::*;
 use crate::{
     mathstructs::{matrix::Matrix, point::Point},
     ray::Ray,
@@ -68,8 +66,8 @@ impl Camera {
     /// for given camera and world we render out the pixels to a canvas
     pub fn render(&self, world: World) -> Canvas {
         let mut canvas = Canvas::new(self.width, self.height);
-        canvas.arr.par_iter_mut().enumerate().for_each(|(y, row)| {
-            row.par_iter_mut().enumerate().for_each(|(x, col)|{
+        canvas.arr.iter_mut().enumerate().for_each(|(y, row)| {
+            row.iter_mut().enumerate().for_each(|(x, col)|{
                 let ray = self.ray_for_pixel(x, y);
                 let color = world.color_at(&ray);
                 *col = color;
@@ -98,19 +96,7 @@ impl Camera {
         canvas
     }
 
-    pub fn render_with_success_msg(&self, world: World) -> Canvas {
-        let now = Instant::now();
-        let mut canvas = Canvas::new(self.width, self.height);
-        canvas.arr.par_iter_mut().enumerate().for_each(|(y, row)| {
-            row.par_iter_mut().enumerate().for_each(|(x, col)|{
-                let ray = self.ray_for_pixel(x, y);
-                let color = world.color_at(&ray);
-                *col = color;
-            });
-        });
-        println!("total render took: {} seconds.", now.elapsed().as_secs());
-        canvas
-    }
+
 }
 
 #[cfg(test)]
