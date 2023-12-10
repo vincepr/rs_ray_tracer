@@ -1,12 +1,12 @@
-pub mod sphere;
 pub mod plane;
+pub mod sphere;
 use crate::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     ray::{intersects::IntersectsRay, Ray},
     visual::material::Material,
 };
 
-use self::{sphere::Sphere, plane::Plane};
+use self::{plane::Plane, sphere::Sphere};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Shape {
@@ -29,8 +29,8 @@ impl Object {
         let ray = ray.transform(&self.transformation.inverse());
 
         match &self.shape {
-            Shape::Sphere => Sphere{}.intersect_raw(&ray),
-            Shape::Plane => Plane{}.intersect_raw(&ray),
+            Shape::Sphere => Sphere {}.intersect_raw(&ray),
+            Shape::Plane => Plane {}.intersect_raw(&ray),
         }
     }
 

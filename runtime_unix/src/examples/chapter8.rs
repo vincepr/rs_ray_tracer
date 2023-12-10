@@ -5,7 +5,7 @@ use std::f64::consts::PI;
 use mathlib::{
     io::ppm::write_to_file,
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
-    object::{sphere::Sphere, plane::Plane},
+    object::{plane::Plane, sphere::Sphere},
     visual::{camera::Camera, color::Col, light::Light, material::Material, world::World},
 };
 
