@@ -1,6 +1,6 @@
 use std::ops::{Index, IndexMut};
 
-use super::color::{Col, COL_BLACK};
+use super::color::{Col, BLACK};
 
 // #[derive(Debug, Clone)]
 // struct Row(Vec<Col>);
@@ -24,7 +24,7 @@ impl Canvas {
         Canvas {
             width: w,
             height: h,
-            arr: vec![vec![COL_BLACK; w]; h],
+            arr: vec![vec![BLACK; w]; h],
         }
     }
 
@@ -57,7 +57,7 @@ impl IndexMut<usize> for Canvas {
 
 #[cfg(test)]
 mod tests {
-    use crate::{cmp::ApproxEq, visual::color::COL_WHITE};
+    use crate::{cmp::ApproxEq, visual::color::WHITE};
 
     use super::*;
 
@@ -91,24 +91,22 @@ mod tests {
         let (w, h) = (10, 20);
         let mut canvas = Canvas::new(w, h);
 
-        canvas[20 - 1][10 - 1] = COL_WHITE;
+        canvas[20 - 1][10 - 1] = WHITE;
 
         let lowest_row = &canvas[20 - 1];
         let last_pixel = lowest_row[10 - 1];
-        assert_eq!(last_pixel, COL_WHITE);
+        assert_eq!(last_pixel, WHITE);
 
-        canvas
-            .write_px(5, 4, COL_WHITE)
-            .write_px(5, 5, COL_WHITE);
-        assert_eq!(canvas[4][5], COL_WHITE);
-        assert_eq!(canvas[5][5], COL_WHITE);
+        canvas.write_px(5, 4, WHITE).write_px(5, 5, WHITE);
+        assert_eq!(canvas[4][5], WHITE);
+        assert_eq!(canvas[5][5], WHITE);
     }
 
     #[test]
     fn read_pixel() {
         let (w, h) = (10, 20);
         let mut canvas = Canvas::new(w, h);
-        canvas[4][4] = COL_WHITE;
-        assert_eq!(*canvas.read(4, 4), COL_WHITE);
+        canvas[4][4] = WHITE;
+        assert_eq!(*canvas.read(4, 4), WHITE);
     }
 }

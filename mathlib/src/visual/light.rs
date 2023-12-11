@@ -1,6 +1,10 @@
 use crate::mathstructs::{point::Point, vector::Vector};
 
-use super::{color::{Col, COL_BLACK}, material::Material};
+use super::{
+    color::{Col, BLACK},
+    material::Material,
+    patterns::Pattn,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Light {
@@ -25,8 +29,12 @@ impl Light {
         normal_v: &Vector,
         in_shadow: bool,
     ) -> Col {
+        let material_color = match material.pattern {
+            Pattn::Single(col) => col,
+            _ => *material.pattern.at(point),
+        };
         // combine the surface color with the lights's color/intensity
-        let effective_col = material.color * light.intensity;
+        let effective_col = material_color * light.intensity;
         // find the direction to the light source
         let light_v = (light.position - *point).normalize();
         // compute the ambient contribution
@@ -45,8 +53,8 @@ impl Light {
 
         let light_dot_normal = light_v.dot(normal_v);
         if light_dot_normal < 0.0 {
-            diffuse = COL_BLACK;
-            specular = COL_BLACK;
+            diffuse = BLACK;
+            specular = BLACK;
         } else {
             // compute the diffuse contribution
             diffuse = effective_col * material.diffuse * light_dot_normal;
@@ -58,7 +66,7 @@ impl Light {
             let reflect_dot_eye = reflect_v.dot(eye_v);
 
             if reflect_dot_eye <= 0.0 {
-                specular = COL_BLACK;
+                specular = BLACK;
             } else {
                 // compute the specular contribution
                 let factor = f64::powf(reflect_dot_eye, material.shininess);

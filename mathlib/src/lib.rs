@@ -21,6 +21,6 @@ pub mod visual {
     pub mod color;
     pub mod light;
     pub mod material;
-    pub mod world;
     pub mod patterns;
+    pub mod world;
 }

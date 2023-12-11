@@ -19,7 +19,7 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
     let half = wall_size / 2.0;
 
     let mut shape = Sphere::new();
-    shape.material.color = Col::new(1.0, 0.2, 1.0);
+    shape.material.color(Col::new(1.0, 0.2, 1.0));
 
     // add a lighting source
     let light_position = Point::inew(-10, 10, -10);

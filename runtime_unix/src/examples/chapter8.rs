@@ -13,7 +13,7 @@ use crate::png_io::canvas_png_save;
 
 pub fn build_example() {
     let mut base_mat = Material::new();
-    base_mat.color = Col::new(1.0, 0.9, 0.9);
+    base_mat.color(Col::new(1.0, 0.9, 0.9));
     base_mat.specular = 0.0;
 
     // a plane as the floor
@@ -24,7 +24,7 @@ pub fn build_example() {
     let mut middle = Sphere::new();
     middle.transformation = Matrix::translation_new(-0.5, 1.0, 0.5);
     middle.material = base_mat.clone();
-    middle.material.color = Col::new(0.1, 1.0, 0.5);
+    middle.material.color(Col::new(0.1, 1.0, 0.5));
     middle.material.diffuse = 0.7;
     middle.material.specular = 0.3;
 
@@ -33,7 +33,7 @@ pub fn build_example() {
     right.transformation =
         Matrix::translation_new(1.2, 0.5, 0.7) * Matrix::scaling_new(0.5, 0.5, 0.5);
     right.material = base_mat.clone();
-    right.material.color = Col::new(0.5, 1.0, 0.1);
+    right.material.color(Col::new(0.5, 1.0, 0.1));
     right.material.diffuse = 0.7;
     right.material.specular = 0.3;
 
@@ -42,7 +42,7 @@ pub fn build_example() {
     left.transformation =
         Matrix::translation_new(-1.5, 1.77, -0.75) * Matrix::scaling_new(0.33, 0.33, 0.33);
     left.material = base_mat;
-    left.material.color = Col::new(1.0, 0.8, 0.1);
+    left.material.color(Col::new(1.0, 0.8, 0.1));
     left.material.diffuse = 0.7;
     left.material.specular = 0.3;
 

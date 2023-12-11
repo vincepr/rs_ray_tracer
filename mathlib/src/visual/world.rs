@@ -4,7 +4,11 @@ use crate::{
     ray::{computations::Computations, intersects::VecIntersections, Ray},
 };
 
-use super::{color::{Col, COL_BLACK}, light::Light};
+use super::{
+    color::{Col, BLACK},
+    light::Light,
+    patterns::Pattn,
+};
 
 #[derive(Debug, Clone)]
 pub struct World {
@@ -34,7 +38,7 @@ impl Default for World {
     fn default() -> Self {
         let mut objects = vec![];
         let mut s1 = Sphere::new();
-        s1.material.color = Col::new(0.8, 1.0, 0.6);
+        s1.material.pattern = Pattn::Single(Col::new(0.8, 1.0, 0.6));
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
         objects.push(s1);
@@ -64,7 +68,7 @@ impl World {
             )
         } else {
             // multiple lights exist in the secene (careful will slow down everything)
-            let mut col_sum = COL_BLACK;
+            let mut col_sum = BLACK;
             for cur_light in &self.lights {
                 col_sum = col_sum
                     + Light::lighting(
@@ -100,7 +104,7 @@ impl World {
     pub fn color_at(&self, ray: &Ray) -> Col {
         let intersects = self.intersect_world(ray);
         match intersects.hit() {
-            None => COL_BLACK,
+            None => BLACK,
             Some(i) => {
                 let comps = Computations::prepare(&i, ray);
                 self.shade_hit(&comps)
@@ -115,7 +119,7 @@ mod tests {
     use crate::{
         mathstructs::{matrix::Matrix, point::Point, vector::Vector},
         ray::{intersects::Intersect, Ray},
-        visual::color::Col,
+        visual::color::{Col, RED},
     };
 
     use super::*;
@@ -131,7 +135,7 @@ mod tests {
         let w = World::default();
         let light = Light::new_point_light(Point::inew(-10, 10, -10), Col::new(1.0, 1.0, 1.0));
         let mut s1 = Sphere::new();
-        s1.material.color = Col::new(0.8, 1.0, 0.6);
+        s1.material.color(Col::new(0.8, 1.0, 0.6));
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
 
@@ -208,7 +212,8 @@ mod tests {
         outer.material.ambient = 1.0;
         let inner = &mut w.objects[1];
         inner.material.ambient = 1.0;
-        let exp = inner.material.color.clone();
+        inner.material.color(RED);
+        let exp = RED;
         let r = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::inew(0, 0, -1));
         let c = w.color_at(&r);
         assert_eq!(c, exp);

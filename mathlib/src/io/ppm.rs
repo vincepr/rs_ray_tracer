@@ -45,7 +45,7 @@ pub fn write_to_file(path: &str, data: String) {
 
 #[cfg(test)]
 mod tests {
-    use crate::visual::color::{Col, COL_WHITE};
+    use crate::visual::color::{Col, WHITE};
 
     use super::*;
 
@@ -80,7 +80,7 @@ mod tests {
         let (w, h) = (11, 1);
         let mut canvas = Canvas::new(w, h);
         for col in canvas.arr[0].iter_mut() {
-            *col = COL_WHITE;
+            *col = WHITE;
         }
         let result = canvas.canvas_to_ppm();
 
