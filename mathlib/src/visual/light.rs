@@ -1,6 +1,6 @@
 use crate::mathstructs::{point::Point, vector::Vector};
 
-use super::{color::Col, material::Material};
+use super::{color::{Col, COL_BLACK}, material::Material};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Light {
@@ -45,8 +45,8 @@ impl Light {
 
         let light_dot_normal = light_v.dot(normal_v);
         if light_dot_normal < 0.0 {
-            diffuse = Col::new_black();
-            specular = Col::new_black();
+            diffuse = COL_BLACK;
+            specular = COL_BLACK;
         } else {
             // compute the diffuse contribution
             diffuse = effective_col * material.diffuse * light_dot_normal;
@@ -58,7 +58,7 @@ impl Light {
             let reflect_dot_eye = reflect_v.dot(eye_v);
 
             if reflect_dot_eye <= 0.0 {
-                specular = Col::new_black();
+                specular = COL_BLACK;
             } else {
                 // compute the specular contribution
                 let factor = f64::powf(reflect_dot_eye, material.shininess);

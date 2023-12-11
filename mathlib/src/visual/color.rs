@@ -15,27 +15,11 @@ pub struct Col {
     pub b: f64,
 }
 
+pub const COL_BLACK :Col = Col{ r: 0.0, g: 0.0, b: 0.0};
+pub const COL_WHITE :Col = Col{ r: 1.0, g: 1.0, b: 1.0};
 impl Col {
     pub fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
-    }
-
-    /// Col { 0, 0, 0}
-    pub fn new_black() -> Self {
-        Self {
-            r: 0.0,
-            g: 0.0,
-            b: 0.0,
-        }
-    }
-
-    /// Col { 1, 1, 1}
-    pub fn new_white() -> Self {
-        Self {
-            r: 1.0,
-            g: 1.0,
-            b: 1.0,
-        }
     }
 }
 

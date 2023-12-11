@@ -1,5 +1,7 @@
 use crate::{cmp::ApproxEq, visual::color::Col};
 
+use super::color::COL_WHITE;
+
 /// Phong Reflection Model uses these values to express lighting
 #[derive(Debug, Clone)]
 pub struct Material {
@@ -19,7 +21,7 @@ impl Material {
 impl Default for Material {
     fn default() -> Self {
         Self {
-            color: Col::new_white(),
+            color: COL_WHITE,
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,

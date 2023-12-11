@@ -4,7 +4,7 @@ use crate::{
     ray::{computations::Computations, intersects::VecIntersections, Ray},
 };
 
-use super::{color::Col, light::Light};
+use super::{color::{Col, COL_BLACK}, light::Light};
 
 #[derive(Debug, Clone)]
 pub struct World {
@@ -64,7 +64,7 @@ impl World {
             )
         } else {
             // multiple lights exist in the secene (careful will slow down everything)
-            let mut col_sum = Col::new_black();
+            let mut col_sum = COL_BLACK;
             for cur_light in &self.lights {
                 col_sum = col_sum
                     + Light::lighting(
@@ -100,7 +100,7 @@ impl World {
     pub fn color_at(&self, ray: &Ray) -> Col {
         let intersects = self.intersect_world(ray);
         match intersects.hit() {
-            None => Col::new_black(),
+            None => COL_BLACK,
             Some(i) => {
                 let comps = Computations::prepare(&i, ray);
                 self.shade_hit(&comps)
