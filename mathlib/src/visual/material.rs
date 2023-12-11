@@ -1,7 +1,7 @@
 use crate::{cmp::ApproxEq, visual::color::Col};
 
 use super::{
-    color::{BLUE, WHITE},
+    color::{WHITE},
     patterns::Pattn,
 };
 
@@ -40,7 +40,7 @@ impl Default for Material {
 
 impl PartialEq for Material {
     fn eq(&self, other: &Self) -> bool {
-        self.pattern == self.pattern
+        self.pattern == other.pattern
             && self.ambient.apx_eq(&other.ambient)
             && self.diffuse.apx_eq(&other.diffuse)
             && self.specular.apx_eq(&other.specular)
