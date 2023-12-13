@@ -2,22 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Rust + Webpack project!</title>
+    <title>Rust + Webpack ray tracer project</title>
   </head>
   <body>
     <div class="controls">
-      <h1>C =</h1>
+      <h1>Really slow so far in the browser. Also single threaded in the browser, so over 100 will take a while</h1>
       <div>
-        <label for="real">real</label>
-        <input type="number" name="real" id="real" value="-0.15" step="0.001">
+        <label for="input_width">width</label>
+        <input type="number" pattern="\d+" name="input_width" id="input_width" value="100" step="100">
       </div>
       <div>
-        <label for="imaginary">imaginary</label>
-        <input type="number" name="imaginary" id="imaginary" value="0.65" step="0.001">
+        <label for="input_height">height</label>
+        <input type="number" pattern="\d+" name="input_height" id="input_height" value="100" step="100">
       </div>
       <button class="button-primary" id="render">render</button>
     </div>
-    <canvas id="drawing" width="600" height="600"></canvas>
+    <canvas id="drawing" src="./out.png" width="600" height="600"></canvas>
 
     <script src="index.js"></script>
   </body>

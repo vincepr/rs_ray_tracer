@@ -34,7 +34,7 @@ impl Display for Col {
 }
 
 // usess COLOR_MAXVAL to translate 0-1 range into percentage of that value
-fn base_255(f: f64) -> u8 {
+pub fn base_255(f: f64) -> u8 {
     match f {
         n if n < 0.0 => 0,
         n if n > COLOR_MAXVAL as f64 => 255,
