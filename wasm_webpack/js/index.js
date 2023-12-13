@@ -27,6 +27,6 @@ import('../pkg/index.js')
                ctx.drawImage(image, 0, 0);
             }
         }
-        drawImage("./out.png");
+        drawImage("./example.png");
     })
     .catch(console.error);
