@@ -5,6 +5,6 @@
 members=[
     "runtime_unix",
     "mathlib",
-    "wasm_web"
+    "wasm_webpack"
 ]
 resolver = "1"

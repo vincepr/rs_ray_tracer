@@ -1,6 +1,11 @@
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
+use std::ops::Add;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::Clamped;
+use web_sys::{CanvasRenderingContext2d, ImageData};
+
 // This is like the `main` function, except for JavaScript.
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
@@ -8,19 +13,9 @@ pub fn main_js() -> Result<(), JsValue> {
     // It's disabled in release mode so it doesn't bloat up the file size.
     #[cfg(debug_assertions)]
     console_error_panic_hook::set_once();
-
-
-    // Your code goes here!
-    console::log_1(&JsValue::from_str("Hello world!"));
-
+    console::log_1(&JsValue::from_str("wasm is hooked up and working."));
     Ok(())
 }
-
-
-use std::ops::Add;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::Clamped;
-use web_sys::{CanvasRenderingContext2d, ImageData};
 
 #[wasm_bindgen]
 pub fn draw(
@@ -30,7 +25,6 @@ pub fn draw(
     real: f64,
     imaginary: f64,
 ) -> Result<(), JsValue> {
-    // The real workhorse of this algorithm, generating pixel data
     let c = Complex { real, imaginary };
     let mut data = get_julia_set(width, height, c);
     let data = ImageData::new_with_u8_clamped_array_and_sh(Clamped(&mut data), width, height)?;
