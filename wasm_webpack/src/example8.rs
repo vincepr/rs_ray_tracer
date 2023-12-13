@@ -1,7 +1,7 @@
 
 use std::f64::consts::PI;
 
-use mathlib::{visual::{material::Material, color::{Col, self}, world::World, light::Light, camera::Camera, canvas::Canvas}, object::{plane::Plane, sphere::Sphere}, mathstructs::{matrix::Matrix, point::Point, vector::Vector}};
+use mathlib::{visual::{material::Material, color::{Col, self}, world::World, light::Light, camera::Camera}, object::{plane::Plane, sphere::Sphere}, mathstructs::{matrix::Matrix, point::Point, vector::Vector}};
 
 pub fn build_example(width: u32, height: u32) -> Vec<u8> {
 

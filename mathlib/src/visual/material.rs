@@ -1,7 +1,7 @@
 use crate::{cmp::ApproxEq, visual::color::Col};
 
 use super::{
-    color::{WHITE},
+    color::WHITE,
     patterns::Pattn,
 };
 
