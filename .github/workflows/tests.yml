@@ -60,7 +60,7 @@ jobs:
       run: npm ci
       working-directory: ./wasm_webpack
     - name: build
-      run: npm run build
+      run: npm run build --openssl-legacy-provider
       working-directory: ./wasm_webpack
 
 
