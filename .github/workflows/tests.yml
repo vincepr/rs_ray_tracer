@@ -67,7 +67,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
-        path: ./wasm_webpack_dist
+        path: ./wasm_webpack/dist
 
     - name: Deploy to GitHub Pages
       id: deployment
