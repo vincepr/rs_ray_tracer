@@ -60,7 +60,7 @@ jobs:
       run: npm ci
       working-directory: ./wasm_webpack
     - name: build
-      run: npm build
+      run: npm run build
       working-directory: ./wasm_webpack
 
 
