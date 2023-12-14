@@ -14,12 +14,6 @@ Ot works by recursively spawning rays and bouncing them arround the scene, to ca
 4. If the surface is transparent, we do the same in direction of the refraction.
 5. Combine all colors that contribute to a point (surface & reflection & refraction)
 
-- building the wasm-project:
-```
-wasm_web/build/index.html
-```
-
-
 - perf in wsl
 ```
 apt install linux-tools-generic
