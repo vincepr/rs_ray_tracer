@@ -4,3 +4,4 @@ out.png
 perf.data
 perf.data.old
 flamegraph.svg
+.vscode
