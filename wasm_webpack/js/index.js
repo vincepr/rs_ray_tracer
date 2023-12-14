@@ -1,5 +1,3 @@
-// import("../pkg/index.js").catch(console.error);
-
 import('../pkg/index.js')
     .then(wasm => {
         const canvas = document.getElementById('drawing');
@@ -8,13 +6,17 @@ import('../pkg/index.js')
         const input_width = document.getElementById('input_width');
         const input_height = document.getElementById('input_height');
         const renderBtn = document.getElementById('render');
+        const time_result = document.getElementById('time_result');
 
         renderBtn.addEventListener('click', () => {
             const width = parseInt(input_width.value) || 0;
             const height = parseInt(input_height.value) || 0;
             canvas.width = width;
             canvas.height = height;
+            const start = new Date();
             wasm.draw(ctx, width, height, "generatorstring");
+            const time_ms = new Date().getTime() - start.getTime();
+            time_result.innerHTML = `it took ${Math.round(time_ms/1000)}s to render`;
         });
 
         // wasm.draw(ctx, 50, 50, "generatorstring");

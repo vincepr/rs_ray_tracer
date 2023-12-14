@@ -2,20 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Rust + Webpack ray tracer project</title>
+    <title>Rust + WASM ray tracer project</title>
   </head>
   <body>
     <div class="controls">
-      <h1>Really slow so far in the browser. Also single threaded in the browser, so over 100 will take a while</h1>
+      <p>Uses only a single thread in the browser, so fairly slow</p>
+      <p>2000 x 1000 took arround 45 seconds on my machine</p>
       <div>
         <label for="input_width">width</label>
-        <input type="number" pattern="\d+" name="input_width" id="input_width" value="100" step="100">
+        <input type="number" pattern="\d+" name="input_width" id="input_width" value="200" step="100">
       </div>
       <div>
         <label for="input_height">height</label>
         <input type="number" pattern="\d+" name="input_height" id="input_height" value="100" step="100">
       </div>
       <button class="button-primary" id="render">render</button>
+      <label id="time_result"></label>
     </div>
     <canvas id="drawing" src="./out.png" width="600" height="600"></canvas>
 

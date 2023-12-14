@@ -63,7 +63,7 @@ pub fn render(camera: Camera, world: World) -> Vec<u8> {
     web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&format!("generating for: w:{} x h:{}", camera.width, camera.height)));
 
     for y in 0..camera.height{
-        web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&y.to_string()));
+        // web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&y.to_string()));
         for x in 0..camera.width {
             let ray = camera.ray_for_pixel(x, y);
             let color = world.color_at(&ray);
