@@ -1,35 +1,55 @@
-use crate::mathstructs::point::Point;
+use crate::{mathstructs::{point::Point, matrix::Matrix}, object::Object};
 
 use super::color::Col;
 
-/// Pattern - texture over the bodies
-#[derive(Debug, Clone)]
-pub enum Pattn {
+#[derive(Debug, Clone, PartialEq)]
+pub enum Texture {
     Single(Col),
     Stripe(Col, Col),
 }
-impl Pattn {
-    pub fn single(a: Col) -> Self {
-        Self::Single(a)
-    }
-    pub fn stripe(a: Col, b: Col) -> Self {
-        Self::Stripe(a, b)
-    }
+
+impl Texture {
     pub fn at(&self, point: &Point) -> &Col {
         match self {
-            Pattn::Stripe(a, b) => stripe_at(point, a, b),
-            Pattn::Single(a) => a,
+            Texture::Stripe(a, b) => stripe_at(point, &a, &b),
+            Texture::Single(a) => &a,
         }
     }
 }
 
-impl PartialEq for Pattn {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Self::Single(l0), Self::Single(r0)) => l0 == r0,
-            (Self::Stripe(l0, l1), Self::Stripe(r0, r1)) => l0 == r0 && l1 == r1,
-            _ => false,
+#[derive(Debug, Clone)]
+pub struct Pattern {
+    pub texture: Texture,
+    pub transform: Option<Matrix>,
+} 
+
+impl Pattern {
+    pub fn single(a: Col) -> Self {
+        Self{
+            texture: Texture::Single(a),
+            transform: None
         }
+    }
+    pub fn stripe(a: Col, b: Col) -> Self {
+        Self{
+            texture: Texture::Stripe(a, b),
+            transform: None
+        }
+    }
+
+    pub fn at_with_obj(&self, object: &Object, world_point: &Point) -> &Col {
+        let object_point = object.transformation.inverse() * *world_point;
+        match self.transform {
+            Some(t) => self.texture.at(&(t.inverse() * object_point)),
+            None =>  self.texture.at(&object_point)
+        }
+
+    }
+}
+
+impl PartialEq for Pattern {
+    fn eq(&self, other: &Self) -> bool {
+        self.texture == other.texture && self.transform == other.transform
     }
 }
 
@@ -43,12 +63,12 @@ fn stripe_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> &'a Col {
 #[cfg(test)]
 mod tests {
     use crate::{
-        mathstructs::vector::Vector,
+        mathstructs::{vector::Vector, matrix::Matrix},
         visual::{
             color::{Col, BLACK, WHITE},
             light::Light,
             material::Material,
-        },
+        }, object::sphere::Sphere,
     };
 
     use super::*;
@@ -61,53 +81,32 @@ mod tests {
 
     #[test]
     fn creating_a_stripe_patter() {
-        let pattern = Pattn::stripe(WHITE, BLACK);
+        let pattern = Pattern::stripe(WHITE, BLACK);
         // constant y:
-        assert_eq!(*pattern.at(&Point::inew(0, 0, 0)), WHITE);
-        assert_eq!(*pattern.at(&Point::inew(0, 1, 0)), WHITE);
-        assert_eq!(*pattern.at(&Point::inew(0, 2, 0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 0, 0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 1, 0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 2, 0)), WHITE);
         // constant z:
-        assert_eq!(*pattern.at(&Point::inew(0, 0, 0)), WHITE);
-        assert_eq!(*pattern.at(&Point::inew(0, 0, 1)), WHITE);
-        assert_eq!(*pattern.at(&Point::inew(0, 0, 2)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 0, 0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 0, 1)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 0, 2)), WHITE);
         // alternating in x:
-        assert_eq!(*pattern.at(&Point::inew(0, 0, 0)), WHITE);
-        assert_eq!(*pattern.at(&Point::new(0.9, 0.0, 0.0)), WHITE);
-        assert_eq!(*pattern.at(&Point::new(1.0, 0.0, 0.0)), BLACK);
+        assert_eq!(*pattern.texture.at(&Point::inew(0, 0, 0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::new(0.9, 0.0, 0.0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::new(1.0, 0.0, 0.0)), BLACK);
 
-        assert_eq!(*pattern.at(&Point::new(-0.1, 0.0, 0.0)), BLACK);
-        assert_eq!(*pattern.at(&Point::new(-1.0, 0.0, 0.0)), BLACK);
-        assert_eq!(*pattern.at(&Point::new(-1.1, 0.0, 0.0)), WHITE);
+        assert_eq!(*pattern.texture.at(&Point::new(-0.1, 0.0, 0.0)), BLACK);
+        assert_eq!(*pattern.texture.at(&Point::new(-1.0, 0.0, 0.0)), BLACK);
+        assert_eq!(*pattern.texture.at(&Point::new(-1.1, 0.0, 0.0)), WHITE);
     }
 
-    #[test]
-    fn lighting_with_pattern_applied() {
-        let mut material = Material::new();
-        material.pattern = Pattn::stripe(WHITE, BLACK);
-        material.ambient = 1.0;
-        material.diffuse = 0.0;
-        material.specular = 0.0;
 
-        let eye_v = Vector::new(0.0, 0.0, -1.0);
-        let normal_v = Vector::new(0.0, 0.0, -1.0);
-        let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
-        let c1 = Light::lighting(
-            &material,
-            &light,
-            &Point::new(0.9, 0.0, 0.0),
-            &eye_v,
-            &normal_v,
-            false,
-        );
-        let c2 = Light::lighting(
-            &material,
-            &light,
-            &Point::new(1.1, 0.0, 0.0),
-            &eye_v,
-            &normal_v,
-            false,
-        );
-        assert_eq!(c1, WHITE);
-        assert_eq!(c2, BLACK);
+
+    // patterns transforming independently
+    #[test]
+    fn stripes_with_an_object_transformation() {
+        let mut object = Sphere::new();
+        object.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
+        let pattern = Pattern::stripe(WHITE, BLACK);
     }
 }

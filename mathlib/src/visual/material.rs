@@ -2,7 +2,7 @@ use crate::{cmp::ApproxEq, visual::color::Col};
 
 use super::{
     color::WHITE,
-    patterns::Pattn,
+    patterns::Pattern,
 };
 
 /// Phong Reflection Model uses these values to express lighting
@@ -12,7 +12,7 @@ pub struct Material {
     pub diffuse: f64,
     pub specular: f64,
     pub shininess: f64,
-    pub pattern: Pattn,
+    pub pattern: Pattern,
 }
 
 impl Material {
@@ -22,7 +22,7 @@ impl Material {
 
     /// 'setter' for a single color
     pub fn color(&mut self, color: Col) {
-        self.pattern = Pattn::Single(color);
+        self.pattern = Pattern::single(color);
     }
 }
 
@@ -33,7 +33,7 @@ impl Default for Material {
             diffuse: 0.9,
             specular: 0.9,
             shininess: 200.0,
-            pattern: Pattn::Single(WHITE),
+            pattern: Pattern::single(WHITE),
         }
     }
 }
@@ -57,7 +57,7 @@ mod tests {
     #[test]
     fn ctor_material_values() {
         let m = Material::new();
-        assert_eq!(m.pattern, Pattn::Single(Col::new(1.0, 1.0, 1.0)));
+        assert_eq!(m.pattern, Pattern::single(Col::new(1.0, 1.0, 1.0)));
         assert_eq!(m.ambient, 0.1);
         assert_eq!(m.diffuse, 0.9);
         assert_eq!(m.specular, 0.9);

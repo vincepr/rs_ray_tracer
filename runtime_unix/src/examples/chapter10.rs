@@ -1,12 +1,12 @@
 // a scene with 6 spheres:
 
-use std::f64::consts::PI;
+use std::{f64::consts::PI};
 
 use mathlib::{
     io::ppm::write_to_file,
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     object::{plane::Plane, sphere::Sphere},
-    visual::{camera::Camera, color::Col, light::Light, material::Material, world::World},
+    visual::{camera::Camera, color::{Col, RED, BLUE, GREEN, BLACK, WHITE}, light::Light, material::Material, world::World, patterns::Pattern},
 };
 
 use crate::png_io::canvas_png_save;
@@ -19,6 +19,7 @@ pub fn build_example() {
     // a plane as the floor
     let mut floor = Plane::new();
     floor.material = base_mat.clone();
+    floor.material.pattern = Pattern::stripe(RED, BLUE);
 
     // colored red sphere in the middle:
     let mut middle = Sphere::new();
@@ -27,6 +28,7 @@ pub fn build_example() {
     middle.material.color(Col::new(0.1, 1.0, 0.5));
     middle.material.diffuse = 0.7;
     middle.material.specular = 0.3;
+    middle.material.pattern = Pattern::stripe(GREEN, WHITE);
 
     // colored green halfsize sphere on the right:
     let mut right = Sphere::new();

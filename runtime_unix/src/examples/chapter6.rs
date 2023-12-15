@@ -51,6 +51,7 @@ pub fn manually_cast_rays_at_sphere_infront_canvas() {
                 let eye_v = -ray.direction;
                 let color_with_lighting = Light::lighting(
                     &hit.object.material,
+                    &hit.object,
                     &light,
                     &point,
                     &eye_v,

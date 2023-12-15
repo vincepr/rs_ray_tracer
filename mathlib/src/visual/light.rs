@@ -1,9 +1,9 @@
-use crate::mathstructs::{point::Point, vector::Vector};
+use crate::{mathstructs::{point::Point, vector::Vector}, object::Object};
 
 use super::{
     color::{Col, BLACK},
     material::Material,
-    patterns::Pattn,
+    patterns::Texture,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -20,8 +20,26 @@ impl Light {
         }
     }
 
-    /// phong-reflection-model combines material and light source to shading
+    /// keeping this arround till i refactor the unit tests that dont use object for the lighting testing
     pub fn lighting(
+        material: &Material,
+        object: &Object,
+        light: &Light,
+        point: &Point,
+        eye_v: &Vector,
+        normal_v: &Vector,
+        in_shadow: bool,
+    ) -> Col {
+        let material_color = match material.pattern.texture {
+            Texture::Single(col) => col,
+            _ => *material.pattern.at_with_obj(object, point),
+        };
+        Self::lighting_calculations(material, light, point, eye_v, normal_v, in_shadow, material_color)
+    }
+
+    /// keeping this arround because rewriting unit tests would suck
+    #[allow(dead_code)]
+    fn lighting_without_obj(
         material: &Material,
         light: &Light,
         point: &Point,
@@ -29,10 +47,23 @@ impl Light {
         normal_v: &Vector,
         in_shadow: bool,
     ) -> Col {
-        let material_color = match material.pattern {
-            Pattn::Single(col) => col,
-            _ => *material.pattern.at(point),
+        let material_color = match material.pattern.texture {
+            Texture::Single(col) => col,
+            _ => *material.pattern.texture.at(point),
         };
+        Self::lighting_calculations(material, light, point, eye_v, normal_v, in_shadow, material_color) 
+    }
+
+    /// phong-reflection-model combines material and light source to shading
+    fn lighting_calculations(
+        material: &Material,
+        light: &Light,
+        point: &Point,
+        eye_v: &Vector,
+        normal_v: &Vector,
+        in_shadow: bool,
+        material_color: Col
+    ) -> Col {
         // combine the surface color with the lights's color/intensity
         let effective_col = material_color * light.intensity;
         // find the direction to the light source
@@ -86,7 +117,7 @@ impl Default for Light {
 
 #[cfg(test)]
 mod tests {
-    use crate::mathstructs::vector::Vector;
+    use crate::{mathstructs::vector::Vector, visual::{color::WHITE, patterns::Pattern}};
 
     use super::*;
 
@@ -111,7 +142,7 @@ mod tests {
         let v_eye = Vector::inew(0, 0, -1);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
+        let res = Light::lighting_without_obj(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(1.9, 1.9, 1.9));
     }
 
@@ -122,7 +153,7 @@ mod tests {
         let v_eye = Vector::new(0.0, sq, -sq);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
+        let res = Light::lighting_without_obj(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(1.0, 1.0, 1.0));
     }
 
@@ -132,7 +163,7 @@ mod tests {
         let v_eye = Vector::inew(0, 0, -1);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 10, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
+        let res = Light::lighting_without_obj(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(0.7364, 0.7364, 0.7364));
     }
 
@@ -143,7 +174,7 @@ mod tests {
         let v_eye = Vector::new(0.0, -sq, -sq);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 10, -10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
+        let res = Light::lighting_without_obj(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(1.63639, 1.63639, 1.63639));
     }
 
@@ -153,7 +184,7 @@ mod tests {
         let v_eye = Vector::inew(0, 0, -1);
         let v_normal = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, 10), Col::new(1.0, 1.0, 1.0));
-        let res = Light::lighting(&m, &light, &position, &v_eye, &v_normal, false);
+        let res = Light::lighting_without_obj(&m, &light, &position, &v_eye, &v_normal, false);
         assert_eq!(res, Col::new(0.1, 0.1, 0.1));
     }
 
@@ -165,7 +196,38 @@ mod tests {
         let normal_v = Vector::inew(0, 0, -1);
         let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
         let in_shadow = true;
-        let res = Light::lighting(&m, &light, &position, &eye_v, &normal_v, in_shadow);
+        let res = Light::lighting_without_obj(&m, &light, &position, &eye_v, &normal_v, in_shadow);
         assert_eq!(res, Col::new(0.1, 0.1, 0.1));
+    }
+
+    #[test]
+    fn lighting_with_pattern_applied() {
+        let mut material = Material::new();
+        material.pattern = Pattern::stripe(WHITE, BLACK);
+        material.ambient = 1.0;
+        material.diffuse = 0.0;
+        material.specular = 0.0;
+
+        let eye_v = Vector::new(0.0, 0.0, -1.0);
+        let normal_v = Vector::new(0.0, 0.0, -1.0);
+        let light = Light::new_point_light(Point::inew(0, 0, -10), Col::new(1.0, 1.0, 1.0));
+        let c1 = Light::lighting_without_obj(
+            &material,
+            &light,
+            &Point::new(0.9, 0.0, 0.0),
+            &eye_v,
+            &normal_v,
+            false,
+        );
+        let c2 = Light::lighting_without_obj(
+            &material,
+            &light,
+            &Point::new(1.1, 0.0, 0.0),
+            &eye_v,
+            &normal_v,
+            false,
+        );
+        assert_eq!(c1, WHITE);
+        assert_eq!(c2, BLACK);
     }
 }

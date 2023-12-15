@@ -7,7 +7,7 @@ use crate::{
 use super::{
     color::{Col, BLACK},
     light::Light,
-    patterns::Pattn,
+    patterns::Pattern,
 };
 
 #[derive(Debug, Clone)]
@@ -38,7 +38,7 @@ impl Default for World {
     fn default() -> Self {
         let mut objects = vec![];
         let mut s1 = Sphere::new();
-        s1.material.pattern = Pattn::Single(Col::new(0.8, 1.0, 0.6));
+        s1.material.pattern = Pattern::single(Col::new(0.8, 1.0, 0.6));
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
         objects.push(s1);
@@ -60,6 +60,7 @@ impl World {
         if self.lights.len() == 1 {
             Light::lighting(
                 &comps.object.material,
+                &comps.object,
                 &self.lights[0],
                 &comps.point,
                 &comps.eye_v,
@@ -73,6 +74,7 @@ impl World {
                 col_sum = col_sum
                     + Light::lighting(
                         &comps.object.material,
+                        &comps.object,
                         cur_light,
                         &comps.point,
                         &comps.eye_v,
