@@ -38,7 +38,7 @@ impl Default for World {
     fn default() -> Self {
         let mut objects = vec![];
         let mut s1 = Sphere::new();
-        s1.material.pattern = Pattern::single(Col::new(0.8, 1.0, 0.6));
+        s1.material.pattern = Pattern::new_single(Col::new(0.8, 1.0, 0.6));
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
         objects.push(s1);

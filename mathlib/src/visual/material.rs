@@ -19,7 +19,7 @@ impl Material {
 
     /// 'setter' for a single color
     pub fn color(&mut self, color: Col) {
-        self.pattern = Pattern::single(color);
+        self.pattern = Pattern::new_single(color);
     }
 }
 
@@ -30,7 +30,7 @@ impl Default for Material {
             diffuse: 0.9,
             specular: 0.9,
             shininess: 200.0,
-            pattern: Pattern::single(WHITE),
+            pattern: Pattern::new_single(WHITE),
         }
     }
 }
@@ -54,7 +54,7 @@ mod tests {
     #[test]
     fn ctor_material_values() {
         let m = Material::new();
-        assert_eq!(m.pattern, Pattern::single(Col::new(1.0, 1.0, 1.0)));
+        assert_eq!(m.pattern, Pattern::new_single(Col::new(1.0, 1.0, 1.0)));
         assert_eq!(m.ambient, 0.1);
         assert_eq!(m.diffuse, 0.9);
         assert_eq!(m.specular, 0.9);

@@ -8,7 +8,7 @@ use mathlib::{
     object::{plane::Plane, sphere::Sphere},
     visual::{
         camera::Camera,
-        color::{Col, BLUE, GREEN, RED, WHITE},
+        color::{Col, BLUE, GREEN, RED, WHITE, BLACK},
         light::Light,
         material::Material,
         patterns::Pattern,
@@ -26,7 +26,7 @@ pub fn build_example() {
     // a plane as the floor
     let mut floor = Plane::new();
     floor.material = base_mat.clone();
-    floor.material.pattern = Pattern::stripe(RED, BLUE);
+    floor.material.pattern = Pattern::new_checkers(WHITE, BLACK);
 
     // colored red sphere in the middle:
     let mut middle = Sphere::new();
@@ -35,7 +35,7 @@ pub fn build_example() {
     middle.material.color(Col::new(0.1, 1.0, 0.5));
     middle.material.diffuse = 0.7;
     middle.material.specular = 0.3;
-    middle.material.pattern = Pattern::stripe(GREEN, WHITE);
+    middle.material.pattern = Pattern::new_stripe(GREEN, WHITE);
 
     // colored green halfsize sphere on the right:
     let mut right = Sphere::new();

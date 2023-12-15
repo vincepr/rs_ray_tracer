@@ -35,7 +35,7 @@ impl Light {
     ) -> Col {
         let material_color = match material.pattern.texture {
             Texture::Single(col) => col,
-            _ => *material.pattern.at_with_obj(object, point),
+            _ => material.pattern.at_with_obj(object, point),
         };
         Self::lighting_calculations(
             material,
@@ -60,7 +60,7 @@ impl Light {
     ) -> Col {
         let material_color = match material.pattern.texture {
             Texture::Single(col) => col,
-            _ => *material.pattern.texture.at(point),
+            _ => material.pattern.texture.at(point),
         };
         Self::lighting_calculations(
             material,
@@ -225,7 +225,7 @@ mod tests {
     #[test]
     fn lighting_with_pattern_applied() {
         let mut material = Material::new();
-        material.pattern = Pattern::stripe(WHITE, BLACK);
+        material.pattern = Pattern::new_stripe(WHITE, BLACK);
         material.ambient = 1.0;
         material.diffuse = 0.0;
         material.specular = 0.0;
