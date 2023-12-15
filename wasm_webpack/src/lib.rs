@@ -32,4 +32,3 @@ pub fn draw(
 fn get_pixel_data(width: u32, height: u32) -> Vec<u8> {
     example8::build_example(width, height)
 }
-

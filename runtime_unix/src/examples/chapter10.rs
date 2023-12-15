@@ -1,12 +1,19 @@
 // a scene with 6 spheres:
 
-use std::{f64::consts::PI};
+use std::f64::consts::PI;
 
 use mathlib::{
     io::ppm::write_to_file,
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     object::{plane::Plane, sphere::Sphere},
-    visual::{camera::Camera, color::{Col, RED, BLUE, GREEN, BLACK, WHITE}, light::Light, material::Material, world::World, patterns::Pattern},
+    visual::{
+        camera::Camera,
+        color::{Col, BLUE, GREEN, RED, WHITE},
+        light::Light,
+        material::Material,
+        patterns::Pattern,
+        world::World,
+    },
 };
 
 use crate::png_io::canvas_png_save;

@@ -1,9 +1,6 @@
 use crate::{cmp::ApproxEq, visual::color::Col};
 
-use super::{
-    color::WHITE,
-    patterns::Pattern,
-};
+use super::{color::WHITE, patterns::Pattern};
 
 /// Phong Reflection Model uses these values to express lighting
 #[derive(Debug, Clone)]

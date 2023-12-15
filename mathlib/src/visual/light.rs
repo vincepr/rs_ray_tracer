@@ -1,4 +1,7 @@
-use crate::{mathstructs::{point::Point, vector::Vector}, object::Object};
+use crate::{
+    mathstructs::{point::Point, vector::Vector},
+    object::Object,
+};
 
 use super::{
     color::{Col, BLACK},
@@ -34,7 +37,15 @@ impl Light {
             Texture::Single(col) => col,
             _ => *material.pattern.at_with_obj(object, point),
         };
-        Self::lighting_calculations(material, light, point, eye_v, normal_v, in_shadow, material_color)
+        Self::lighting_calculations(
+            material,
+            light,
+            point,
+            eye_v,
+            normal_v,
+            in_shadow,
+            material_color,
+        )
     }
 
     /// keeping this arround because rewriting unit tests would suck
@@ -51,7 +62,15 @@ impl Light {
             Texture::Single(col) => col,
             _ => *material.pattern.texture.at(point),
         };
-        Self::lighting_calculations(material, light, point, eye_v, normal_v, in_shadow, material_color) 
+        Self::lighting_calculations(
+            material,
+            light,
+            point,
+            eye_v,
+            normal_v,
+            in_shadow,
+            material_color,
+        )
     }
 
     /// phong-reflection-model combines material and light source to shading
@@ -62,7 +81,7 @@ impl Light {
         eye_v: &Vector,
         normal_v: &Vector,
         in_shadow: bool,
-        material_color: Col
+        material_color: Col,
     ) -> Col {
         // combine the surface color with the lights's color/intensity
         let effective_col = material_color * light.intensity;
@@ -117,7 +136,10 @@ impl Default for Light {
 
 #[cfg(test)]
 mod tests {
-    use crate::{mathstructs::vector::Vector, visual::{color::WHITE, patterns::Pattern}};
+    use crate::{
+        mathstructs::vector::Vector,
+        visual::{color::WHITE, patterns::Pattern},
+    };
 
     use super::*;
 

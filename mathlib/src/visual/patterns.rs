@@ -1,4 +1,7 @@
-use crate::{mathstructs::{point::Point, matrix::Matrix}, object::Object};
+use crate::{
+    mathstructs::{matrix::Matrix, point::Point},
+    object::Object,
+};
 
 use super::color::Col;
 
@@ -21,19 +24,19 @@ impl Texture {
 pub struct Pattern {
     pub texture: Texture,
     pub transform: Option<Matrix>,
-} 
+}
 
 impl Pattern {
     pub fn single(a: Col) -> Self {
-        Self{
+        Self {
             texture: Texture::Single(a),
-            transform: None
+            transform: None,
         }
     }
     pub fn stripe(a: Col, b: Col) -> Self {
-        Self{
+        Self {
             texture: Texture::Stripe(a, b),
-            transform: None
+            transform: None,
         }
     }
 
@@ -41,9 +44,8 @@ impl Pattern {
         let object_point = object.transformation.inverse() * *world_point;
         match self.transform {
             Some(t) => self.texture.at(&(t.inverse() * object_point)),
-            None =>  self.texture.at(&object_point)
+            None => self.texture.at(&object_point),
         }
-
     }
 }
 
@@ -63,12 +65,9 @@ fn stripe_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> &'a Col {
 #[cfg(test)]
 mod tests {
     use crate::{
-        mathstructs::{vector::Vector, matrix::Matrix},
-        visual::{
-            color::{Col, BLACK, WHITE},
-            light::Light,
-            material::Material,
-        }, object::sphere::Sphere,
+        mathstructs::matrix::Matrix,
+        object::sphere::Sphere,
+        visual::color::{BLACK, WHITE},
     };
 
     use super::*;
@@ -100,13 +99,11 @@ mod tests {
         assert_eq!(*pattern.texture.at(&Point::new(-1.1, 0.0, 0.0)), WHITE);
     }
 
-
-
     // patterns transforming independently
     #[test]
     fn stripes_with_an_object_transformation() {
         let mut object = Sphere::new();
         object.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
-        let pattern = Pattern::stripe(WHITE, BLACK);
+        let _pattern = Pattern::stripe(WHITE, BLACK);
     }
 }

@@ -1,10 +1,18 @@
-
 use std::f64::consts::PI;
 
-use mathlib::{visual::{material::Material, color::{Col, self}, world::World, light::Light, camera::Camera}, object::{plane::Plane, sphere::Sphere}, mathstructs::{matrix::Matrix, point::Point, vector::Vector}};
+use mathlib::{
+    mathstructs::{matrix::Matrix, point::Point, vector::Vector},
+    object::{plane::Plane, sphere::Sphere},
+    visual::{
+        camera::Camera,
+        color::{self, Col},
+        light::Light,
+        material::Material,
+        world::World,
+    },
+};
 
 pub fn build_example(width: u32, height: u32) -> Vec<u8> {
-
     let mut base_mat = Material::new();
     base_mat.color(Col::new(1.0, 0.9, 0.9));
     base_mat.specular = 0.0;
@@ -48,11 +56,13 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
     world.lights[0] =
         Light::new_point_light(Point::new(-10.0, 10.0, -10.0), Col::new(1.0, 1.0, 1.0));
 
-    let camera = Camera::new(width as usize, height as usize, PI / 3.0).with_transform(Matrix::view_transform_new(
-        Point::new(0.0, 1.5, -5.0),
-        Point::new(0.0, 1.0, 0.0),
-        Vector::new(0.0, 1.0, 0.0),
-    ));
+    let camera = Camera::new(width as usize, height as usize, PI / 3.0).with_transform(
+        Matrix::view_transform_new(
+            Point::new(0.0, 1.5, -5.0),
+            Point::new(0.0, 1.0, 0.0),
+            Vector::new(0.0, 1.0, 0.0),
+        ),
+    );
 
     render(camera, world)
 }
@@ -60,9 +70,12 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
 pub fn render(camera: Camera, world: World) -> Vec<u8> {
     let mut raw_pixels: Vec<u8> = Vec::new();
 
-    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&format!("generating for: w:{} x h:{}", camera.width, camera.height)));
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&format!(
+        "generating for: w:{} x h:{}",
+        camera.width, camera.height
+    )));
 
-    for y in 0..camera.height{
+    for y in 0..camera.height {
         // web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&y.to_string()));
         for x in 0..camera.width {
             let ray = camera.ray_for_pixel(x, y);
@@ -70,9 +83,8 @@ pub fn render(camera: Camera, world: World) -> Vec<u8> {
             raw_pixels.push(color::base_255(color.r));
             raw_pixels.push(color::base_255(color.g));
             raw_pixels.push(color::base_255(color.b));
-            raw_pixels.push(255);   // transparency
+            raw_pixels.push(255); // transparency
         }
     }
     raw_pixels
 }
-
