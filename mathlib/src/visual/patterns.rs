@@ -1,6 +1,6 @@
 use crate::{
     mathstructs::{matrix::Matrix, point::Point},
-    object::Object, cmp::ApproxEq,
+    object::Object,
 };
 
 use super::color::Col;
@@ -25,7 +25,6 @@ impl Texture {
         }
     }
 }
-
 
 #[derive(Debug, Clone)]
 pub struct Pattern {
@@ -102,14 +101,16 @@ fn gradient_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> Col {
 }
 
 fn ring_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> Col {
-    if ((point.x*point.x + point.z*point.z).sqrt()).floor() % 2.0 == 0.0 {
+    if ((point.x * point.x + point.z * point.z).sqrt()).floor() % 2.0 == 0.0 {
         return *a;
     }
     *b
 }
 
 fn checker_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> Col {
-    let sum = f64::floor(point.x).abs() as u32 + f64::abs(point.y).abs() as u32 + f64::abs(point.z).abs() as u32;
+    let sum = f64::floor(point.x).abs() as u32
+        + f64::abs(point.y).abs() as u32
+        + f64::abs(point.z).abs() as u32;
     if sum % 2 == 0 {
         return *a;
     }
@@ -167,7 +168,7 @@ mod tests {
     fn stripes_with_a_pattern_transformation() {
         let object = Sphere::new();
         let mut pattern = Pattern::new_stripe(WHITE, BLACK);
-        pattern.transform = Some(Matrix::scaling_new(2.0, 2.0, 2.0)); 
+        pattern.transform = Some(Matrix::scaling_new(2.0, 2.0, 2.0));
         let res = pattern.at_with_obj(&object, &Point::new(1.5, 0.0, 0.0));
         assert_eq!(res, WHITE);
     }
@@ -177,7 +178,7 @@ mod tests {
         let mut object = Sphere::new();
         object.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
         let mut pattern = Pattern::new_stripe(WHITE, BLACK);
-        pattern.transform = Some(Matrix::translation_new(0.5, 0.0, 0.0)); 
+        pattern.transform = Some(Matrix::translation_new(0.5, 0.0, 0.0));
         let res = pattern.at_with_obj(&object, &Point::new(2.5, 0.0, 0.0));
         assert_eq!(res, WHITE);
     }
@@ -186,9 +187,18 @@ mod tests {
     fn a_gradient_linearly_interpolates_between_colors() {
         let pattern = Pattern::new_gradient(WHITE, BLACK);
         assert_eq!(pattern.texture.at(&Point::inew(0, 0, 0)), WHITE);
-        assert_eq!(pattern.texture.at(&Point::new(0.25, 0.0, 0.0)), Col::new(0.75, 0.75, 0.75));
-        assert_eq!(pattern.texture.at(&Point::new(0.5, 0.0, 0.0)), Col::new(0.5, 0.5, 0.5));
-        assert_eq!(pattern.texture.at(&Point::new(0.75, 0.0, 0.0)), Col::new(0.25, 0.25, 0.25));
+        assert_eq!(
+            pattern.texture.at(&Point::new(0.25, 0.0, 0.0)),
+            Col::new(0.75, 0.75, 0.75)
+        );
+        assert_eq!(
+            pattern.texture.at(&Point::new(0.5, 0.0, 0.0)),
+            Col::new(0.5, 0.5, 0.5)
+        );
+        assert_eq!(
+            pattern.texture.at(&Point::new(0.75, 0.0, 0.0)),
+            Col::new(0.25, 0.25, 0.25)
+        );
     }
 
     #[test]
@@ -201,7 +211,7 @@ mod tests {
     }
 
     #[test]
-    fn checkers_should_repeat(){
+    fn checkers_should_repeat() {
         let pattern = Pattern::new_checkers(WHITE, BLACK);
         // repeats x direction
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.0)), WHITE);
