@@ -24,8 +24,8 @@ pub fn draw(
     height: u32,
     _generator_string: &str,
 ) -> Result<(), JsValue> {
-    let mut data = get_pixel_data(width, height);
-    let data = ImageData::new_with_u8_clamped_array_and_sh(Clamped(&mut data), width, height)?;
+    let data = get_pixel_data(width, height);
+    let data = ImageData::new_with_u8_clamped_array_and_sh(Clamped(&data), width, height)?;
     ctx.put_image_data(&data, 0.0, 0.0)
 }
 

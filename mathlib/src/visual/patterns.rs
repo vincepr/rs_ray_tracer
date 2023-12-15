@@ -14,8 +14,8 @@ pub enum Texture {
 impl Texture {
     pub fn at(&self, point: &Point) -> &Col {
         match self {
-            Texture::Stripe(a, b) => stripe_at(point, &a, &b),
-            Texture::Single(a) => &a,
+            Texture::Stripe(a, b) => stripe_at(point, a, b),
+            Texture::Single(a) => a,
         }
     }
 }
