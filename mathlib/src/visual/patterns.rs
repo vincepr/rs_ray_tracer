@@ -109,16 +109,11 @@ fn ring_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> Col {
 }
 
 fn checker_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> Col {
-    let sum = f64::floor(point.x) + f64::floor(point.y) + f64::floor(point.z);
-        if (sum % 2.0).apx_eq(&0.0) {
-            return *a;
-        }
-        *b
-        
-    // if ((point.x.abs() + point.y.abs() + point.z.abs()) % 2.0) == 0.0 {
-    //     return *a;
-    // }
-    // *b
+    let sum = f64::floor(point.x).abs() as u32 + f64::abs(point.y).abs() as u32 + f64::abs(point.z).abs() as u32;
+    if sum % 2 == 0 {
+        return *a;
+    }
+    *b
 }
 
 #[cfg(test)]
@@ -211,14 +206,14 @@ mod tests {
         // repeats x direction
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.texture.at(&Point::new(0.99, 0.0, 0.0)), WHITE);
-        assert_eq!(pattern.texture.at(&Point::new(1.01, 0.0, 0.0)), WHITE);
+        assert_eq!(pattern.texture.at(&Point::new(1.01, 0.0, 0.0)), BLACK);
         // repeats y direction
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.99, 0.0)), WHITE);
-        assert_eq!(pattern.texture.at(&Point::new(0.0, 1.01, 0.0)), WHITE);
+        assert_eq!(pattern.texture.at(&Point::new(0.0, 1.01, 0.0)), BLACK);
         // repeats z direction
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.99)), WHITE);
-        assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 1.01)), WHITE);
+        assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 1.01)), BLACK);
     }
 }

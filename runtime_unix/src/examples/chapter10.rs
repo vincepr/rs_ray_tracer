@@ -35,7 +35,7 @@ pub fn build_example() {
     middle.material.color(Col::new(0.1, 1.0, 0.5));
     middle.material.diffuse = 0.7;
     middle.material.specular = 0.3;
-    middle.material.pattern = Pattern::new_stripe(GREEN, WHITE);
+    middle.material.pattern = Pattern::new_ring(GREEN, WHITE);
 
     // colored green halfsize sphere on the right:
     let mut right = Sphere::new();
@@ -45,6 +45,7 @@ pub fn build_example() {
     right.material.color(Col::new(0.5, 1.0, 0.1));
     right.material.diffuse = 0.7;
     right.material.specular = 0.3;
+    right.material.pattern = Pattern::new_gradient(RED, BLUE);
 
     // colored smallest sphere to the left:
     let mut left = Sphere::new();
