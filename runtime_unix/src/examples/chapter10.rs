@@ -1,4 +1,4 @@
-// a scene with 6 spheres:
+// Patterns/Texture
 
 use std::f64::consts::PI;
 

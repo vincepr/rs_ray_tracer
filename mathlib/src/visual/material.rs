@@ -10,6 +10,8 @@ pub struct Material {
     pub specular: f64,
     pub shininess: f64,
     pub pattern: Pattern,
+    /// 0 = noreflection. 1 = perfect mirror
+    pub reflective: f64,
 }
 
 impl Material {
@@ -30,6 +32,7 @@ impl Default for Material {
             diffuse: 0.9,
             specular: 0.9,
             shininess: 200.0,
+            reflective: 0.0,
             pattern: Pattern::new_single(WHITE),
         }
     }
@@ -58,6 +61,7 @@ mod tests {
         assert_eq!(m.ambient, 0.1);
         assert_eq!(m.diffuse, 0.9);
         assert_eq!(m.specular, 0.9);
+        assert_eq!(m.reflective, 0.0);
         assert_eq!(m.shininess, 200.0);
     }
 

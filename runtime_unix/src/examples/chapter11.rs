@@ -1,18 +1,24 @@
+// Reflections
+
 use std::f64::consts::PI;
 
 use mathlib::{
+    io::ppm::write_to_file,
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     object::{plane::Plane, sphere::Sphere},
     visual::{
         camera::Camera,
-        color::{self, Col},
+        color::{Col, BLACK, BLUE, GREEN, RED, WHITE},
         light::Light,
         material::Material,
+        patterns::Pattern,
         world::World,
     },
 };
 
-pub fn build_example(width: u32, height: u32) -> Vec<u8> {
+use crate::png_io::canvas_png_save;
+
+pub fn build_example() {
     let mut base_mat = Material::new();
     base_mat.color(Col::new(1.0, 0.9, 0.9));
     base_mat.specular = 0.0;
@@ -20,14 +26,16 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
     // a plane as the floor
     let mut floor = Plane::new();
     floor.material = base_mat.clone();
+    floor.material.pattern = Pattern::new_checkers(WHITE, BLACK);
 
     // colored red sphere in the middle:
     let mut middle = Sphere::new();
     middle.transformation = Matrix::translation_new(-0.5, 1.0, 0.5);
     middle.material = base_mat.clone();
-    middle.material.color(Col::new(0.1, 1.0, 0.5));
+    middle.material.color(WHITE);
     middle.material.diffuse = 0.7;
     middle.material.specular = 0.3;
+    middle.material.reflective = 1.0;
 
     // colored green halfsize sphere on the right:
     let mut right = Sphere::new();
@@ -37,6 +45,7 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
     right.material.color(Col::new(0.5, 1.0, 0.1));
     right.material.diffuse = 0.7;
     right.material.specular = 0.3;
+    right.material.reflective = 1.0;
 
     // colored smallest sphere to the left:
     let mut left = Sphere::new();
@@ -56,35 +65,13 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
     world.lights[0] =
         Light::new_point_light(Point::new(-10.0, 10.0, -10.0), Col::new(1.0, 1.0, 1.0));
 
-    let camera = Camera::new(width as usize, height as usize, PI / 3.0).with_transform(
-        Matrix::view_transform_new(
-            Point::new(0.0, 1.5, -5.0),
-            Point::new(0.0, 1.0, 0.0),
-            Vector::new(0.0, 1.0, 0.0),
-        ),
-    );
+    let camera = Camera::new(1000, 500, PI / 3.0).with_transform(Matrix::view_transform_new(
+        Point::new(0.0, 1.5, -5.0),
+        Point::new(0.0, 1.0, 0.0),
+        Vector::new(0.0, 1.0, 0.0),
+    ));
 
-    render(camera, world)
-}
-
-pub fn render(camera: Camera, world: World) -> Vec<u8> {
-    let mut raw_pixels: Vec<u8> = Vec::new();
-
-    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&format!(
-        "generating for: w:{} x h:{}",
-        camera.width, camera.height
-    )));
-
-    for y in 0..camera.height {
-        // web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&y.to_string()));
-        for x in 0..camera.width {
-            let ray = camera.ray_for_pixel(x, y);
-            let color = world.color_at(&ray, 1);
-            raw_pixels.push(color::base_255(color.r));
-            raw_pixels.push(color::base_255(color.g));
-            raw_pixels.push(color::base_255(color.b));
-            raw_pixels.push(255); // transparency
-        }
-    }
-    raw_pixels
+    let canvas = crate::parallel::render_parallel(camera, world);
+    write_to_file("./out.ppm", canvas.canvas_to_ppm());
+    canvas_png_save(&canvas, "./out.png");
 }

@@ -12,7 +12,7 @@ pub fn render_parallel(camera: Camera, world: World) -> Canvas {
     canvas.arr.par_iter_mut().enumerate().for_each(|(y, row)| {
         row.par_iter_mut().enumerate().for_each(|(x, col)| {
             let ray = camera.ray_for_pixel(x, y);
-            let color = world.color_at(&ray);
+            let color = world.color_at(&ray, 4);
             *col = color;
         });
         bar.inc(1);
