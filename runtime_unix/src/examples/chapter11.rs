@@ -27,6 +27,7 @@ pub fn build_example() {
     let mut floor = Plane::new();
     floor.material = base_mat.clone();
     floor.material.pattern = Pattern::new_checkers(WHITE, BLACK);
+    floor.material.reflective = 0.3;
 
     // colored red sphere in the middle:
     let mut middle = Sphere::new();
@@ -35,7 +36,7 @@ pub fn build_example() {
     middle.material.color(WHITE);
     middle.material.diffuse = 0.7;
     middle.material.specular = 0.3;
-    middle.material.reflective = 1.0;
+    middle.material.reflective = 0.8;
 
     // colored green halfsize sphere on the right:
     let mut right = Sphere::new();
@@ -45,7 +46,7 @@ pub fn build_example() {
     right.material.color(Col::new(0.5, 1.0, 0.1));
     right.material.diffuse = 0.7;
     right.material.specular = 0.3;
-    right.material.reflective = 1.0;
+    right.material.reflective = 0.7;
 
     // colored smallest sphere to the left:
     let mut left = Sphere::new();
@@ -55,6 +56,7 @@ pub fn build_example() {
     left.material.color(Col::new(1.0, 0.8, 0.1));
     left.material.diffuse = 0.7;
     left.material.specular = 0.3;
+    right.material.reflective = 0.2;
 
     let mut world = World::new();
     world.objects.push(floor);
@@ -65,7 +67,7 @@ pub fn build_example() {
     world.lights[0] =
         Light::new_point_light(Point::new(-10.0, 10.0, -10.0), Col::new(1.0, 1.0, 1.0));
 
-    let camera = Camera::new(1000, 500, PI / 3.0).with_transform(Matrix::view_transform_new(
+    let camera = Camera::new(4000, 2000, PI / 3.0).with_transform(Matrix::view_transform_new(
         Point::new(0.0, 1.5, -5.0),
         Point::new(0.0, 1.0, 0.0),
         Vector::new(0.0, 1.0, 0.0),

@@ -68,7 +68,7 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
 }
 
 pub fn render(camera: Camera, world: World) -> Vec<u8> {
-    let mut raw_pixels: Vec<u8> = Vec::new();
+    let mut raw_pixels: Vec<u8> = Vec::with_capacity(camera.height*camera.width*4);
 
     web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&format!(
         "generating for: w:{} x h:{}",
