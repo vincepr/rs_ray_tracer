@@ -14,6 +14,12 @@ impl Sphere {
     pub fn new() -> Object {
         Object::new(Shape::Sphere)
     }
+    pub fn new_glass_sphere() -> Object {
+        let mut o = Object::new(Shape::Sphere);
+        o.material.transparency = 1.;
+        o.material.refractive_index = 1.5;
+        o
+    }
 }
 
 impl IntersectsRay for Sphere {
@@ -97,17 +103,15 @@ mod tests {
 
     #[test]
     fn changing_a_sphere_s_transformation() {
-        let mut s = Sphere::new();
-        let t = Matrix::translation_new(2.0, 3.0, 4.0);
-        s.set_transform(t);
+        let t =Matrix::translation_new(2.0, 3.0, 4.0); 
+        let s = Sphere::new().with_transform(Matrix::translation_new(2.0, 3.0, 4.0));
         assert_eq!(s.transformation, t);
     }
 
     #[test]
     fn intersecting_a_scaled_sphere_with_a_ray() {
         let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
-        let mut s = Sphere::new();
-        s.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
+        let s = Sphere::new().with_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
         let xs = s.intersect_raw(&r);
         assert!(xs.is_some());
         assert_eq!(xs, Some((3.0, 7.0)));
@@ -116,8 +120,7 @@ mod tests {
     #[test]
     fn intersecting_a_translated_sphere_with_a_ray() {
         let r = Ray::new(Point::inew(0, 0, -5), Vector::inew(0, 0, 1));
-        let mut s = Sphere::new();
-        s.set_transform(Matrix::translation_new(5.0, 0.0, 0.0));
+        let s = Sphere::new().with_transform(Matrix::translation_new(5.0, 0.0, 0.0));
         let xs = s.intersect_raw(&r);
         dbg!(xs);
         assert!(!xs.is_some())
@@ -163,18 +166,24 @@ mod tests {
 
     #[test]
     fn computing_normal_on_a_translated_sphere() {
-        let mut s = Sphere::new();
-        s.set_transform(Matrix::translation_new(0.0, 1.0, 0.0));
+        let s = Sphere::new().with_transform(Matrix::translation_new(0.0, 1.0, 0.0));
         let res = s.normal_at(&Point::new(0.0, 1.70711, -0.70711));
         assert_eq!(res, Vector::new(0.0, 0.70711, -0.70711));
     }
 
     #[test]
     fn computing_normal_on_a_transformed_sphere() {
-        let mut s = Sphere::new();
-        s.set_transform(Matrix::scaling_new(1.0, 0.5, 1.0) * Matrix::rotation_z_new(PI / 5.0));
+        let s = Sphere::new().with_transform(Matrix::scaling_new(1.0, 0.5, 1.0) * Matrix::rotation_z_new(PI / 5.0));
         let sq = 2.0_f64.sqrt() / 2.0;
         let res = s.normal_at(&Point::new(0.0, sq, sq));
         assert_eq!(res, Vector::new(0.0, 0.97014, 0.24254));
+    }
+
+    #[test]
+    fn defaults_of_a_glass_sphere() {
+        let s = Sphere::new_glass_sphere();
+        assert_eq!(s.transformation, Matrix::new_identity());
+        assert_eq!(s.material.transparency, 1.0);
+        assert_eq!(s.material.refractive_index, 1.5);
     }
 }

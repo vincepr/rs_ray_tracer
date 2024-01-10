@@ -157,8 +157,7 @@ mod tests {
     // patterns transforming independently
     #[test]
     fn stripes_with_an_object_transformation() {
-        let mut object = Sphere::new();
-        object.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
+        let object = Sphere::new().with_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
         let pattern = Pattern::new_stripe(WHITE, BLACK);
         let res = pattern.at_with_obj(&object, &Point::new(1.5, 0.0, 0.0));
         assert_eq!(res, WHITE);
@@ -175,8 +174,7 @@ mod tests {
 
     #[test]
     fn stripes_with_obj_and_pattern_transformation() {
-        let mut object = Sphere::new();
-        object.set_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
+        let object = Sphere::new().with_transform(Matrix::scaling_new(2.0, 2.0, 2.0));
         let mut pattern = Pattern::new_stripe(WHITE, BLACK);
         pattern.transform = Some(Matrix::translation_new(0.5, 0.0, 0.0));
         let res = pattern.at_with_obj(&object, &Point::new(2.5, 0.0, 0.0));
