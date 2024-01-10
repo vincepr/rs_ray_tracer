@@ -103,7 +103,7 @@ mod tests {
 
     #[test]
     fn changing_a_sphere_s_transformation() {
-        let t =Matrix::translation_new(2.0, 3.0, 4.0); 
+        let t = Matrix::translation_new(2.0, 3.0, 4.0);
         let s = Sphere::new().with_transform(Matrix::translation_new(2.0, 3.0, 4.0));
         assert_eq!(s.transformation, t);
     }
@@ -173,7 +173,8 @@ mod tests {
 
     #[test]
     fn computing_normal_on_a_transformed_sphere() {
-        let s = Sphere::new().with_transform(Matrix::scaling_new(1.0, 0.5, 1.0) * Matrix::rotation_z_new(PI / 5.0));
+        let s = Sphere::new()
+            .with_transform(Matrix::scaling_new(1.0, 0.5, 1.0) * Matrix::rotation_z_new(PI / 5.0));
         let sq = 2.0_f64.sqrt() / 2.0;
         let res = s.normal_at(&Point::new(0.0, sq, sq));
         assert_eq!(res, Vector::new(0.0, 0.97014, 0.24254));

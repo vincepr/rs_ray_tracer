@@ -8,7 +8,7 @@ use mathlib::{
     object::{plane::Plane, sphere::Sphere},
     visual::{
         camera::Camera,
-        color::{Col, BLACK, BLUE, GREEN, RED, WHITE},
+        color::{Col, BLACK, WHITE},
         light::Light,
         material::Material,
         patterns::Pattern,

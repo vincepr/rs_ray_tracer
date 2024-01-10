@@ -1,11 +1,12 @@
 use crate::{
+    cmp::ApproxEq,
     mathstructs::{matrix::Matrix, point::Point},
     object::{sphere::Sphere, Object},
-    ray::{computations::Computations, intersects::VecIntersections, Ray}, cmp::ApproxEq,
+    ray::{computations::Computations, intersects::VecIntersections, Ray},
 };
 
 use super::{
-    color::{Col, BLACK},
+    color::{Col, BLACK, WHITE},
     light::Light,
     patterns::Pattern,
 };
@@ -74,6 +75,7 @@ impl World {
         }
         // calculate and add reflected light
         col_sum = col_sum + self.reflected_color(comps, remaining);
+        col_sum = col_sum + self.refracted_color(comps, remaining);
         col_sum
     }
 
@@ -105,7 +107,7 @@ impl World {
         }
     }
 
-    /// we basically spawn new rays from reflective material 
+    /// we basically spawn new rays from reflective material
     pub fn reflected_color(&self, comps: &Computations, remaining: u8) -> Col {
         if remaining == 0 || comps.object.material.reflective.apx_eq(&0.0) {
             return BLACK;
@@ -115,6 +117,30 @@ impl World {
         let color = self.color_at(&reflect_ray, remaining - 1);
         color * comps.object.material.reflective
     }
+
+    pub fn refracted_color(&self, comps: &Computations, remaining: u8) -> Col {
+        if remaining <= 0 {
+            return BLACK;
+        }
+        if comps.object.material.transparency == 0. {
+            return BLACK;
+        }
+
+        // total internal reflection (ex inside a fiber-optic-cable or with shallow angle against water surface)
+        let n_ratio = comps.n1 / comps.n2;
+        let cos_i = comps.eye_v.dot(&comps.normal_v);
+        let sin2_t = n_ratio * n_ratio * (1. - cos_i * cos_i);
+        if sin2_t > 1. {
+            return BLACK;
+        }
+
+        // calc refracted color from intersecting material
+        let cos_t = (1. - sin2_t).sqrt();
+        let direction = comps.normal_v * (n_ratio * cos_i - cos_t) - comps.eye_v * n_ratio;
+        let refract_ray = Ray::new(comps.under_point, direction);
+        let color = self.color_at(&refract_ray, remaining - 1) * comps.object.material.transparency;
+        return color;
+    }
 }
 
 #[cfg(test)]
@@ -122,8 +148,9 @@ mod tests {
 
     use crate::{
         mathstructs::{matrix::Matrix, point::Point, vector::Vector},
+        object::plane::Plane,
         ray::{intersects::Intersect, Ray},
-        visual::color::{Col, RED}, object::plane::Plane,
+        visual::color::{Col, RED},
     };
 
     use super::*;
@@ -316,15 +343,15 @@ mod tests {
         let i = Intersect::new(2.0_f64.sqrt(), &shape);
         let comps = Computations::prepare(&i, &ray);
         let res = w.shade_hit(&comps, 1);
-        // these values were off quite a bit from the book's. There might be 
-        // a bug somewhere       0.87677,  0.92436 , 0.82918 
+        // these values were off quite a bit from the book's. There might be
+        // a bug somewhere       0.87677,  0.92436 , 0.82918
         assert_eq!(res, Col::new(0.876757, 0.924340, 0.82918));
     }
 
     #[test]
     fn avoid_infinite_recursion_with_mutually_reflective_surfaces() {
         let mut w = World::default();
-        w.lights[0] = Light::new_point_light(Point::inew(0,0,0), Col::new(1., 1., 1.));
+        w.lights[0] = Light::new_point_light(Point::inew(0, 0, 0), Col::new(1., 1., 1.));
 
         let mut lower = Plane::new();
         lower.material.reflective = 1.;
@@ -358,5 +385,102 @@ mod tests {
 
         let res = w.reflected_color(&comps, 0);
         assert_eq!(res, Col::new(0., 0., 0.));
+    }
+    
+    // refraction (rays passing trough see trough/getting internal reflected etc)
+    #[test]
+    fn refracted_color_with_an_opaque_surface() {
+        let w = crate::visual::world::World::default();
+        let shape = w.objects.first().unwrap();
+        let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+        let xs = VecIntersections{0:vec![ 
+            Intersect { t: 4., object: &shape },
+            Intersect { t: 6., object: &shape } 
+        ]};
+        let comps = Computations::prepare_computations(&Intersect { t: 4., object: &shape }, &ray, &xs);
+        let c = w.refracted_color(&comps, 5);
+        assert_eq!(c, BLACK);
+    }
+
+    #[test]
+    fn refracted_color_at_max_recursive_depth_always_black() {
+        let mut w = crate::visual::world::World::default();
+        let shape: &mut Object = w.objects.first_mut().unwrap();
+        shape.material.transparency = 1.;
+        shape.material.refractive_index = 1.5;
+        let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
+        let xs = VecIntersections{0:vec![ 
+            Intersect { t: 4., object: &shape },
+            Intersect { t: 6., object: &shape } 
+        ]};
+        let comps = Computations::prepare_computations(&Intersect { t: 4., object: &shape }, &ray, &xs);
+        let c = w.refracted_color(&comps, 0);
+        assert_eq!(c, BLACK);
+    }
+
+    #[test]
+    fn refracted_color_under_total_internal_reflection() {
+        let mut w = crate::visual::world::World::default();
+        let shape: &mut Object = w.objects.first_mut().unwrap();
+        shape.material.transparency = 1.;
+        shape.material.refractive_index = 1.5;
+        let sq = 2.0_f64.sqrt() / 2.;
+        let ray = Ray::new(Point::new(0., 0., sq), Vector::new(0., 1., 0.));
+        let xs = VecIntersections{0:vec![ 
+            Intersect { t: -sq, object: &shape },
+            Intersect { t: sq, object: &shape } 
+        ]};
+        let comps = Computations::prepare_computations(&Intersect { t: sq, object: &shape }, &ray, &xs);
+        let c = w.refracted_color(&comps, 5);
+        assert_eq!(c, BLACK);
+    }
+
+    #[test]
+    fn refracted_color_with_refracted_ray() {
+        let mut w = crate::visual::world::World::default();
+        {
+            let a_shape: &mut Object = w.objects.first_mut().unwrap();
+            a_shape.material.ambient = 1.;
+            a_shape.material.pattern = Pattern::new_test_pattern();
+            let b_shape: &mut Object = w.objects.last_mut().unwrap();
+            b_shape.material.transparency = 1.;
+            b_shape.material.refractive_index = 1.5;
+        }
+        let a_shape = w.objects.first().unwrap();
+        let b_shape = w.objects.last().unwrap();
+
+        let ray = Ray::new(Point::new(0., 0., 0.1), Vector::new(0., 1., 0.));
+        let xs = VecIntersections{0:vec![ 
+            Intersect { t: -0.9899, object: &a_shape },
+            Intersect { t: -0.4899, object: &b_shape } ,
+            Intersect { t: 0.4899, object: &b_shape } ,
+            Intersect { t: 0.9899, object: &a_shape } 
+            ]};
+        let comps = Computations::prepare_computations(&Intersect { t: 0.4899, object: &b_shape }, &ray, &xs);
+        let c = w.refracted_color(&comps, 5);
+        assert_eq!(c, Col::new(0., 0.99888, 0.04721)); 
+        // book has different rounding here: 0. 0.99888 0.04725
+    }
+
+    #[test]
+    fn shade_hit_now_with_transparent_refraction() {
+        let mut w = crate::visual::world::World::default();
+        let mut floor = Plane::new().with_transform(Matrix::translation_new(0., -1., 0.));
+        floor.material.transparency = 0.5;
+        floor.material.refractive_index = 1.5;
+        w.objects.push(floor);
+        let mut ball = Sphere::new().with_transform(Matrix::translation_new(0., -3.5, -0.5));
+        ball.material.color(Col::new(1., 0., 0.));
+        ball.material.ambient = 0.5;
+        w.objects.push(ball);
+        let obj = &w.objects[2];
+        let sq = 2.0_f64.sqrt();
+        let ray = Ray::new(Point::new(0., 0., -3.), Vector::new(0., -sq/2., sq/2.));
+        let xs = VecIntersections{0:vec![ Intersect { t: sq, object: &obj },]};
+        let comps = Computations::prepare_computations(&Intersect { t: sq, object: &obj }, &ray, &xs);
+        let c = w.shade_hit(&comps, 5);
+        assert_eq!(c, Col::new(0.93642, 0.68642, 0.68642)); 
+
+
     }
 }

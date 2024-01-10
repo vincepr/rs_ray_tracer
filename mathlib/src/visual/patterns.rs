@@ -12,6 +12,7 @@ pub enum Texture {
     Gradient(Col, Col),
     Ring(Col, Col),
     Checker(Col, Col),
+    TestPattern,
 }
 
 impl Texture {
@@ -22,6 +23,7 @@ impl Texture {
             Texture::Gradient(a, b) => gradient_at(point, a, b),
             Texture::Ring(a, b) => ring_at(point, a, b),
             Texture::Checker(a, b) => checker_at(point, a, b),
+            Texture::TestPattern => test_at(point),
         }
     }
 }
@@ -34,7 +36,7 @@ pub struct Pattern {
 
 impl Pattern {
     /// sets pattern transform. (default is None)
-    pub fn pattern_transform(mut self, transform: Matrix) -> Self {
+    pub fn with_pattern_transform(mut self, transform: Matrix) -> Self {
         self.transform = Some(transform);
         self
     }
@@ -70,6 +72,13 @@ impl Pattern {
     pub fn new_checkers(a: Col, b: Col) -> Self {
         Self {
             texture: Texture::Checker(a, b),
+            transform: None,
+        }
+    }
+
+    pub fn new_test_pattern() -> Self {
+        Self {
+            texture: Texture::TestPattern,
             transform: None,
         }
     }
@@ -115,6 +124,10 @@ fn checker_at<'a>(point: &Point, a: &'a Col, b: &'a Col) -> Col {
         return *a;
     }
     *b
+}
+
+fn test_at(point: &Point) -> Col {
+    Col::new(point.x, point.y, point.z)
 }
 
 #[cfg(test)]
@@ -223,5 +236,25 @@ mod tests {
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 0.99)), WHITE);
         assert_eq!(pattern.texture.at(&Point::new(0.0, 0.0, 1.01)), BLACK);
+    }
+
+    #[test]
+    fn test_pattern_takes_choords() {
+        let shape = Sphere::new().with_transform(Matrix::scaling_new(2., 2., 2.));
+        let pattern = Pattern::new_test_pattern();
+        let point = Point::inew(2, 3, 4);
+        assert_eq!(pattern.at_with_obj(&shape, &point), Col::new(1., 1.5, 2.));
+    }
+
+    #[test]
+    fn test_pattern_appliestransform() {
+        let shape = Sphere::new().with_transform(Matrix::scaling_new(2., 2., 2.));
+        let pattern = Pattern::new_test_pattern()
+            .with_pattern_transform(Matrix::translation_new(0.5, 1., 1.5));
+        let point = Point::new(2.5, 3., 3.5);
+        assert_eq!(
+            pattern.at_with_obj(&shape, &point),
+            Col::new(0.75, 0.5, 0.25)
+        );
     }
 }

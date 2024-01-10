@@ -55,7 +55,7 @@ impl<'a> Ord for Intersect<'a> {
 /// collection of Intersections
 /// - aways sorted ascending
 #[derive(Debug)]
-pub struct VecIntersections<'a>(Vec<Intersect<'a>>);
+pub struct VecIntersections<'a>(pub(crate) Vec<Intersect<'a>>);
 impl<'a> VecIntersections<'a> {
     pub fn new() -> Self {
         Self(Vec::new())
@@ -113,7 +113,7 @@ impl<'a> VecIntersections<'a> {
             None => {}
             Some((t1, t2)) => {
                 self.push(Intersect::new(t1, obj));
-                self.push(Intersect::new(t2, obj)); // TODO: we could not remove double in case of tangent?
+                self.push(Intersect::new(t2, obj)); // TODO: we could not remove double in case of tangent? Alt use hashmap.
             }
         }
     }
@@ -133,7 +133,7 @@ impl<'a> Default for VecIntersections<'a> {
 
 #[cfg(test)]
 mod tests {
-    use crate::object::Shape;
+    use crate::{object::Shape, ray::computations::Computations, visual::{color::{BLACK, Col}, patterns::Pattern}};
 
     use super::*;
 
@@ -215,4 +215,6 @@ mod tests {
         let res = ins.hit();
         assert_eq!(res, Some(i4));
     }
+
+    
 }
