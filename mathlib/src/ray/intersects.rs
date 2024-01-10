@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, collections::BTreeSet};
+use std::cmp::Ordering;
 
 use crate::{
     mathstructs::{point::Point, vector::Vector},
@@ -45,24 +45,26 @@ impl<'a> Ord for Intersect<'a> {
         } else if self.t < other.t {
             return Ordering::Less;
         }
-        // // because we use a BTreeSet if we do it like this we can map Shape != Shape
-        // if self.object == other.object {
-        //     return Ordering::Equal
-        // }
+        if self.object == other.object {
+            return Ordering::Equal
+        }
         Ordering::Less
     }
 }
 
 /// collection of Intersections
+/// - aways sorted ascending
 #[derive(Debug)]
-pub struct VecIntersections<'a>(BTreeSet<Intersect<'a>>);
+pub struct VecIntersections<'a>(Vec<Intersect<'a>>);
 impl<'a> VecIntersections<'a> {
     pub fn new() -> Self {
-        Self(BTreeSet::new())
+        Self(Vec::new())
     }
 
+    /// adds but always keeps list sorted
     fn push(&mut self, add: Intersect<'a>) {
-        self.0.insert(add);
+        let pos = self.0.binary_search(&add).unwrap_or_else(|e| e);
+        self.0.insert(pos, add);
     }
 
     pub fn len(&self) -> usize {
@@ -80,9 +82,10 @@ impl<'a> VecIntersections<'a> {
                 .filter(|inter| inter.t.is_sign_positive())
                 .min()?
                 .clone(),
-        ) // or maybe just return by reference? might be
+        ) // or maybe just return by reference? might be faster
     }
 
+    /// since we keep our vec sorted when inserting this should be sorted aswell
     pub fn iter(&self) -> impl Iterator<Item = &Intersect> {
         self.0.iter()
     }
@@ -109,8 +112,8 @@ impl<'a> VecIntersections<'a> {
         match intersect {
             None => {}
             Some((t1, t2)) => {
-                self.0.insert(Intersect::new(t1, obj));
-                self.0.insert(Intersect::new(t2, obj)); // TODO: we could not remove double in case of tangent?
+                self.push(Intersect::new(t1, obj));
+                self.push(Intersect::new(t2, obj)); // TODO: we could not remove double in case of tangent?
             }
         }
     }
@@ -154,9 +157,9 @@ mod tests {
         intersections.push(i2);
         intersections.push(i3);
         assert_eq!(intersections.0.len(), 3);
-        assert_eq!(intersections.0.pop_first().unwrap().t, 1.0);
-        assert_eq!(intersections.0.pop_first().unwrap().t, 2.0);
-        assert_eq!(intersections.0.pop_first().unwrap().t, 3.0);
+        assert_eq!(intersections.0.remove(0).t, 1.0);
+        assert_eq!(intersections.0.remove(0).t, 2.0);
+        assert_eq!(intersections.0.remove(0).t, 3.0);
     }
 
     #[test]

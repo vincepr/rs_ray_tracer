@@ -74,10 +74,8 @@ impl Computations {
         let mut n2: f64 = 0.;
         let mut containers: Vec<&Object> = vec![];
 
-        let hit = xs.hit();
-
         for i in xs.iter() {
-            if Some(i) == hit.as_ref() {
+            if i == intersection {
                 if containers.len() == 0 {
                     n1 = 1.0;
                 } else {
@@ -91,9 +89,9 @@ impl Computations {
                 containers.push(i.object);
             }
 
-            if Some(i) == hit.as_ref() {
+            if i == intersection {
                 if containers.is_empty() {
-                    n2 = 10.0;
+                    n2 = 1.0;
                 } else {
                     n2 = containers.last().unwrap().material.refractive_index;
                 }
@@ -190,7 +188,7 @@ mod tests {
 
     fn assert_n1_n2(n1: f64, n2: f64, comp: &Computations, iteration: usize) {
         assert_eq!(n1, comp.n1, "{n1}!={} at iteration:{iteration} -> failed at comp: {:#?}", comp.n1, comp);
-        assert_eq!(n2, comp.n2, "{n1}!={} -at iteration:{iteration} -> failed at comp: {:#?}", comp.n2, comp);
+        assert_eq!(n2, comp.n2, "{n2}!={} -at iteration:{iteration} -> failed at comp: {:#?}", comp.n2, comp);
     }
 
     #[test]
@@ -204,7 +202,7 @@ mod tests {
         let c = Sphere::new_glass_sphere()
             .with_transform(Matrix::translation_new(0., 0., 0.25))
             .with_refrative_index(2.5);
-        let ray = Ray::new(Point::inew(0,0, 4), Vector::inew(0, 0, 1));
+        let ray = Ray::new(Point::inew(0,0, -4), Vector::inew(0, 0, 1));
         let mut xs = VecIntersections::new();
         xs.intersect_add(&ray, &a);
         xs.intersect_add(&ray, &b);
