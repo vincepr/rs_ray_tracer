@@ -12,6 +12,10 @@ pub struct Material {
     pub pattern: Pattern,
     /// 0 = noreflection. 1 = perfect mirror
     pub reflective: f64,
+    /// 0 = no-transparency. 1 = fully-see-trough
+    pub transparency: f64,
+    /// Vacuum: 1, Air 1.00029, Water: 1.333, Glass: 1.52, Diamond 2.417
+    pub refractive_index: f64,
 }
 
 impl Material {
@@ -31,9 +35,11 @@ impl Default for Material {
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,
-            shininess: 200.0,
-            reflective: 0.0,
+            shininess: 200.,
+            reflective: 0.,
             pattern: Pattern::new_single(WHITE),
+            transparency: 0.,
+            refractive_index: 1.,
         }
     }
 }
@@ -63,6 +69,8 @@ mod tests {
         assert_eq!(m.specular, 0.9);
         assert_eq!(m.reflective, 0.0);
         assert_eq!(m.shininess, 200.0);
+        assert_eq!(m.transparency, 0.0);
+        assert_eq!(m.refractive_index, 1.0);
     }
 
     #[test]

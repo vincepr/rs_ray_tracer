@@ -58,10 +58,6 @@ impl Object {
         }
     }
 
-    pub fn set_transform(&mut self, m: Matrix) {
-        self.transformation = m;
-    }
-
     /// translates between choordinate systems. World_point to object_point
     fn world_to_obj(&self, world_point: Point) -> Point {
         self.transformation.inverse() * world_point
@@ -70,6 +66,18 @@ impl Object {
     /// translates between choordinate systems. Object_vector to world_vector
     fn obj_to_world(&self, object_normal: Vector) -> Vector {
         (self.transformation.inverse()).transpose() * object_normal
+    }
+}
+
+impl Object {
+    pub fn with_transform(mut self, m: Matrix) -> Self {
+        self.transformation = m;
+        self
+    }
+
+    pub fn with_refrative_index(mut self, f: f64) -> Self {
+        self.material.refractive_index = f;
+        self
     }
 }
 
