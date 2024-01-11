@@ -133,7 +133,7 @@ impl<'a> Default for VecIntersections<'a> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{object::Shape, ray::computations::Computations, visual::{color::{BLACK, Col}, patterns::Pattern}};
+    use crate::object::Shape;
 
     use super::*;
 
