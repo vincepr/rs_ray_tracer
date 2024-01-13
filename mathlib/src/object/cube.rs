@@ -24,8 +24,8 @@ impl IntersectsRay for Cube {
         }
     }
 
-    // (1.0,0.3,0.6) -> the value with 1.0 is directoin of our normal. BUT because f64 we better
-    // check for max here.
+    // (1.0,0.3,0.6) -> the value with 1.0 is direction of our normal.
+    // BUT because f64 we better check absolute for max here. 1.0 might rounding-error
     fn normal_at(point: Point) -> Vector {
         let maxc = f64::max(f64::max(point.x.abs(), point.y.abs()), point.z.abs());
         match maxc {
@@ -108,7 +108,6 @@ mod tests {
     fn expect_normal(point: Point, vector: Vector) {
         let c = Cube::new();
         let normal = c.normal_at(&point);
-        dbg!(&point);
         assert_eq!(normal, vector);
     }
 
