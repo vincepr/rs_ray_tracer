@@ -1,17 +1,20 @@
+pub mod cube;
 pub mod plane;
 pub mod sphere;
+
 use crate::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     ray::{intersects::IntersectsRay, Ray},
     visual::material::Material,
 };
 
-use self::{plane::Plane, sphere::Sphere};
+use self::{cube::Cube, plane::Plane, sphere::Sphere};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Shape {
     Sphere, // Sphere has no state so i guess no need to actually wrap the shape-struct here
     Plane,
+    Cube,
 }
 
 /// wrapper that represents a shape like a Sphere and applied transformations etc.
@@ -31,6 +34,7 @@ impl Object {
         match &self.shape {
             Shape::Sphere => Sphere {}.intersect_raw(&ray),
             Shape::Plane => Plane {}.intersect_raw(&ray),
+            Shape::Cube => Cube {}.intersect_raw(&ray),
         }
     }
 
@@ -43,6 +47,7 @@ impl Object {
         let object_normal = match &self.shape {
             Shape::Sphere => Sphere::normal_at(object_point),
             Shape::Plane => Plane::normal_at(object_point),
+            Shape::Cube => Cube::normal_at(object_point),
         };
         // transform back to world choordinates:
         let world_normal = self.obj_to_world(object_normal).normalize();

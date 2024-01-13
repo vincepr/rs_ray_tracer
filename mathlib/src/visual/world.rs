@@ -74,13 +74,12 @@ impl World {
                 );
         }
 
-
         // calculate and add reflected light
         let reflected = self.reflected_color(comps, remaining);
         let refracted = self.refracted_color(comps, remaining);
         if comps.object.material.reflective > 0. && comps.object.material.transparency > 0. {
             let reflectance = comps.schlick();
-            return col_sum + reflected * reflectance + refracted * ( 1. - reflectance);
+            return col_sum + reflected * reflectance + refracted * (1. - reflectance);
         }
         col_sum + reflected + refracted
     }
@@ -125,7 +124,7 @@ impl World {
         color * comps.object.material.reflective
     }
 
-    /// see-trough materials 
+    /// see-trough materials
     pub fn refracted_color(&self, comps: &Computations, remaining: u8) -> Col {
         #[allow(clippy::absurd_extreme_comparisons)]
         if remaining <= 0 {
@@ -394,18 +393,33 @@ mod tests {
         let res = w.reflected_color(&comps, 0);
         assert_eq!(res, Col::new(0., 0., 0.));
     }
-    
+
     // refraction (rays passing trough see trough/getting internal reflected etc)
     #[test]
     fn refracted_color_with_an_opaque_surface() {
         let w = World::default();
         let shape = w.objects.first().unwrap();
         let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
-        let xs = VecIntersections{0:vec![ 
-            Intersect { t: 4., object: &shape },
-            Intersect { t: 6., object: &shape } 
-        ]};
-        let comps = Computations::prepare_computations(&Intersect { t: 4., object: &shape }, &ray, &xs);
+        let xs = VecIntersections {
+            0: vec![
+                Intersect {
+                    t: 4.,
+                    object: &shape,
+                },
+                Intersect {
+                    t: 6.,
+                    object: &shape,
+                },
+            ],
+        };
+        let comps = Computations::prepare_computations(
+            &Intersect {
+                t: 4.,
+                object: &shape,
+            },
+            &ray,
+            &xs,
+        );
         let c = w.refracted_color(&comps, 5);
         assert_eq!(c, BLACK);
     }
@@ -417,11 +431,26 @@ mod tests {
         shape.material.transparency = 1.;
         shape.material.refractive_index = 1.5;
         let ray = Ray::new(Point::new(0., 0., -5.), Vector::new(0., 0., 1.));
-        let xs = VecIntersections{0:vec![ 
-            Intersect { t: 4., object: &shape },
-            Intersect { t: 6., object: &shape } 
-        ]};
-        let comps = Computations::prepare_computations(&Intersect { t: 4., object: &shape }, &ray, &xs);
+        let xs = VecIntersections {
+            0: vec![
+                Intersect {
+                    t: 4.,
+                    object: &shape,
+                },
+                Intersect {
+                    t: 6.,
+                    object: &shape,
+                },
+            ],
+        };
+        let comps = Computations::prepare_computations(
+            &Intersect {
+                t: 4.,
+                object: &shape,
+            },
+            &ray,
+            &xs,
+        );
         let c = w.refracted_color(&comps, 0);
         assert_eq!(c, BLACK);
     }
@@ -434,11 +463,26 @@ mod tests {
         shape.material.refractive_index = 1.5;
         let sq = 2.0_f64.sqrt() / 2.;
         let ray = Ray::new(Point::new(0., 0., sq), Vector::new(0., 1., 0.));
-        let xs = VecIntersections{0:vec![ 
-            Intersect { t: -sq, object: &shape },
-            Intersect { t: sq, object: &shape } 
-        ]};
-        let comps = Computations::prepare_computations(&Intersect { t: sq, object: &shape }, &ray, &xs);
+        let xs = VecIntersections {
+            0: vec![
+                Intersect {
+                    t: -sq,
+                    object: &shape,
+                },
+                Intersect {
+                    t: sq,
+                    object: &shape,
+                },
+            ],
+        };
+        let comps = Computations::prepare_computations(
+            &Intersect {
+                t: sq,
+                object: &shape,
+            },
+            &ray,
+            &xs,
+        );
         let c = w.refracted_color(&comps, 5);
         assert_eq!(c, BLACK);
     }
@@ -458,15 +502,36 @@ mod tests {
         let b_shape = w.objects.last().unwrap();
 
         let ray = Ray::new(Point::new(0., 0., 0.1), Vector::new(0., 1., 0.));
-        let xs = VecIntersections{0:vec![ 
-            Intersect { t: -0.9899, object: &a_shape },
-            Intersect { t: -0.4899, object: &b_shape } ,
-            Intersect { t: 0.4899, object: &b_shape } ,
-            Intersect { t: 0.9899, object: &a_shape } 
-            ]};
-        let comps = Computations::prepare_computations(&Intersect { t: 0.4899, object: &b_shape }, &ray, &xs);
+        let xs = VecIntersections {
+            0: vec![
+                Intersect {
+                    t: -0.9899,
+                    object: &a_shape,
+                },
+                Intersect {
+                    t: -0.4899,
+                    object: &b_shape,
+                },
+                Intersect {
+                    t: 0.4899,
+                    object: &b_shape,
+                },
+                Intersect {
+                    t: 0.9899,
+                    object: &a_shape,
+                },
+            ],
+        };
+        let comps = Computations::prepare_computations(
+            &Intersect {
+                t: 0.4899,
+                object: &b_shape,
+            },
+            &ray,
+            &xs,
+        );
         let c = w.refracted_color(&comps, 5);
-        assert_eq!(c, Col::new(0., 0.99888, 0.04721)); 
+        assert_eq!(c, Col::new(0., 0.99888, 0.04721));
         // book has different rounding here: 0. 0.99888 0.04725
     }
 
@@ -484,12 +549,24 @@ mod tests {
         w.objects.push(ball);
 
         let sq = 2.0_f64.sqrt();
-        let ray = Ray::new(Point::new(0., 0., -3.), Vector::new(0., -sq/2., sq/2.));
+        let ray = Ray::new(Point::new(0., 0., -3.), Vector::new(0., -sq / 2., sq / 2.));
         let obj = &w.objects[2];
-        let xs = VecIntersections{0:vec![ Intersect { t: sq, object: &obj },]};
-        let comps = Computations::prepare_computations(&Intersect { t: sq, object: &obj }, &ray, &xs);
+        let xs = VecIntersections {
+            0: vec![Intersect {
+                t: sq,
+                object: &obj,
+            }],
+        };
+        let comps = Computations::prepare_computations(
+            &Intersect {
+                t: sq,
+                object: &obj,
+            },
+            &ray,
+            &xs,
+        );
         let c = w.shade_hit(&comps, 5);
-        assert_eq!(c, Col::new(0.93642, 0.68642, 0.68642)); 
+        assert_eq!(c, Col::new(0.93642, 0.68642, 0.68642));
     }
 
     #[test]
@@ -507,11 +584,23 @@ mod tests {
         w.objects.push(ball);
 
         let sq = 2.0_f64.sqrt();
-        let ray = Ray::new(Point::new(0., 0., -3.), Vector::new(0., -sq/2., sq/2.));
+        let ray = Ray::new(Point::new(0., 0., -3.), Vector::new(0., -sq / 2., sq / 2.));
         let obj = &w.objects[2];
-        let xs = VecIntersections{0:vec![ Intersect { t: sq, object: &obj },]};
-        let comps = Computations::prepare_computations(&Intersect { t: sq, object: &obj }, &ray, &xs);
+        let xs = VecIntersections {
+            0: vec![Intersect {
+                t: sq,
+                object: &obj,
+            }],
+        };
+        let comps = Computations::prepare_computations(
+            &Intersect {
+                t: sq,
+                object: &obj,
+            },
+            &ray,
+            &xs,
+        );
         let c = w.shade_hit(&comps, 5);
-        assert_eq!(c, Col::new(0.93391, 0.69643, 0.69243)); 
+        assert_eq!(c, Col::new(0.93391, 0.69643, 0.69243));
     }
 }

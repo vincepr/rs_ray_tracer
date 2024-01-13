@@ -46,7 +46,7 @@ impl<'a> Ord for Intersect<'a> {
             return Ordering::Less;
         }
         if self.object == other.object {
-            return Ordering::Equal
+            return Ordering::Equal;
         }
         Ordering::Less
     }
@@ -215,6 +215,4 @@ mod tests {
         let res = ins.hit();
         assert_eq!(res, Some(i4));
     }
-
-    
 }

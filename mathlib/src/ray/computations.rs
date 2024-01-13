@@ -142,7 +142,7 @@ impl Computations {
     }
 
     /// approximation for fresnel-effect. Like how Water close by is seetrough, but far away reflecs more.
-    /// returns 'reflectance': from 0 all light is refracted(internally). to 1 all light is reflected. 
+    /// returns 'reflectance': from 0 all light is refracted(internally). to 1 all light is reflected.
     pub fn schlick(&self) -> f64 {
         let mut cos = self.eye_v.dot(&self.normal_v);
 
@@ -158,19 +158,20 @@ impl Computations {
             cos = cos_t;
         }
         let r0 = ((self.n1 - self.n2) / (self.n1 + self.n2)).powi(2);
-        r0 + ( 1. - r0) * ( 1. - cos).powi(5)
+        r0 + (1. - r0) * (1. - cos).powi(5)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::{
+        cmp::ApproxEq,
         mathstructs::matrix::Matrix,
         object::{plane::Plane, sphere::Sphere},
         ray::{
             intersects::{Intersect, VecIntersections},
             Ray,
-        }, cmp::ApproxEq,
+        },
     };
 
     use super::*;
@@ -290,10 +291,10 @@ mod tests {
     #[test]
     fn schlick_aprox_under_total_internal_reflection() {
         let shape = Sphere::new_glass_sphere();
-        let sq = 2.0_f64.sqrt() /2.;
+        let sq = 2.0_f64.sqrt() / 2.;
         let ray = Ray::new(Point::new(0., 0., sq), Vector::new(0., 1., 0.));
         let xs = VecIntersections {
-            0: vec![ Intersect::new(-sq, &shape), Intersect::new(sq, &shape),]
+            0: vec![Intersect::new(-sq, &shape), Intersect::new(sq, &shape)],
         };
         let i = Intersect::new(sq, &shape);
         let comps = Computations::prepare_computations(&i, &ray, &xs);
@@ -304,7 +305,9 @@ mod tests {
     fn schlick_aprox_with_perpendicular_viewing_angle() {
         let shape = Sphere::new_glass_sphere();
         let ray = Ray::new(Point::new(0., 0., 0.), Vector::new(0., 1., 0.));
-        let xs = VecIntersections {0: vec![ Intersect::new(-1., &shape), Intersect::new(1., &shape),]};
+        let xs = VecIntersections {
+            0: vec![Intersect::new(-1., &shape), Intersect::new(1., &shape)],
+        };
         let i = Intersect::new(1., &shape);
         let comps = Computations::prepare_computations(&i, &ray, &xs);
         assert!(comps.schlick().apx_eq(&0.04));
@@ -314,7 +317,9 @@ mod tests {
     fn schlick_aprox_with_small_angle_and_n2_gt_n1() {
         let shape = Sphere::new_glass_sphere();
         let ray = Ray::new(Point::new(0., 0.99, -2.), Vector::new(0., 0., 1.));
-        let xs = VecIntersections {0: vec![ Intersect::new(1.8589, &shape),]};
+        let xs = VecIntersections {
+            0: vec![Intersect::new(1.8589, &shape)],
+        };
         let i = Intersect::new(1.8589, &shape);
         let comps = Computations::prepare_computations(&i, &ray, &xs);
         assert!(comps.schlick().apx_eq(&0.48873));
