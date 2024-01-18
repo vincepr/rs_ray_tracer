@@ -1,4 +1,5 @@
 pub mod cube;
+pub mod cylinder;
 pub mod plane;
 pub mod sphere;
 
@@ -8,13 +9,14 @@ use crate::{
     visual::material::Material,
 };
 
-use self::{cube::Cube, plane::Plane, sphere::Sphere};
+use self::{cube::Cube, plane::Plane, sphere::Sphere, cylinder::Cylinder};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Shape {
     Sphere, // Sphere has no state so i guess no need to actually wrap the shape-struct here
     Plane,
     Cube,
+    CylinderShape(Cylinder),
 }
 
 /// wrapper that represents a shape like a Sphere and applied transformations etc.
@@ -35,12 +37,13 @@ impl Object {
             Shape::Sphere => Sphere {}.intersect_raw(&ray),
             Shape::Plane => Plane {}.intersect_raw(&ray),
             Shape::Cube => Cube {}.intersect_raw(&ray),
+            Shape::CylinderShape(cylinder) => cylinder.intersect_raw(&ray),
         }
     }
 
     #[allow(clippy::let_and_return)]
     /// gets point perpendicular to surface.
-    pub fn normal_at(&self, world_point: &Point) -> Vector {
+    pub fn normal_at(&self, world_point: &Point) -> Vector  {
         // transform to object's choordinate system
         let object_point = self.world_to_obj(*world_point);
         // do the shape's normal_at implementation
@@ -48,6 +51,7 @@ impl Object {
             Shape::Sphere => Sphere::normal_at(object_point),
             Shape::Plane => Plane::normal_at(object_point),
             Shape::Cube => Cube::normal_at(object_point),
+            Shape::CylinderShape(_) => Cylinder::normal_at(object_point),
         };
         // transform back to world choordinates:
         let world_normal = self.obj_to_world(object_normal).normalize();
