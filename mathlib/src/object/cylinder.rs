@@ -162,11 +162,12 @@ mod tests {
 
     #[test]
     fn intersecting_a_constrained_cylinder() {
-        expect_miss_on_constrained(Point::new(0.,1.5,1.), Vector::new(0.1,1.,0.));
+        expect_miss_on_constrained(Point::new(0.,1.5,0.), Vector::new(0.1,1.,0.));
         expect_miss_on_constrained(Point::inew(0,3,-5), Vector::inew(0,0,1));
         expect_miss_on_constrained(Point::inew(0,0,-5), Vector::inew(0,0,1));
         expect_miss_on_constrained(Point::inew(0,2,-5), Vector::inew(0,0,1));
         expect_miss_on_constrained(Point::inew(0,1,-5), Vector::inew(0,0,1));
-        expect_hit_on_constrained(Point::new(0.,1.5,-2.), Vector::inew(0,0,1), (1.,1.));
+        // book expects xs.len() == 2 here
+        expect_hit_on_constrained(Point::new(0.,1.5,-2.), Vector::inew(0,0,1), (1.,3.));
     }
 }
