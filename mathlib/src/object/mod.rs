@@ -51,7 +51,7 @@ impl Object {
             Shape::Sphere => Sphere::normal_at(object_point),
             Shape::Plane => Plane::normal_at(object_point),
             Shape::Cube => Cube::normal_at(object_point),
-            Shape::CylinderShape(_) => Cylinder::normal_at(object_point),
+            Shape::CylinderShape(cylinder) => cylinder.actual_normal_at(object_point),
         };
         // transform back to world choordinates:
         let world_normal = self.obj_to_world(object_normal).normalize();
