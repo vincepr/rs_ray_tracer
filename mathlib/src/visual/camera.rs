@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{f64::consts::PI, time::Instant};
 
 use crate::{
     mathstructs::{matrix::Matrix, point::Point},
@@ -7,6 +7,7 @@ use crate::{
 
 use super::{canvas::Canvas, world::World};
 
+#[derive(Debug)]
 pub struct Camera {
     /// width in pixels
     pub width: usize,
@@ -17,6 +18,13 @@ pub struct Camera {
     pub pixel_size: f64,
     pub half_width: f64,
     pub half_height: f64,
+}
+
+impl Default for Camera {
+    /// A default light configuration used for testing. at Point (-10, 10, -10)
+    fn default() -> Self {
+        Self::new(160, 120, PI / 2.0)
+    }
 }
 
 impl Camera {
