@@ -2,6 +2,11 @@
 
 - live example https://vincepr.github.io/rs_ray_tracer/
 
+## Example render of the book-cover
+* created from the yaml file provided in the book `./samples/yaml_samples/book_cover.yaml`
+![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+
+## The Ray Tracer Challange
 Along the Book **The Ray Tracer Challenge** by Jamis Buck, the goal is to write a 3D Renderer in rust. And play arround with Flamegraph, Wasm, Wasm combined with Webworkers and whatever else comes up.
 
 - Goals are using as few as possible dependencies (for the core functionality )
@@ -24,6 +29,3 @@ PERF=/usr/lib/linux-tools/5.15.0-91-generic/perf cargo flamegraph -o flamegraph.
 sudo /usr/lib/linux-tools/5.15.0-91-generic/perf record -g --call-graph dwarf ./unix_compiled
 ```
 
-## Example render of the book-cover
-* created from the yaml file provided in the book `./samples/yaml_samples/book_cover.yaml`
-![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
