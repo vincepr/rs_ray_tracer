@@ -6,8 +6,12 @@ pub mod examples {
     pub mod chapter6;
     pub mod chapter7;
     pub mod chapter8;
+    pub mod appendix1;
+}
+pub mod yaml_parsing {
+    pub mod yaml;
 }
 
 fn main() {
-    examples::chapter11::build_example();
+    examples::appendix1::parse_yaml();
 }
