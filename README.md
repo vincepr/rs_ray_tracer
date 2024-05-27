@@ -4,6 +4,7 @@
 
 ## Example render of the book-cover
 * created from the yaml file provided in the book `./samples/yaml_samples/book_cover.yaml`
+
 ![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
 
 ## The Ray Tracer Challange
