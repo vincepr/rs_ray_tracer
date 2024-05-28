@@ -1,10 +1,11 @@
 # ======================================================
 # the camera
 # ======================================================
+## if building for big resulitons make sure to build in release mode
 
 - add: camera
-  width: 300
-  height: 200
+  width: 6000
+  height: 5000
   field-of-view: 0.785
   from: [ -6, 6, -10 ]
   to: [ 6, 0, 6 ]
