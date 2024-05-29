@@ -8,9 +8,6 @@ pub mod examples {
     pub mod chapter8;
     pub mod appendix1;
 }
-pub mod yaml_parsing {
-    pub mod yaml;
-}
 
 fn main() {
     examples::appendix1::parse_yaml();

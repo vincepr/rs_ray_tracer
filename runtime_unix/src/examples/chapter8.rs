@@ -2,7 +2,7 @@
 
 use std::f64::consts::PI;
 
-use mathlib::{
+use mathlib_renderer::{
     io::ppm::write_to_file,
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     object::{plane::Plane, sphere::Sphere},

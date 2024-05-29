@@ -1,3 +1,7 @@
+###
+### Project that implements wasm-bindings and a crude web-page to run the renderer in the browser
+###
+
 [package]
 name = "wasm_web"
 version = "0.1.0"
@@ -9,18 +13,19 @@ crate-type = ["cdylib"]
 [profile.release]
 # This makes the compiled code faster and smaller, but it makes compiling slower,
 # so it's only enabled in release mode.
-lto = true
+
 
 [features]
 # If you uncomment this line, it will enable `wee_alloc`:
-#default = ["wee_alloc"]
+#default = ["wee_alloc", "console_error_panic_hook"]
+default = []
 
 [dependencies]
 # The `wasm-bindgen` crate provides the bare minimum functionality needed
 # to interact with JavaScript.
 wasm-bindgen = "0.2.45"
 
-mathlib = { path = "../mathlib"}
+mathlib_renderer = { path = "../mathlib_renderer"}
 
 # The `web-sys` crate allows you to interact with the various browser APIs,
 # like the DOM.
@@ -37,4 +42,4 @@ features = [
 # all the `std::fmt` and `std::panicking` infrastructure, so it's only enabled
 # in debug mode.
 [target."cfg(debug_assertions)".dependencies]
-console_error_panic_hook = "0.1.5"
+console_error_panic_hook = { version = "0.1.5", optional = true }

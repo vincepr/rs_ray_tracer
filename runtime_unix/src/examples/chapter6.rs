@@ -1,4 +1,4 @@
-use mathlib::{
+use mathlib_renderer::{
     io::ppm::write_to_file,
     mathstructs::point::Point,
     object::sphere::Sphere,
