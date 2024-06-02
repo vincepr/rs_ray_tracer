@@ -12,7 +12,7 @@ use mathlib_renderer::{
     },
 };
 
-pub fn build_example(width: u32, height: u32) -> Vec<u8> {
+pub fn build_example(width: u32, height: u32, currentLine: u32) -> Vec<u8> {
     let mut base_mat = Material::new();
     base_mat.color(Col::new(1.0, 0.9, 0.9));
     base_mat.specular = 0.0;
@@ -64,10 +64,10 @@ pub fn build_example(width: u32, height: u32) -> Vec<u8> {
         ),
     );
 
-    render(camera, world)
+    render(camera, world, currentLine)
 }
 
-pub fn render(camera: Camera, world: World) -> Vec<u8> {
+pub fn render(camera: Camera, world: World, currentLine: u32) -> Vec<u8> {
     let mut raw_pixels: Vec<u8> = Vec::with_capacity(camera.height * camera.width * 4);
 
     web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&format!(
@@ -75,7 +75,7 @@ pub fn render(camera: Camera, world: World) -> Vec<u8> {
         camera.width, camera.height
     )));
 
-    for y in 0..camera.height {
+    let y = currentLine as usize;
         // web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(&y.to_string()));
         for x in 0..camera.width {
             let ray = camera.ray_for_pixel(x, y);
@@ -85,6 +85,5 @@ pub fn render(camera: Camera, world: World) -> Vec<u8> {
             raw_pixels.push(color::base_255(color.b));
             raw_pixels.push(255); // transparency
         }
-    }
     raw_pixels
 }

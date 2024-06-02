@@ -40,11 +40,12 @@ impl World {
   pub fn render(&self, y: f64) -> Result<ImageData, JsValue> {
     // Skip the "cost" of initializing the vector, as we are writing everywhere
     // in it later on
-    let data_size = self.canvas_size as usize * 4;
-    let mut data: Vec<u8> = Vec::with_capacity(data_size);
-    unsafe {
-      data.set_len(data_size);
-    }
+    // let data_size = self.canvas_size as usize * 4;
+    // let mut data: Vec<u8> = Vec::with_capacity(data_size);
+    // unsafe {
+      // data.set_len(data_size);
+    // }
+    let data = get_pixel_data(self.canvas_size, self.canvas_size, y.abs() as u32);
     
     //   #[allow(clippy::identity_op)]
     //   {
@@ -71,6 +72,6 @@ impl World {
 //     ctx.put_image_data(&data, 0.0, 0.0)
 // }
 
-fn get_pixel_data(width: u32, height: u32) -> Vec<u8> {
-    example8::build_example(width, height)
+fn get_pixel_data(width: u32, height: u32, currentLine: u32) -> Vec<u8> {
+    example8::build_example(width, height, currentLine)
 }

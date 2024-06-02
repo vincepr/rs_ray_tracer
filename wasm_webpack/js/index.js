@@ -73,18 +73,19 @@
 // })
 
 import * as Comlink from "comlink";
-const size = 20;
+const size = 200;
 
 const canvas = document.createElement("canvas");
 canvas.setAttribute("width", size);
 canvas.setAttribute("height", size);
-canvas.style.width = size / 2 + "px";
-canvas.style.height = size / 2 + "px";
+// canvas.style.width = size / 2 + "px";
+// canvas.style.height = size / 2 + "px";
 
 document.body.appendChild(canvas);
 
 const context = canvas.getContext("2d");
 
+// starts the rendering process for slice of pixes: [start, end]
 async function spawnRenderer(start, end) {
   const worker = new Worker('./worker.js');
   const renderer = Comlink.wrap(worker);
@@ -99,10 +100,15 @@ async function spawnRenderer(start, end) {
   }
 }
 
-(async () => {
-  const workers = navigator.hardwareConcurrency || 4;
+
+async function startParallelRenderprocess(fixedNrCores = null) {
+  const possibleWorkers = navigator.hardwareConcurrency || 4;
+  const workers = fixedNrCores !== null ? fixedNrCores : possibleWorkers;
+  console.log(`found ${navigator.hardwareConcurrency} threads, multithreading with ${workers} concurrent workers.`)
   const perWorker = size / workers;
   for (let i = 0; i < workers; i++) {
     spawnRenderer(i * perWorker, (i + 1) * perWorker);
   }
-})();
+}
+
+startParallelRenderprocess(2);
