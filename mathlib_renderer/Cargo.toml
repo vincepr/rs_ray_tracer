@@ -1,0 +1,10 @@
+###
+### Library-project that holds all code regarding the renderer itself.
+###
+
+[package]
+name = "mathlib_renderer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

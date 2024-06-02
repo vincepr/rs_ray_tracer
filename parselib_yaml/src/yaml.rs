@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
-use mathlib::{
-    io::ppm::write_to_file,
+use mathlib_renderer::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     object::{cube::Cube, plane::Plane, sphere::Sphere, Object},
     visual::{
@@ -9,13 +8,11 @@ use mathlib::{
         color::{Col, WHITE},
         light::Light,
         material::Material,
-        world::World,
     },
 };
 use yaml_rust2::{yaml, Yaml, YamlLoader};
 
-use crate::png_io::canvas_png_save;
-
+/// Container holding all information relevant to a scene.
 pub struct SceneToRun {
     pub camera: Option<Camera>,
     pub lights: Vec<Light>,
@@ -30,22 +27,9 @@ impl SceneToRun {
             objects: vec![],
         }
     }
-
-    pub fn run_scene(self) {
-        let mut world = World::new();
-        for light in self.lights {
-            world.lights.push(light);
-        }
-        for obj in self.objects {
-            world.objects.push(obj)
-        }
-
-        let canvas = crate::parallel::render_parallel(self.camera.expect("unreachable."), world);
-        write_to_file("./out.ppm", canvas.canvas_to_ppm());
-        canvas_png_save(&canvas, "./out.png");
-    }
 }
 
+/// Parses all information regarding the scene out of a yaml-string.
 pub fn parse_str(yaml_str: String) -> SceneToRun {
     let docs = YamlLoader::load_from_str(&yaml_str).expect("Unable to load yaml from string.");
     let root_nodes = docs[0]

@@ -1,10 +1,13 @@
-
-# Only the workspace definition allowed in here (no dependencies etc)
-
+# all our libraries and projects for frontent-/commandline-implementations
 [workspace]
 members=[
     "runtime_unix",
-    "mathlib",
+    "mathlib_renderer",
+    "parselib_yaml",
     "wasm_webpack"
 ]
 resolver = "1"
+
+[profile.release]
+lto = true
+opt-level = 3

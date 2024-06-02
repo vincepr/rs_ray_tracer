@@ -1,0 +1,12 @@
+###
+### Library-project that holds all code regarding the yaml-parsing and converting that to render-instructions.
+###
+
+[package]
+name = "parselib_yaml"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+yaml-rust2= "0.8"
+mathlib_renderer = { path = "../mathlib_renderer"}

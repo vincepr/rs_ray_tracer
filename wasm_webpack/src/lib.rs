@@ -9,9 +9,10 @@ use web_sys::{CanvasRenderingContext2d, ImageData};
 // This is like the `main` function, except for JavaScript.
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
-    // This provides better error messages in debug mode.
-    // It's disabled in release mode so it doesn't bloat up the file size.
-    #[cfg(debug_assertions)]
+    // When the `console_error_panic_hook` feature is enabled, we can call the
+    // `set_panic_hook` function at least once during initialization, and then
+    // we will get better error messages if our code ever panics.
+    #[cfg(feature = "console_error_panic_hook")]
     console_error_panic_hook::set_once();
     console::log_1(&JsValue::from_str("wasm is hooked up and working."));
     Ok(())

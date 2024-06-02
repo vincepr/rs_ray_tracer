@@ -1,5 +1,5 @@
 use image::{ImageBuffer, ImageFormat, RgbImage};
-use mathlib::{
+use mathlib_renderer::{
     io::ppm::COLOR_MAXVAL,
     visual::{canvas::Canvas, color::Col},
 };

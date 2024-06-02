@@ -1,3 +1,7 @@
+###
+### Project that implements a multi threaded cli-application to run our renderer
+###
+
 [package]
 name = "runtime_unix"
 version = "0.1.0"
@@ -7,6 +11,7 @@ edition = "2021"
 [dependencies]
 image = "0.24.7"
 indicatif = "0.17.7"
-mathlib = { path = "../mathlib"}
+mathlib_renderer = { path = "../mathlib_renderer"}
+parselib_yaml = { path = "../parselib_yaml"}
 rayon = "1.8.0"
-yaml-rust2= "0.8"
+

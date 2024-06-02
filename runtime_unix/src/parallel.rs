@@ -1,7 +1,7 @@
 // using rayon for multi threading the process
 
 use indicatif::{ProgressBar, ProgressStyle};
-use mathlib::visual::{camera::Camera, canvas::Canvas, world::World};
+use mathlib_renderer::visual::{camera::Camera, canvas::Canvas, world::World};
 use rayon::prelude::*;
 pub fn render_parallel(camera: Camera, world: World) -> Canvas {
     let bar = ProgressBar::new((camera.height) as u64);

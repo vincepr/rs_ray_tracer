@@ -1,6 +1,6 @@
 use std::f64::consts::PI;
 
-use mathlib::{
+use mathlib_renderer::{
     mathstructs::{matrix::Matrix, point::Point, vector::Vector},
     object::{plane::Plane, sphere::Sphere},
     visual::{
