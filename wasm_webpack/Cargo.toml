@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 [features]
 # If you uncomment this line, it will enable `wee_alloc`:
 #default = ["wee_alloc", "console_error_panic_hook"]
-default = []
+default = ["console_error_panic_hook"]
 
 [dependencies]
 # The `wasm-bindgen` crate provides the bare minimum functionality needed
