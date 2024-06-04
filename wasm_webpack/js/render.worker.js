@@ -1,27 +1,27 @@
 import * as ComLink from "comlink";
 
-// code for our web-workers (so we dont block our ui thread AND can parallelize)
-
-ComLink.expose({
-  world: undefined,
-  range: undefined,
-  y: undefined,
-  init(size, lineRange) {
-    return import("../pkg").then((wasm) => {
-      wasm.main_js();
-      this.world = new wasm.World(size);
-      this.range = lineRange;
-      this.y = lineRange.start;
+class RendererWorker{
+  // sets up wasm for this worker and current state.
+  // Web workers cant really share a wasm-instance. So they all start their own here. Only the
+  // Wasm-Object: 'Renderer' need's to be saved by reference to call into this wasm instance
+  async init({start: start, end: end, yaml_str: yaml_str}) {
+    await import("../pkg").then((wasm) => {
+      wasm.main_js(); // initialize rust-panic -> console.error pipline so errors are passed down.
+ 
+    this.wasmRenderer = new wasm.WasmRenderer(yaml_str);
+      this.end = end;
+      this.y = start;
     });
-  },
-  renderNext() {
-    if (this.y >= this.range.end) {
+  }
+
+  async renderNext() {
+    if (this.y >= this.end) {
       return false;
     }
 
-    const data = this.world.render(this.y);
-    const retVal = { y: this.y++, data };
-    // return Comlink.transfer(retVal, [retVal.data.data]);
-    return retVal;
-  },
-});
+    const imgData = this.wasmRenderer.row_to_image_pixels(this.y);
+    return { y: this.y++, imgData: imgData };
+  }
+}
+
+ComLink.expose(new RendererWorker());

@@ -9,6 +9,119 @@
       <p>Uses only a single thread in the browser, so fairly slow</p>
       <p>2000 x 1000 took arround 45 seconds on my machine</p>
       <div>
+        <label for="input_yaml">width</label>
+        <textarea name="input_yaml" id="input_yaml" rows="15" style="min-width:500px; max-width:100%;min-height:50px;height:100%;width:100%;">
+          # ======================================================
+          # the camera
+          # ======================================================
+          
+          - add: camera
+            width: 200
+            height: 80
+            field-of-view: 0.785
+            from: [ -6, 6, -10 ]
+            to: [ 6, 0, 6 ]
+            up: [ -0.45, 1, 0 ]
+          
+          # ======================================================
+          # light sources
+          # ======================================================
+          
+          - add: light
+            at: [ 50, 100, -50 ]
+            intensity: [ 1, 1, 1 ]
+          
+          # an optional second light for additional illumination
+          - add: light
+            at: [ -400, 50, -10 ]
+            intensity: [ 0.2, 0.2, 0.2 ]
+          
+          # ======================================================
+          # define some constants to avoid duplication
+          # ======================================================
+          
+          - define: white-material
+            value:
+              color: [ 1, 1, 1 ]
+              diffuse: 0.7
+              ambient: 0.1
+              specular: 0.0
+              reflective: 0.1
+          
+          - define: blue-material
+            extend: white-material
+            value:
+              color: [ 0.537, 0.831, 0.914 ]
+          
+          - define: red-material
+            extend: white-material
+            value:
+              color: [ 0.941, 0.322, 0.388 ]
+          
+          - define: purple-material
+            extend: white-material
+            value:
+              color: [ 0.373, 0.404, 0.550 ]
+          
+          - define: standard-transform
+            value:
+              - [ translate, 1, -1, 1 ]
+              - [ scale, 0.5, 0.5, 0.5 ]
+          
+          - define: large-object
+            value:
+              - standard-transform
+              - [ scale, 3.5, 3.5, 3.5 ]
+          
+          - define: medium-object
+            value:
+              - standard-transform
+              - [ scale, 3, 3, 3 ]
+          
+          - define: small-object
+            value:
+              - standard-transform
+              - [ scale, 2, 2, 2 ]
+          
+          # ======================================================
+          # a white backdrop for the scene
+          # ======================================================
+          
+          - add: plane
+            material:
+              color: [ 1, 1, 1 ]
+              ambient: 1
+              diffuse: 0
+              specular: 0
+            transform:
+              - [ rotate-x, 1.5707963267948966 ] # pi/2
+              - [ translate, 0, 0, 500 ]
+          
+          # ======================================================
+          # describe the elements of the scene
+          # ======================================================
+          
+          - add: sphere
+            material:
+              color: [ 0.373, 0.404, 0.550 ]
+              diffuse: 0.2
+              ambient: 0.0
+              specular: 1.0
+              shininess: 200
+              reflective: 0.7
+              transparency: 0.7
+              refractive-index: 1.5
+            transform:
+              - large-object
+          
+          - add: cube
+            material: white-material
+            transform:
+              - medium-object
+              - [ translate, 4, 0, 0 ]
+        </textarea>
+      </div>
+      <div>
         <label for="input_width">width</label>
         <input type="number" pattern="\d+" name="input_width" id="input_width" value="200" step="100">
       </div>

@@ -1,114 +1,79 @@
-// import * as ComLink from "comlink";
-
-
-// async function spawnRenderer(start, end) {
-//     const worker = new Worker("./worker.js");
-//     const renderer = ComLink.wrap(worker);
-
-//     console.log("worker initializing.", start, end);
-//     await renderer.init(size, {start: start, end: end});
-
-//     console.log("worker starting, beginning rendering.", start, end)
-//     while ((lineData = await renderer.renderNext()) != false) {
-//         // render one line
-//         context.putImageData(lineData.data, 0, result.y);
-//     }
-// }
-
-// // import('../pkg/index.js')
-// //     .then(wasm => {
-// //         const canvas = document.getElementById('drawing');
-// //         const ctx = canvas.getContext('2d');
-
-// //         const input_width = document.getElementById('input_width');
-// //         const input_height = document.getElementById('input_height');
-// //         const renderBtn = document.getElementById('render');
-// //         const time_result = document.getElementById('time_result');
-
-// //         renderBtn.addEventListener('click', () => {
-// //             const width = parseInt(input_width.value) || 0;
-// //             const height = parseInt(input_height.value) || 0;
-// //             canvas.width = width;
-// //             canvas.height = height;
-// //             const start = new Date();
-
-// //             (async () => {
-// //                 spawnRenderer(0, size);
-// //             })
-
-// //             wasm.draw(ctx, width, height, "generatorstring");
-// //             const time_ms = new Date().getTime() - start.getTime();
-// //             time_result.innerHTML = `it took ${Math.round(time_ms/1000)}s to render`;
-// //         });
-
-// //         // wasm.draw(ctx, 50, 50, "generatorstring");
-// //         const drawImage = (url) => {
-// //             const image = new Image();
-// //             image.src = url;
-// //             image.onload = () => {
-// //                 canvas.width = image.width;
-// //                 canvas.height = image.height;
-// //                ctx.drawImage(image, 0, 0);
-// //             }
-// //         }
-// //         drawImage("./example.png");
-// //     })
-// //     .catch(console.error);
-
-// const size = 2048;
-// const canvas = document.getElementById('drawing');
-// canvas.setAttribute("width", size);
-// canvas.setAttribute("height", size);
-
-// // double pixels to help against aliassing
-// canvas.style.width = size / 2 + "px";
-// canvas.style.height = size / 2 + "px";
-
-// const context = canvas.getContext("2d");
-
-
-
-// (async () => {
-//     spawnRenderer(0, size);
-// })
-
 import * as Comlink from "comlink";
-const size = 200;
 
-const canvas = document.createElement("canvas");
-canvas.setAttribute("width", size);
-canvas.setAttribute("height", size);
-// canvas.style.width = size / 2 + "px";
-// canvas.style.height = size / 2 + "px";
+drawCanvasOnPageload("./example.png");
+setupPage();
 
-document.body.appendChild(canvas);
-
-const context = canvas.getContext("2d");
-
-// starts the rendering process for slice of pixes: [start, end]
-async function spawnRenderer(start, end) {
-  const worker = new Worker('./worker.js');
-  const renderer = Comlink.wrap(worker);
-  
-  console.log("initializing ", start, "-", end);
-  await renderer.init(size, { start: start, end: end });
-
-  console.log("rendering ", start, "-", end);
-  let result;
-  while ((result = await renderer.renderNext()) !== false) {
-    context.putImageData(result.data, 0, result.y);
-  }
+async function setupPage() {
+  const renderBtn = document.getElementById('render');
+  renderBtn.addEventListener('click', handleRenderBtnClicked);
 }
 
+async function handleRenderBtnClicked(){
+  // start timer
+  const start_time = new Date();
 
-async function startParallelRenderprocess(fixedNrCores = null) {
+  // prepare our canvas/ctx
+  const canvas = document.getElementById('drawing');
+  const ctx = canvas.getContext('2d');
+  const yaml_str = document.getElementById('input_yaml').value;
+
+  let {width, height} = await parseYamlForSceneData();
+  canvas.width = width;
+  canvas.height = height;
+
+  // start the rendering
+  await startParallelRendering(ctx, yaml_str, height);
+
+  // display timer
+  const time_ms = new Date().getTime() - start_time.getTime();
+  time_result.innerHTML = `it took ${Math.round(time_ms/1000)}s to render`;
+}
+
+// Parse in yaml in wasm one time, to get width and height.
+// We could also check for (syntax-)errors here. For better error-feedback.
+async function parseYamlForSceneData() {
+  return import('../pkg/index.js').then(wasm => {
+    const yaml_str = document.getElementById('input_yaml').value;
+    const sceneToRender = new wasm.WasmRenderer(yaml_str);
+    return { width: sceneToRender.width, height: sceneToRender.height }
+  });
+}
+
+async function startParallelRendering(ctx, yaml_str, sceneHeight, fixedNrCores = null) {
+  async function spawnRenderer(start, end) {
+    const worker = new Worker('./worker.js');
+    const renderer = Comlink.wrap(worker);
+    
+    await renderer.init({ start: start, end: end, yaml_str: yaml_str });
+
+    console.log("starting worker for ", start, " to ", end);
+    let result;
+    while ((result = await renderer.renderNext()) !== false) {
+      ctx.putImageData(result.imgData, 0, result.y);
+    }
+  }
+
   const possibleWorkers = navigator.hardwareConcurrency || 4;
   const workers = fixedNrCores !== null ? fixedNrCores : possibleWorkers;
-  console.log(`found ${navigator.hardwareConcurrency} threads, multithreading with ${workers} concurrent workers.`)
-  const perWorker = size / workers;
+  console.log(`found ${navigator.hardwareConcurrency} cores, multithreading with ${workers} concurrent workers.`)
+  const perWorker = sceneHeight / workers;
+
+  let tasks = [];
   for (let i = 0; i < workers; i++) {
-    spawnRenderer(i * perWorker, (i + 1) * perWorker);
+    tasks.push(spawnRenderer(i * perWorker, (i + 1) * perWorker));
   }
+
+  await Promise.all(tasks);
 }
 
-startParallelRenderprocess(2);
+function drawCanvasOnPageload(url) {
+  const canvas = document.getElementById('drawing');
+  const ctx = canvas.getContext('2d');
+  const image = new Image();
+  image.src = url;
+  image.onload = () => {
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.drawImage(image, 0, 0);
+  }
+}

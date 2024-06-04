@@ -1,3 +1,7 @@
+# The wasm webpack project
+* Holds rust code to expose wasm bindings to js.
+* Some Js to make the rust run.
+
 ## How to install
 
 ```sh
