@@ -57,9 +57,10 @@ async function startParallelRendering(ctx, yaml_str, sceneHeight, fixedNrCores =
     }
   }
 
+  // browsers report untrue cpu-count, so we add some on top.
   const possibleWorkers = navigator.hardwareConcurrency || 4;
-  const workers = fixedNrCores !== null ? fixedNrCores : possibleWorkers;
-  console.log(`found ${navigator.hardwareConcurrency} cores, multithreading with ${workers} concurrent workers.`)
+  const workers = fixedNrCores !== null ? fixedNrCores : (possibleWorkers + 3);
+  console.log(`browser reported ${navigator.hardwareConcurrency} cores, multithreading with ${workers} concurrent workers.`)
   const perWorker = sceneHeight / workers;
 
   let tasks = [];
