@@ -5,19 +5,19 @@
 ## Example render of the book-cover
 - generate the book cover fromt he parsed yaml file `./samples/yaml_samples/book_cover.yaml` 
 
-![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+![book_cover_render](data/yaml_samples/appendix1_book_cover.png)
 
 - chapter 7 - the first decent render
 
-![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+![book_cover_render](data/yaml_samples/chapter7.png)
 
 - chapter 8 - added shadows
 
-![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+![book_cover_render](data/yaml_samples/chapter8.png)
 
 - chapter 11 - added reflection and refraction
 
-![book_cover_render](data/yaml_samples/appendix1_book_cover.png)
+![book_cover_render](data/yaml_samples/chapter11.png)
 
 ## The Ray Tracer Challange
 Along the Book **The Ray Tracer Challenge** by Jamis Buck, the goal is to write a 3D Renderer in rust. And play arround with Flamegraph, Wasm, Wasm combined with Webworkers and whatever else comes up.
