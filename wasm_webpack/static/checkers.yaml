@@ -1,9 +1,9 @@
 - add: camera
   width: 1000
-  height: 500
+  height: 800
   field-of-view: 1.047
   from: [ 0, 1.5, -5 ]
-  to: [ 0, 1, .0 ]
+  to: [ 0, 0.2, 0 ]
   up: [ 0, 1, 0 ]
 
 - add: light

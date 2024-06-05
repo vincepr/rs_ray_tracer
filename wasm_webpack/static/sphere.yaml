@@ -10,7 +10,6 @@
   to: [ 0, 1, .0 ]
   up: [ 0, 1, 0 ]
 
-
 # ======================================================
 # light sources
 # ======================================================
@@ -20,10 +19,8 @@
   intensity: [ 1, 1, 1 ]
 
 # ======================================================
-# define some constants to avoid duplication
+# define the objects
 # ======================================================
-
-
 
 # a flattened sphere scaled up is used as 'ground'
 - add: sphere
