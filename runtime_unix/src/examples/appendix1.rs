@@ -1,4 +1,4 @@
-use mathlib_renderer::{io::ppm::write_to_file, visual::world::World};
+use mathlib_renderer::io::ppm::write_to_file;
 use parselib_yaml::yaml::SceneToRun;
 
 use crate::png_io::canvas_png_save;
