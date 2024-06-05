@@ -1,7 +1,7 @@
 import * as Comlink from "comlink";
 
-setupCanvasOnPageload("./example.png");
-setupTexareaOnPageload("./book_cover.yaml")
+setupInitialCanvas("./example.png");
+loadTextareaFromFile("./cover.yaml")
 setupPage();
 
 function setupPage() {
@@ -9,12 +9,13 @@ function setupPage() {
   renderBtn.addEventListener('click', handleRenderBtnClicked);
 }
 
+//
+//                  Rendering
+//
+
 async function handleRenderBtnClicked(){
   // start timer
   const start_time = new Date();
-
-  let coreCount = document.getElementById('input_cores').value;
-  coreCount = coreCount > 0 ? coreCount : null;
 
   // prepare our canvas/ctx
   const canvas = document.getElementById('drawing');
@@ -26,7 +27,7 @@ async function handleRenderBtnClicked(){
   canvas.height = height;
 
   // start the rendering
-  await startParallelRendering(ctx, yaml_str, height, coreCount);
+  await startParallelRendering(ctx, yaml_str, height);
 
   // display timer
   const time_ms = new Date().getTime() - start_time.getTime();
@@ -43,7 +44,7 @@ async function parseYamlForSceneData() {
   return await renderer.getWidthHeight();
 }
 
-async function startParallelRendering(ctx, yaml_str, sceneHeight, fixedNrCores = null) {
+async function startParallelRendering(ctx, yaml_str, sceneHeight) {
   async function spawnRenderer(start, end) {
     const worker = new Worker('./worker.js');
     const renderer = Comlink.wrap(worker);
@@ -58,20 +59,30 @@ async function startParallelRendering(ctx, yaml_str, sceneHeight, fixedNrCores =
   }
 
   // browsers report untrue cpu-count, so we add some on top.
-  const possibleWorkers = navigator.hardwareConcurrency || 4;
-  const workers = fixedNrCores !== null ? fixedNrCores : (possibleWorkers + 3);
-  console.log(`browser reported ${navigator.hardwareConcurrency} cores, multithreading with ${workers} concurrent workers.`)
-  const perWorker = sceneHeight / workers;
-
+  const workerCount = getAvailableCores();
+  const perWorker = sceneHeight / workerCount;
   let tasks = [];
-  for (let i = 0; i < workers; i++) {
+
+  for (let i = 0; i < workerCount; i++) {
     tasks.push(spawnRenderer(i * perWorker, (i + 1) * perWorker));
   }
 
   await Promise.all(tasks);
 }
 
-function setupCanvasOnPageload(url) {
+function getAvailableCores() {
+  const coresNrInput = document.getElementById('input_cores');
+  const coreCount = coresNrInput.value > 0 ? coresNrInput.value : navigator.hardwareConcurrency || 4;
+  console.log(`browser reported ${navigator.hardwareConcurrency} cores, multithreading with ${coreCount} concurrent workers.`)
+  coresNrInput.value = coreCount;
+  return coreCount;
+}
+
+//
+//              Handle buttons/navigation 
+//
+
+function setupInitialCanvas(url) {
   const canvas = document.getElementById('drawing');
   const ctx = canvas.getContext('2d');
   const image = new Image();
@@ -83,11 +94,35 @@ function setupCanvasOnPageload(url) {
   }
 }
 
-async function setupTexareaOnPageload(path) {
-  fetch(path)
+document.getElementById("sphere_yaml").addEventListener("click", () => {
+  changeOpenFile("sphere_yaml");
+});
+
+document.getElementById("checkers_yaml").addEventListener("click", () => {
+  changeOpenFile("checkers_yaml");
+});
+
+document.getElementById("cover_yaml").addEventListener("click", () => {
+  changeOpenFile("cover_yaml");
+});
+
+// use this global variable to store 'state'
+var activeFile = "cover_yaml"
+
+async function changeOpenFile(filename) {
+  document.getElementById(activeFile).classList.remove("fileopen");
+  document.getElementById(filename).classList.add("fileopen");
+  await loadTextareaFromFile("./" + filename.replace("_", "."))
+  activeFile = filename;
+  if (document.getElementById('checkbox_onload').checked ==true) {
+    handleRenderBtnClicked();
+  }
+}
+
+async function loadTextareaFromFile(path) {
+  await fetch(path)
     .then(response => response.text())
     .then((text) => {
-      const textArea = document.getElementById("input_yaml");
-      textArea.value = text
-    })
+      document.getElementById("input_yaml").value = text;
+    });
 }
