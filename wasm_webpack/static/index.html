@@ -1,75 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="styles.css" >
     <title>Rust + WASM ray tracer project</title>
   </head>
   <body>
-    <div class="controls">
-      <p>Uses web workers to parellalize the wasm workload</p>
-      <div>
-        <label for="input_yaml">width</label>
-        <textarea name="input_yaml" id="input_yaml" rows="15" style="min-width:500px; max-width:100%;min-height:50px;height:100%;width:100%;">
-          # ======================================================
-          # the camera
-          # ======================================================
-          
-          - add: camera
-            width: 200
-            height: 80
-            field-of-view: 0.785
-            from: [ -6, 6, -10 ]
-            to: [ 6, 0, 6 ]
-            up: [ -0.45, 1, 0 ]
-          
-          # ======================================================
-          # light sources
-          # ======================================================
-          
-          - add: light
-            at: [ 50, 100, -50 ]
-            intensity: [ 1, 1, 1 ]
-          
-          # ======================================================
-          # a white backdrop for the scene
-          # ======================================================
-          
-          - add: plane
-            material:
-              color: [ 1, 1, 1 ]
-              ambient: 1
-              diffuse: 0
-              specular: 0
-            transform:
-              - [ rotate-x, 1.5707963267948966 ] # pi/2
-              - [ translate, 0, 0, 500 ]
-          
-          # ======================================================
-          # describe the elements of the scene
-          # ======================================================
-          
-          - add: sphere
-            material:
-              color: [ 0.373, 0.404, 0.550 ]
-              diffuse: 0.2
-              ambient: 0.0
-              specular: 1.0
-              shininess: 200
-              reflective: 0.7
-              transparency: 0.7
-              refractive-index: 1.5
-          
-        </textarea>
-      </div>
-      <div>
-        <label for="input_cores">cores count. -1 for max.</label>
-        <input type="number" pattern="\d+" name="input_cores" id="input_cores" value="-1" step="1">
-      </div>
-      <button class="button-primary" id="render">render</button>
-      <label id="time_result"></label>
+    <div class="nav-box dark4">
+      <nav class="nav-left">
+          <button class="button " id="sphere_yaml">sphere.yml</button>
+          <button class="button " id="checkers_yaml">checkers.yml</button>
+          <button class="button fileopen " id="cover_yaml">cover.yml</button>
+          <div style="margin-left: 0.5em;"><label>Render on tab load</label><input class="toggle" type="checkbox" id="checkbox_onload" checked/></div>
+      </nav>
+      <nav class="nav-right">
+        <button class="button" type="button" onClick="parent.open('https://www.github.com/vincepr/rs_ray_tracer')">on Github</button>
+        <button class="button green " id="render">Render ▶</button>
+        <div>
+          <label class="label_middle">CPU Cores
+            <input class="number" type="number" min="0" max="30" name="input_cores" id="input_cores" value="0" step="1">
+          </label>
+        </div>
+      </nav>
     </div>
-    <canvas id="drawing" src="./out.png" width="600" height="600" style="max-width:100%;"></canvas>
-
+    <div class="row dark3">
+      <div class="column left" id="container">
+        <label  id="time_result"></label>
+        <canvas id="drawing" src="./out.png" width="600" height="600" style="max-width:100%;"></canvas>
+      </div>
+      <div class="column right dark3" >
+        <textarea class="textarea emscripten" id="input_yaml" type="text" spellcheck="false" >some text</textarea>
+      </div>
+    </div>
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <script src="./bootstrap.js"></script>
   </body>

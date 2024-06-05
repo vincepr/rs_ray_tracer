@@ -1,0 +1,82 @@
+# ======================================================
+# the camera
+# ======================================================
+
+- add: camera
+  width: 1000
+  height: 500
+  field-of-view: 1.047
+  from: [ 0, 1.5, -5 ]
+  to: [ 0, 1, .0 ]
+  up: [ 0, 1, 0 ]
+
+
+# ======================================================
+# light sources
+# ======================================================
+
+- add: light
+  at: [ -10, 10, -10 ]
+  intensity: [ 1, 1, 1 ]
+
+# ======================================================
+# define some constants to avoid duplication
+# ======================================================
+
+
+
+# a flattened sphere scaled up is used as 'ground'
+- add: sphere
+  material:
+    color: [ 1, 0.9, 0.9 ]
+  transform:
+    - [ scale, 10, 0.01, 10]
+
+# a flattened sphere is used as left 'wall'
+- add: sphere
+  material:
+    color: [ 1, 0.9, 0.9 ]
+  transform:
+    - [ scale, 10, 0.01, 10]
+    - [ rotate-x, 1.57]
+    - [ rotate-y, -0.78 ]
+    - [ translate, 0, 0, 5 ]
+
+# a flattened sphere is used as right 'wall'
+- add: sphere
+  material:
+    color: [ 1, 0.9, 0.9 ]
+  transform:
+    - [ scale, 10, 0.01, 10]
+    - [ rotate-x, 1.57]
+    - [ rotate-y, 0.785 ]
+    - [ translate, 0, 0, 5 ]
+
+# colored red sphere in the middle
+- add: sphere
+  material:
+    color: [ 0.1, 1, 0.5 ] # red
+    diffuse: 0.7
+    specular: 0.3
+  transform:
+    - [ translate, -0.5, 1, 0.5 ]
+  
+# colored green halfsize sphere on the right:
+- add: sphere
+  material:
+    color: [ 0.5, 1, 0.1 ] # green
+    diffuse: 0.7
+    specular: 0.3
+  transform:
+    - [ scale, 0.5, 0.5, 0.5]
+    - [ translate, 1.5, 0.5, -0.5 ]
+
+# colored smallest sphere to the left:
+- add: sphere
+  material:
+    color: [ 1, 0.8, 0.1 ] # green
+    diffuse: 0.7
+    specular: 0.3
+  transform:
+    - [ scale, 0.33, 0.33, 0.33 ]
+    - [ translate, -1.5, 0.33, -0.75 ]

@@ -46,7 +46,7 @@ impl WasmRenderer {
 
     for x in 0..self.scene.camera.width {
       let ray = self.scene.camera.ray_for_pixel(x, y);
-      let color = self.scene.world.color_at(&ray, 4);
+      let color = self.scene.world.color_at(&ray, 2);
       raw_pixels.push(color::base_255(color.r));
       raw_pixels.push(color::base_255(color.g));
       raw_pixels.push(color::base_255(color.b));

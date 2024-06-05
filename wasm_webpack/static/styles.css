@@ -1,0 +1,257 @@
+@import url(https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700,800);
+
+html, body {
+  font-family: "Dosis";
+  font-weight: 300;
+  height: 100%;
+  margin: 0;
+  /* overflow: hidden;  */
+  --col1 : #191A19;
+  --col2: #1E5128;
+  --col3: #4E9F3D;
+  --col4: #4a4c43;
+
+  --dark1: 	#3e3e42;
+  --dark2: 	#2d2d30;
+  --dark3: 	#252526;
+  --dark4: 	#1e1e1e;
+}
+
+.nav-box{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background-color: #f1f3f5;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.nav-left {
+  align-items: center;
+  display: flex;
+  text-align: left;
+  padding: 10px 0px;
+  font-size: 1rem;
+}
+
+.nav-right {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  text-align: right;
+  padding: 10px 0px;
+  font-size: 1rem;
+}
+
+label {
+  display:flex;
+  text-align: justify;
+  justify-content: center;
+  justify-self: center;
+}
+.label_middle {
+  display: block;
+}
+
+.number {
+	display: inline-block;
+    margin: 5px 2px 5px 2px;
+    padding: 0.75rem 0.75rem;
+    width: 50px;
+	border: 0;
+	border-radius: 0.317rem;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 1rem;
+    line-height: 1.5;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	cursor: pointer;
+	-webkit-font-smoothing: antialiased;
+	background-color: #aaa;
+}
+
+
+/* BUTTON STYLING*/
+.button {
+	display: inline-block;
+  margin: 5px 2px 5px 2px;
+  padding: 0.75rem 0.75rem;
+	border: 0;
+	border-radius: 0.317rem;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 1rem;
+  line-height: 1.5;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	cursor: pointer;
+	-webkit-font-smoothing: antialiased;
+	background-color: #aaa;
+}
+
+.fileopen{
+  border: solid #191a198a;
+  background-color: var(--col4);
+	box-shadow: inset 0 3px 4px hsla(0, 0%, 0%, 0.2);
+}
+
+.button:hover {
+	opacity: 0.85;
+}
+
+.button:active {
+	box-shadow: inset 0 3px 4px hsla(0, 0%, 0%, 0.2);
+  outline: thin dotted #444;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.green {
+	background-color:  var(--col3);
+}
+
+
+/*TEXTEDITOR & OUTPUT*/
+.column {
+  /* float: left; */
+  height: 300px;
+  height: 100%;
+}
+  
+.left {
+  width: 100%;
+  height: 100%;
+}
+  
+.right {
+  margin-left: 10px;
+  height: 100%;
+  background-color:#f1f3f5;
+}
+
+.row {
+  height: 90%;
+  padding: 10px;
+  display: flex;
+
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* THE OUTPUT*/
+
+textarea.emscripten {
+  width: 59ch;
+  height: 100%;
+  outline: none;
+  border: none;
+  padding:0;
+  font-family: monospace;
+  resize: none;
+  background-color: #f1f3f5;
+}
+div.emscripten { text-align: center; }
+div.emscripten_border { border: 1px solid black; }
+
+/* CSS FOR TOGGLE BUTTONS*/
+.toggle {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 62px;
+  height: 32px;
+  display: inline-block;
+  position: relative;
+  border-radius: 50px;
+  overflow: hidden;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  background-color: #707070;
+  transition: background-color ease 0.3s;
+}
+
+.toggle:before {
+  content: "on off";
+  display: block;
+  position: absolute;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  left: 2px;
+  top: 2px;
+  border-radius: 50%;
+  font: 10px/28px Helvetica;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-indent: -22px;
+  word-spacing: 37px;
+  color: #fff;
+  text-shadow: -1px -1px rgba(0,0,0,0.15);
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+}
+
+.toggle:checked {
+  background-color: var(--col3);
+}
+
+.toggle:checked:before {
+  left: 32px;
+}
+
+.dark1Active{
+  background-color: var(--col2) !important;
+}
+.dark2Active{
+  background-color: var(--col3) !important;
+}
+.dark2Active .fileopen {
+  background-color: #aaa!important;
+}
+.dark3Active{
+  background-color: var(--dark3) !important;
+  color:#f1f3f5;
+}
+.dark4Active{
+  background-color: var(--dark4) !important;
+  color:#f1f3f5;
+}
+
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 900px) {
+  .left {
+    width: 100%;
+    height:fit-content
+  }
+  .right {
+    margin-left: 0.5em;
+    width:auto;
+    height: 50%;
+  }
+  .row {
+    display:contents;
+    box-sizing: border-box;
+    height: 90%;
+    padding: 10px;
+  }
+  textarea.emscripten {
+    width: -webkit-fill-available;
+    height: 100%;
+    outline: none;
+    border: none;
+    padding:0;
+    font-family: monospace;
+    resize: none;
+    background-color: #f1f3f5;
+  }
+}
