@@ -1,9 +1,10 @@
 import * as Comlink from "comlink";
 
-drawCanvasOnPageload("./example.png");
+setupCanvasOnPageload("./example.png");
+setupTexareaOnPageload("./book_cover.yaml")
 setupPage();
 
-async function setupPage() {
+function setupPage() {
   const renderBtn = document.getElementById('render');
   renderBtn.addEventListener('click', handleRenderBtnClicked);
 }
@@ -11,6 +12,9 @@ async function setupPage() {
 async function handleRenderBtnClicked(){
   // start timer
   const start_time = new Date();
+
+  let coreCount = document.getElementById('input_cores').value;
+  coreCount = coreCount > 0 ? coreCount : null;
 
   // prepare our canvas/ctx
   const canvas = document.getElementById('drawing');
@@ -22,7 +26,7 @@ async function handleRenderBtnClicked(){
   canvas.height = height;
 
   // start the rendering
-  await startParallelRendering(ctx, yaml_str, height);
+  await startParallelRendering(ctx, yaml_str, height, coreCount);
 
   // display timer
   const time_ms = new Date().getTime() - start_time.getTime();
@@ -66,7 +70,7 @@ async function startParallelRendering(ctx, yaml_str, sceneHeight, fixedNrCores =
   await Promise.all(tasks);
 }
 
-function drawCanvasOnPageload(url) {
+function setupCanvasOnPageload(url) {
   const canvas = document.getElementById('drawing');
   const ctx = canvas.getContext('2d');
   const image = new Image();
@@ -76,4 +80,13 @@ function drawCanvasOnPageload(url) {
       canvas.height = image.height;
       ctx.drawImage(image, 0, 0);
   }
+}
+
+async function setupTexareaOnPageload(path) {
+  fetch(path)
+    .then(response => response.text())
+    .then((text) => {
+      const textArea = document.getElementById("input_yaml");
+      textArea.value = text
+    })
 }

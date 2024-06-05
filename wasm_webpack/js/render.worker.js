@@ -1,5 +1,6 @@
 import * as ComLink from "comlink";
 
+// web worker used to parellalize the wasm workload.
 class RendererWorker{
   // sets up wasm for this worker and current state.
   // Web workers cant really share a wasm-instance. So they all start their own here. Only the
@@ -23,7 +24,7 @@ class RendererWorker{
     return { y: this.y++, imgData: imgData };
   }
 
-  async getWidthHeight(){
+  async getWidthHeight() {
     return { width: this.wasmRenderer.width, height: this.wasmRenderer.height }
   }
 }

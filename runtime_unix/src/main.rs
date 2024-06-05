@@ -10,5 +10,5 @@ pub mod examples {
 }
 
 fn main() {
-    examples::appendix1::parse_yaml();
+    examples::appendix1::parse_yaml_cli();
 }

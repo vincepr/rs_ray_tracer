@@ -1,9 +1,9 @@
 use mathlib_renderer::{io::ppm::write_to_file, visual::world::World};
-use parselib_yaml::yaml::{parse_str, SceneToRun};
+use parselib_yaml::yaml::SceneToRun;
 
 use crate::png_io::canvas_png_save;
 
-pub fn parse_yaml() {
+pub fn parse_yaml_cli() {
     // read args
     let args: Vec<String> = std::env::args().collect();
 
@@ -23,7 +23,7 @@ pub fn parse_yaml() {
     let yaml_str = std::fs::read_to_string(path).unwrap();
 
     // parse yaml to scene
-    let scene = parse_str(yaml_str);
+    let scene = SceneToRun::new_from_yaml(&yaml_str);
 
     // render scene to output .ppm and .png files in parallel
     run_scene(scene);
@@ -31,15 +31,8 @@ pub fn parse_yaml() {
 
 /// render the scene out and write the result to a file
 pub fn run_scene(scene: SceneToRun) {
-    let mut world = World::new();
-    for light in scene.lights {
-        world.lights.push(light);
-    }
-    for obj in scene.objects {
-        world.objects.push(obj)
-    }
 
-    let canvas = crate::parallel::render_parallel(scene.camera.expect("unreachable."), world);
+    let canvas = crate::parallel::render_parallel(scene.camera, scene.world);
     write_to_file("./out.ppm", canvas.canvas_to_ppm());
     canvas_png_save(&canvas, "./out.png");
 }

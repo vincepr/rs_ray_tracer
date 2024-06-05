@@ -7,65 +7,52 @@ use mathlib_renderer::{
         camera::Camera,
         color::{Col, WHITE},
         light::Light,
-        material::Material,
+        material::Material, world::World,
     },
 };
 use yaml_rust2::{yaml, Yaml, YamlLoader};
 
 /// Container holding all information relevant to a scene.
 pub struct SceneToRun {
-    pub camera: Option<Camera>,
-    pub lights: Vec<Light>,
-    pub objects: Vec<Object>,
+    pub camera: Camera,
+    pub world: World,
 }
 
 impl SceneToRun {
-    pub fn new() -> Self {
-        Self {
-            camera: None,
-            lights: vec![],
-            objects: vec![],
-        }
-    }
-}
-
-/// Parses all information regarding the scene out of a yaml-string.
-pub fn parse_str(yaml_str: String) -> SceneToRun {
-    let docs = YamlLoader::load_from_str(&yaml_str).expect("Unable to load yaml from string.");
-    let root_nodes = docs[0]
-        .as_vec()
-        .expect("Bad yaml structure. Expected multiple entries.");
-
-    let defs = parse_definitions(root_nodes);
-
-    let mut camera: Option<Camera> = None;
-    let mut lights: Vec<Light> = vec![];
-    let mut objects: Vec<Object> = vec![];
-
-    for node in root_nodes.iter().map(|yaml| yaml.as_hash().unwrap()) {
-        if let Some(add_node) = node.get(&Yaml::from_str("add")) {
-            match add_node.as_str().unwrap() {
-                "camera" => camera = Some(camera_from_node(node)),
-                "light" => lights.push(light_from_node(node)),
-                typ if typ == "cube" || typ == "plane" || typ == "sphere" => {
-                    objects.push(obj_from_node(node, typ, &defs))
+    /// Parses all information regarding the scene out of a yaml-string.
+    pub fn new_from_yaml(yaml_str: &str) -> Self {
+        let docs = YamlLoader::load_from_str(&yaml_str).expect("Unable to load yaml from string.");
+        let root_nodes = docs[0]
+            .as_vec()
+            .expect("Bad yaml structure. Expected multiple entries.");
+    
+        let defs = parse_definitions(root_nodes);
+    
+        let mut camera: Option<Camera> = None;
+        let mut lights: Vec<Light> = vec![];
+        let mut objects: Vec<Object> = vec![];
+    
+        for node in root_nodes.iter().map(|yaml| yaml.as_hash().unwrap()) {
+            if let Some(add_node) = node.get(&Yaml::from_str("add")) {
+                match add_node.as_str().unwrap() {
+                    "camera" => camera = Some(camera_from_node(node)),
+                    "light" => lights.push(light_from_node(node)),
+                    typ if typ == "cube" || typ == "plane" || typ == "sphere" => {
+                        objects.push(obj_from_node(node, typ, &defs))
+                    }
+                    _ => unimplemented!("missing support for type {}", add_node.as_str().unwrap()),
                 }
-                _ => unimplemented!("missing support for type {}", add_node.as_str().unwrap()),
             }
         }
-    }
-
-    if camera.is_none() {
-        panic!("Expect camera to be 'add'-ed.");
-    }
-    if lights.len() < 1 {
-        panic!("Expect at least one light to be 'add'-ed.");
-    }
-    // dbg!(&objects);
-    SceneToRun {
-        camera,
-        lights,
-        objects,
+    
+        if lights.len() < 1 {
+            panic!("Expect at least one light to be 'add'-ed.");
+        }
+        // dbg!(&objects);
+        SceneToRun {
+            camera: camera.expect("Expected one camera to be 'add-ed."),
+            world: World { lights, objects }
+        }
     }
 }
 

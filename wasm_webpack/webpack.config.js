@@ -25,12 +25,9 @@ const appConfig = {
     new CopyPlugin([
       path.resolve(__dirname, "static")
     ]),
-    new WasmPackPlugin({
-      crateDirectory: __dirname,
-      forceMode: "production",
-    }),
   ]
 };
+
 const workerConfig = {
   mode: "production",
   entry: "./js/render.worker.js",
