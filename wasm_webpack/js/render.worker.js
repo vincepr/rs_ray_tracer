@@ -22,6 +22,10 @@ class RendererWorker{
     const imgData = this.wasmRenderer.row_to_image_pixels(this.y);
     return { y: this.y++, imgData: imgData };
   }
+
+  async getWidthHeight(){
+    return { width: this.wasmRenderer.width, height: this.wasmRenderer.height }
+  }
 }
 
 ComLink.expose(new RendererWorker());

@@ -32,11 +32,11 @@ async function handleRenderBtnClicked(){
 // Parse in yaml in wasm one time, to get width and height.
 // We could also check for (syntax-)errors here. For better error-feedback.
 async function parseYamlForSceneData() {
-  return import('../pkg/index.js').then(wasm => {
-    const yaml_str = document.getElementById('input_yaml').value;
-    const sceneToRender = new wasm.WasmRenderer(yaml_str);
-    return { width: sceneToRender.width, height: sceneToRender.height }
-  });
+  const yaml_str = document.getElementById('input_yaml').value;
+  const worker = new Worker('./worker.js');
+  const renderer = Comlink.wrap(worker);
+  await renderer.init({ start: 0, end: 0, yaml_str: yaml_str });
+  return await renderer.getWidthHeight();
 }
 
 async function startParallelRendering(ctx, yaml_str, sceneHeight, fixedNrCores = null) {
