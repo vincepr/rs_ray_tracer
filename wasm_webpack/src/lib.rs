@@ -2,7 +2,6 @@
 use mathlib_renderer::visual::color;
 use parselib_yaml::yaml::SceneToRun;
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
