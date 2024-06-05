@@ -8,7 +8,8 @@ crypto.createHash = algorithm => crypto_orig_createHash(algorithm == "md4" ? "sh
 
 const dist = path.resolve(__dirname, "dist");
 
-module.exports = {
+const appConfig = {
+  // stats : "verbose",
   mode: "production",
   entry: {
     index: "./js/index.js"
@@ -24,9 +25,26 @@ module.exports = {
     new CopyPlugin([
       path.resolve(__dirname, "static")
     ]),
-
-    new WasmPackPlugin({
-      crateDirectory: __dirname,
-    }),
   ]
 };
+
+const workerConfig = {
+  mode: "production",
+  entry: "./js/render.worker.js",
+  target: "webworker",
+  resolve: {
+    extensions: [".js", ".wasm"]
+  },
+  plugins: [
+    new WasmPackPlugin({
+      crateDirectory: __dirname,
+      forceMode: "production",
+    })
+  ],
+  output: {
+    path: dist,
+    filename: "worker.js"
+  }
+};
+
+module.exports = [appConfig, workerConfig]

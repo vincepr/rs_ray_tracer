@@ -647,6 +647,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "mathlib_renderer",
+ "parselib_yaml",
  "wasm-bindgen",
  "web-sys",
  "wee_alloc",

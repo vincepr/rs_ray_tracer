@@ -3,7 +3,19 @@
 - live example https://vincepr.github.io/rs_ray_tracer/
 
 ## Example render of the book-cover
-* created from the yaml file provided in the book `./samples/yaml_samples/book_cover.yaml`
+- generate the book cover fromt he parsed yaml file `./samples/yaml_samples/book_cover.yaml` 
+
+![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+
+- chapter 7 - the first decent render
+
+![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+
+- chapter 8 - added shadows
+
+![book_cover_render](samples/yaml_samples/appendix1_book_cover.png)
+
+- chapter 11 - added reflection and refraction
 
 ![book_cover_render](data/yaml_samples/appendix1_book_cover.png)
 
@@ -30,4 +42,6 @@ PERF=/usr/lib/linux-tools/5.15.0-91-generic/perf cargo flamegraph -o flamegraph.
 
 sudo /usr/lib/linux-tools/5.15.0-91-generic/perf record -g --call-graph dwarf ./unix_compiled
 ```
-
+## How to build / run
+- for the wasm-javascript-webpage check out `./wasm_webpack/README.md`
+- for the cli-tool. With rust and cargo installed you can just run: `cargo run --release -- ./samples/yaml_samples/book_cover.yaml`

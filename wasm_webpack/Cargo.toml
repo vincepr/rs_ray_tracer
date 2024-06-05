@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 [features]
 # If you uncomment this line, it will enable `wee_alloc`:
 #default = ["wee_alloc", "console_error_panic_hook"]
-default = []
+default = ["console_error_panic_hook"]
 
 [dependencies]
 # The `wasm-bindgen` crate provides the bare minimum functionality needed
@@ -21,6 +21,7 @@ default = []
 wasm-bindgen = "0.2.45"
 
 mathlib_renderer = { path = "../mathlib_renderer"}
+parselib_yaml = { path = "../parselib_yaml"}
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
