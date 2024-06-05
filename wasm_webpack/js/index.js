@@ -27,12 +27,16 @@ async function handleRenderBtnClicked(){
   canvas.height = height;
 
   // start the rendering
+  toggleWorkInProgress();
   await startParallelRendering(ctx, yaml_str, height);
+  toggleWorkInProgress()
 
   // display timer
   const time_ms = new Date().getTime() - start_time.getTime();
   time_result.innerHTML = `it took ${Math.round(time_ms/1000)}s to render`;
 }
+
+
 
 // Parse in yaml in wasm one time, to get width and height.
 // We could also check for (syntax-)errors here. For better error-feedback.
@@ -79,7 +83,7 @@ function getAvailableCores() {
 }
 
 //
-//              Handle buttons/navigation 
+//              Handle buttons/navigation/ui-feedback
 //
 
 function setupInitialCanvas(url) {
@@ -125,4 +129,26 @@ async function loadTextareaFromFile(path) {
     .then((text) => {
       document.getElementById("input_yaml").value = text;
     });
+}
+
+// disable multiple renders at once by using this global to keep track of 'state'
+var state = "ready";
+function toggleWorkInProgress() {
+  if (state === 'ready') {
+    const btn = document.getElementById("render");
+    btn.disabled = true;
+    btn.classList.add("disabled");
+    const box = document.getElementById("checkbox_onload");
+    box.disabled = true;
+    state = box.checked ? "wasChecked" : "notChecked"
+    box.checked = false;
+  } else {
+    const btn = document.getElementById("render");
+    btn.disabled = false;
+    btn.classList.remove("disabled");
+    const box = document.getElementById("checkbox_onload");
+    box.disabled = false;
+    box.checked = state === "wasChecked" ? true : false;
+    state = "ready";
+  }
 }

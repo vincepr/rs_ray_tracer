@@ -10,6 +10,7 @@ html, body {
   --col2: #1E5128;
   --col3: #4E9F3D;
   --col4: #4a4c43;
+  --col5: #987171;
 
   --dark1: 	#3e3e42;
   --dark2: 	#2d2d30;
@@ -206,6 +207,10 @@ div.emscripten_border { border: 1px solid black; }
 
 .toggle:checked:before {
   left: 32px;
+}
+
+.button:disabled {
+  background-color: var(--col5);
 }
 
 .dark1Active{
